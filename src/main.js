@@ -1,6 +1,7 @@
 import * as Backend from './app/backend.js'
 import * as Html from "./app/html.js";
 import * as Handlers from "./app/handlers.js";
+import * as Store from "./app/store.js";
 
 async function initializeApp() {
 
@@ -10,9 +11,9 @@ async function initializeApp() {
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
 
     // dropdowns
-    await loadModels()
-    await loadPatterns()
-    await loadMarkdown()
+    await loadModels(Store.getModel())
+    await loadPatterns(Store.getPattern())
+    await loadMarkdown(Store.getMarkdown())
 }
 
 function registerButtonClickListener(buttonId, handler) {
@@ -26,22 +27,22 @@ function registerButtonClickListener(buttonId, handler) {
     button.addEventListener('click', handler)
 }
 
-async function loadModels() {
+async function loadModels(selected) {
     const models = await Backend.listModels()
     let dd = document.getElementById("model");
-    Html.loadDropdown(models, dd)
+    Html.loadDropdown(models, dd, selected, "Please select")
 }
 
-async function loadPatterns() {
+async function loadPatterns(selected) {
     const data = await Backend.listPatterns()
     let dd = document.getElementById("pattern");
-    Html.loadDropdown(data, dd)
+    Html.loadDropdown(data, dd, selected, "Please select")
 }
 
-async function loadMarkdown() {
+async function loadMarkdown(selected) {
     const data = await Backend.listMarkdowns()
     let dd = document.getElementById("markdown");
-    Html.loadDropdown(data, dd)
+    Html.loadDropdown(data, dd, selected, "None")
 }
 
 document.addEventListener('DOMContentLoaded', () => {
