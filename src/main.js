@@ -1,10 +1,12 @@
 import * as Backend from './app/api/backend.js'
+import * as Html from "./app/html/html.js";
 
 async function initializeApp() {
-    registerAllButtonEventListeners()
+    registerButtonEventListeners()
+    await loadModels()
 }
 
-function registerAllButtonEventListeners() {
+function registerButtonEventListeners() {
     registerButtonClickListener('toggle-sound', handleToggleSoundButtonClick)
     registerButtonClickListener('toggle-input', handleToggleInputButtonClick)
     registerButtonClickListener('send-button', handleSendButtonClick)
@@ -51,6 +53,13 @@ async function handleRefreshButtonClick() {
     } catch (err) {
         console.error('Failed to fetch todos', err)
     }
+}
+
+async function loadModels() {
+    const models = await Backend.listModels()
+    let dd = document.getElementById("model");
+    Html.loadDropdown(models, dd)
+    new Choices(dd, {searchable: true})
 }
 
 document.addEventListener('DOMContentLoaded', () => {
