@@ -1,6 +1,6 @@
-import * as Backend from './app/api/backend.js'
-import * as Html from "./app/html/html.js";
-import * as Handlers from "./handlers.js";
+import * as Backend from './app/backend.js'
+import * as Html from "./app/html.js";
+import * as Handlers from "./app/handlers.js";
 
 async function initializeApp() {
 

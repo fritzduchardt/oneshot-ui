@@ -1,11 +1,13 @@
-import * as Backend from './app/api/backend.js'
+import * as Backend from './backend.js'
+import * as Ui from './ui.js';
 
-export function handleSendButtonClick(event) {
+export async function handleSendButtonClick(event) {
     const message = document.getElementById('message').value
     const model = document.getElementById('model').value
     const pattern = document.getElementById('pattern').value
     const markdown = document.getElementById('markdown').value
-    Backend.chat(message, model, pattern, markdown).catch(error => console.log(error))
+    const res = await Backend.chat(message, model, pattern, markdown).catch(error => console.log(error))
+    Ui.messageTextarea.value += res
 }
 
 export function handleToggleSoundButtonClick() {
