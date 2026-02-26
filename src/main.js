@@ -1,17 +1,18 @@
 import * as Backend from './app/api/backend.js'
 import * as Html from "./app/html/html.js";
+import * as Handlers from "./handlers.js";
 
 async function initializeApp() {
-    registerButtonEventListeners()
-    await loadModels()
-}
 
-function registerButtonEventListeners() {
-    registerButtonClickListener('toggle-sound', handleToggleSoundButtonClick)
-    registerButtonClickListener('toggle-input', handleToggleInputButtonClick)
-    registerButtonClickListener('send-button', handleSendButtonClick)
-    registerButtonClickListener('chat-button', handleChatButtonClick)
-    registerButtonClickListener('refreshBtn', handleRefreshButtonClick)
+    // buttons
+    registerButtonClickListener('send-button', Handlers.handleSendButtonClick)
+    registerButtonClickListener('toggle-sound', Handlers.handleToggleSoundButtonClick)
+    registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
+
+    // dropdowns
+    await loadModels()
+    await loadPatterns()
+    await loadMarkdown()
 }
 
 function registerButtonClickListener(buttonId, handler) {
@@ -25,41 +26,22 @@ function registerButtonClickListener(buttonId, handler) {
     button.addEventListener('click', handler)
 }
 
-function handleSendButtonClick(event) {
-    const message = document.getElementById('message')
-    const model = document.getElementById('model')
-    const markdown = document.getElementById('markdown')
-    Backend.chat(message, model, markdown).catch(error => console.log(error))
-}
-
-function handleToggleSoundButtonClick() {
-    console.log('Toggle sound clicked')
-}
-
-function handleToggleInputButtonClick() {
-    console.log('Toggle input clicked')
-}
-
-function handleChatButtonClick() {
-    console.log('Chat clicked')
-}
-
-async function handleRefreshButtonClick() {
-    console.log('Refresh clicked')
-
-    try {
-        const todos = await fetch('/api/todos').then((res) => res.json())
-        console.log('Todos:', todos)
-    } catch (err) {
-        console.error('Failed to fetch todos', err)
-    }
-}
-
 async function loadModels() {
     const models = await Backend.listModels()
     let dd = document.getElementById("model");
     Html.loadDropdown(models, dd)
-    new Choices(dd, {searchable: true})
+}
+
+async function loadPatterns() {
+    const data = await Backend.listPatterns()
+    let dd = document.getElementById("pattern");
+    Html.loadDropdown(data, dd)
+}
+
+async function loadMarkdown() {
+    const data = await Backend.listMarkdowns()
+    let dd = document.getElementById("markdown");
+    Html.loadDropdown(data, dd)
 }
 
 document.addEventListener('DOMContentLoaded', () => {

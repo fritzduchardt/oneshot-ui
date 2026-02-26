@@ -21,9 +21,9 @@ export async function listMarkdowns() {
         .catch(err => console.log(err));
 }
 
-export async function chat(message, model, markdown) {
+export async function chat(message, model, pattern, markdown) {
     const url = `${Config.API_URL}/completion`
-    const payload = { message, model, markdown }
+    const payload = { message, model, pattern, markdown }
     const abortController = new AbortController()
     setTimeout(() => abortController.abort(), Config.CHAT_TIMEOUT_MILLIS);
 
