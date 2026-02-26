@@ -30,13 +30,13 @@ function registerButtonClickListener(buttonId, handler) {
 async function loadModels(selected) {
     const models = await Backend.listModels()
     let dd = document.getElementById("model");
-    Html.loadDropdown(models, dd, selected, "Please select")
+    Html.loadDropdown(models, dd, selected, selected ? false : "Please select")
 }
 
 async function loadPatterns(selected) {
     const data = await Backend.listPatterns()
     let dd = document.getElementById("pattern");
-    Html.loadDropdown(data, dd, selected, "Please select")
+    Html.loadDropdown(data, dd, selected, selected ? false : "Please select")
 }
 
 async function loadMarkdown(selected) {
@@ -48,3 +48,11 @@ async function loadMarkdown(selected) {
 document.addEventListener('DOMContentLoaded', () => {
     let promise = initializeApp()
 })
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/public/sw.js')
+            .then(reg => console.log('Service Worker registered', reg))
+            .catch(err => console.error('Service Worker registration failed', err))
+    })
+}
