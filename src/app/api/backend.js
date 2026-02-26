@@ -7,6 +7,13 @@ export async function listPatterns() {
         .catch(err => console.log(err));
 }
 
+export async function listModels() {
+    const url = `${Config.API_URL}/models/names`
+    return await fetch(url)
+        .then(res => res.json())
+        .catch(err => console.log(err));
+}
+
 export async function listMarkdowns() {
     const url = `${Config.API_URL}/markdown/paths`
     return await fetch(url)
@@ -25,9 +32,7 @@ export async function chat(message, model, markdown) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
         signal: abortController.signal
-    })
-        .then(response => response.text())
-        .catch(error => console.log(error));
+    }).then(response => response.text())
 }
 
 export async function storeMarkdown(path, markdown) {
@@ -37,18 +42,14 @@ export async function storeMarkdown(path, markdown) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-    })
-        .then(response => response.text())
-        .catch(error => console.log(error));
+    }).then(response => response.text())
 }
 
 export async function generatePatterns() {
     const url = `${Config.API_URL}/patterns/generate`
     return await fetch(url, {
         method: 'POST',
-    })
-        .then(response => response.text())
-        .catch(error => console.log(error));
+    }).then(response => response.text())
 }
 
 export async function telegramSend(message) {
@@ -57,7 +58,5 @@ export async function telegramSend(message) {
     return await fetch(url, {
         method: 'POST',
         body: JSON.stringify(payload),
-    })
-        .then(response => response.text())
-        .catch(error => console.log(error));
+    }).then(response => response.text())
 }
