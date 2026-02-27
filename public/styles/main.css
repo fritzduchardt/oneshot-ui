@@ -7,6 +7,10 @@
     --button-border: #c9c9c9;
     --button-text: #222;
     --button-radius: 8px;
+    --dropdown-background: #e6e6e6;
+    --dropdown-background-active: #ffffff;
+    --dropdown-text: #222;
+    --messages-background-color: #fff6b3;
 }
 
 html,
@@ -23,6 +27,21 @@ body {
 
 body {
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+/*Layout*/
+
+#oneshot {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    background: var(--messages-background-color);
+    overflow: auto;
 }
 
 /*Buttons*/
@@ -48,4 +67,32 @@ button:active {
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/*Dropdowns*/
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--dropdown-background);
+    color: var(--button-text);
+    border: 1px solid var(--button-border);
+    border-radius: var(--button-radius);
+    padding: 10px 36px 10px 12px;
+    font: inherit;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    line-height: 1.2;
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--dropdown-text) 50%),
+        linear-gradient(135deg, var(--dropdown-text) 50%, transparent 50%);
+    background-position:
+        calc(100% - 18px) 50%,
+        calc(100% - 12px) 50%;
+    background-size:
+        6px 6px,
+        6px 6px;
+    background-repeat: no-repeat;
+    background-color: var(--dropdown-background-active);
 }
