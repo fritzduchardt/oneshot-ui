@@ -28,6 +28,8 @@ body {
 
 body {
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    font-size: 12px;
+    line-height: 1.2;
 }
 
 /*Layout*/
@@ -39,20 +41,20 @@ body {
 }
 
 #input-section {
-    margin: 8px;
+    margin: 6px;
 }
 
 #message-row {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: stretch;
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .button-group {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: stretch;
     margin-left: auto;
     flex: 0 0 auto;
@@ -61,10 +63,10 @@ body {
 .dropdown-row-1,
 .dropdown-row-2 {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .dropdown-row-2 {
@@ -81,21 +83,16 @@ body {
     min-width: 0;
 }
 
-#footer {
-    margin: 0 8px 8px;
-}
-
-#footer-left {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-    font-size: 11px;
-}
-
 #version {
-    font-size: 11px;
-    line-height: 1.2;
+    flex: 0 0 auto;
+    font-size: 10px;
+    line-height: 1;
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+.hidden {
+    display: none;
 }
 
 /*Messages Panel*/
@@ -105,7 +102,22 @@ body {
     min-height: 0;
     background: var(--messages-background-color);
     overflow: auto;
-    margin: 8px;
+    margin: 6px;
+    position: relative;
+}
+
+/*Controls*/
+
+#controls {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 6px;
+    margin: 0;
 }
 
 /*Message Text Area*/
@@ -135,11 +147,12 @@ button {
     color: var(--button-text);
     border: 1px solid var(--general-border);
     border-radius: var(--general-radius);
-    padding: 4px 8px;
+    padding: 6px 8px;
     font: inherit;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    line-height: 1.1;
 }
 
 button:active {
@@ -160,21 +173,21 @@ select {
     color: var(--button-text);
     border: 1px solid var(--general-border);
     border-radius: var(--general-radius);
-    padding: 4px 26px 4px 8px;
+    padding: 6px 28px 6px 8px;
     font: inherit;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    line-height: 1.2;
+    line-height: 1.1;
     background-image:
         linear-gradient(45deg, transparent 50%, var(--dropdown-text) 50%),
         linear-gradient(135deg, var(--dropdown-text) 50%, transparent 50%);
     background-position:
-        calc(100% - 18px) 50%,
-        calc(100% - 12px) 50%;
+        calc(100% - 14px) 50%,
+        calc(100% - 9px) 50%;
     background-size:
-        6px 6px,
-        6px 6px;
+        5px 5px,
+        5px 5px;
     background-repeat: no-repeat;
     background-color: var(--dropdown-background-active);
 }

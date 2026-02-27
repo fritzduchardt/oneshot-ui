@@ -9,3 +9,4 @@ const getRequiredElementById = (id) => {
 };
 
 export const messageTextarea = getRequiredElementById("message");
+export const inputSection = getRequiredElementById("input-section");

@@ -23,7 +23,7 @@ export function handleToggleSoundButtonClick() {
 }
 
 export function handleToggleInputButtonClick() {
-    console.log('Toggle input clicked')
+    Ui.inputSection.classList.toggle('hidden');
 }
 
 export function handleChatButtonClick() {
