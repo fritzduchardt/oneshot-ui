@@ -2,6 +2,7 @@ import * as Backend from './backend.js'
 import * as Ui from './ui.js';
 import * as Store from "./store.js";
 import * as Msg from "./messages.js";
+import * as Html from "./html.js";
 
 export async function handleSendButtonClick(event) {
     const message = document.getElementById('message').value
@@ -20,8 +21,9 @@ export async function handleSendButtonClick(event) {
     Store.setMarkdown(markdown)
     Store.setModel(model)
     Store.setPattern(pattern)
-    const res = await Backend.chat(message, model, pattern, markdown).catch(error => console.log(error))
-    Msg.addBotMessage(res)
+    const plain_response = await Backend.chat(message, model, pattern, markdown).catch(error => console.log(error))
+    const response = Html.convertMarkdownToHtml(plain_response);
+    Msg.addBotMessage(response.html, response.metadata)
 }
 
 export function handleAgentButtonClick() {
