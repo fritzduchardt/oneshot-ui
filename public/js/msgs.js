@@ -17,6 +17,10 @@ export function addUserMessage(message, metadata) {
     parent.append(Html.createDiv("user-message-content", message))
 
     Ui.messagesDiv.append(parent)
+    let actionButtons = document.createElement('div');
+    actionButtons.className = "action-buttons"
+    actionButtons.append(createPromptAgainButton(message))
+    parent.append(actionButtons)
     scrollMessagesToBottom()
 }
 
@@ -54,7 +58,6 @@ export function addPendingMessage() {
     return parent
 }
 
-
 function addMetadata(metadata) {
     let parent = document.createElement("div")
     parent.className = "message-tags"
@@ -64,6 +67,12 @@ function addMetadata(metadata) {
     return parent
 }
 
+function scrollMessagesToBottom() {
+    Ui.messagesDiv.scrollTop = Ui.messagesDiv.scrollHeight
+}
+
+// Action Buttons
+
 function createCloseButton() {
     const closeBtn = document.createElement('span');
     closeBtn.className = "close-button"
@@ -71,6 +80,12 @@ function createCloseButton() {
     return closeBtn;
 }
 
-function scrollMessagesToBottom() {
-    Ui.messagesDiv.scrollTop = Ui.messagesDiv.scrollHeight
+function createPromptAgainButton(prompt) {
+    const btn = document.createElement('button');
+    btn.className = "action-button"
+    btn.innerHTML = "Prompt again"
+    btn.addEventListener('click', () => {
+        Ui.messageTextarea.value = prompt
+    })
+    return btn;
 }
