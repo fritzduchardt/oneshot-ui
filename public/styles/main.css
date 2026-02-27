@@ -214,3 +214,9 @@ table {
     text-align: left;
     border: 1px solid var(--general-border);
 }
+
+table th,
+table td {
+    border: 1px solid var(--general-border);
+    padding: 4px;
+}
