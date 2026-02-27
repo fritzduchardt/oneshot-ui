@@ -1,11 +1,24 @@
 export function convertMarkdownToHtml(markdown) {
-    const metadata = new Map()
 
+    // strip spaces
+    markdown = markdown.trim()
+
+    // trim filename
+    const filenamePattern = /^FILENAME:\s+([\S]*?)\n/
+    const filenameMatch = markdown.match(filenamePattern)
+    let filename = ""
+    if (filenameMatch) {
+        markdown = markdown.slice(filenameMatch[0].length)
+        filename = filenameMatch[1]
+    }
+
+    const metadata = new Map()
     const metadataHeaderPattern = /^---\n([\s\S]*?)\n---\n/
     const metadataMatch = markdown.match(metadataHeaderPattern)
 
     let content = markdown
     if (metadataMatch) {
+        console.debug("Found metadata:", metadata)
         const metadataBlock = metadataMatch[1]
         content = markdown.slice(metadataMatch[0].length)
 
@@ -51,7 +64,8 @@ export function convertMarkdownToHtml(markdown) {
 
     return {
         html: `<p>${html}</p>`,
-        metadata
+        metadata,
+        filename
     }
 }
 

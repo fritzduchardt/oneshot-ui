@@ -52,6 +52,9 @@ export function addBotMessage(plain_response, parent) {
     actionButtons.append(createCopyButton(Md.convertMarkdownToPlainText(plain_response), "Copy"))
     const link = ""
     actionButtons.append(createShareButton(link))
+    if (response.filename) {
+        actionButtons.append(createStoreButton(response.filename, response.markdown))
+    }
     parent.append(actionButtons)
 
     scrollMessagesToBottom()
@@ -122,6 +125,17 @@ function createShareButton(message) {
     btn.addEventListener('click', () => {
         Backend.telegramSend(message)
             .catch(err => console.error('Failed to telegram send', err))
+    })
+    return btn;
+}
+
+function createStoreButton(filename, markdown) {
+    const btn = document.createElement('button');
+    btn.className = "action-button"
+    btn.innerHTML = `Store: ${filename}`
+    btn.addEventListener('click', () => {
+        Backend.storeMarkdown(filename, markdown)
+            .catch(err => console.error('Failed to save to backend', err))
     })
     return btn;
 }
