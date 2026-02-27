@@ -115,7 +115,8 @@ body {
     flex: 1 1 auto;
     min-height: 0;
     background: var(--messages-background-color);
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     margin: 6px;
     position: relative;
 }
@@ -126,19 +127,23 @@ body {
     background: var(--user-message-background-color);
     border-radius: var(--general-radius);
     padding: 6px 8px;
-    margin-left: 5px;
+    margin-left: auto;
     box-sizing: border-box;
     border: 1px solid var(--user-message-border-color);
 }
 
 .bot-message {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     box-sizing: border-box;
     border-radius: var(--general-radius);
     margin: 5px;
     background: var(--bot-message-background-color);
     border: 1px solid var(--bot-message-border-color);
     padding: 6px 8px;
+    overflow-x: hidden;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 /*Controls*/
