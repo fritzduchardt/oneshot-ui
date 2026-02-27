@@ -2,9 +2,9 @@ import * as Backend from './backend.js'
 import * as Ui from './ui.js';
 import * as Store from "./store.js";
 import * as Msg from "./msgs.js";
-import * as Html from "./html.js";
+import * as Md from "./md.js";
 
-export async function handleSendButtonClick(event) {
+export async function handleSendButtonClick() {
     const message = document.getElementById('message').value
     const model = document.getElementById('model').value
     if (!model) {
@@ -23,7 +23,7 @@ export async function handleSendButtonClick(event) {
     Store.setModel(model)
     Store.setPattern(pattern)
     const plain_response = await Backend.chat(message, model, pattern, markdown).catch(error => console.log(error))
-    const response = Html.convertMarkdownToHtml(plain_response);
+    const response = Md.convertMarkdownToHtml(plain_response);
     Msg.addBotMessage(response.html, response.metadata)
 }
 
@@ -37,8 +37,4 @@ export function handleToggleSoundButtonClick() {
 
 export function handleToggleInputButtonClick() {
     Ui.inputSection.classList.toggle('hidden');
-}
-
-export function handleChatButtonClick() {
-    console.log('Chat clicked')
 }

@@ -7,20 +7,27 @@ import {APP_VERSION} from "./sw.js";
 
 async function initializeApp() {
 
+    // version
+    Ui.version.innerHTML = APP_VERSION;
+
+    // all the loading
+    await loadModels(Store.getModel())
+    await loadPatterns(Store.getPattern())
+    await loadMarkdown(Store.getMarkdown())
+    await loadMessage(Store.getMessage())
+
+    // keys
+    registerKeyListener()
+
+    // focus
+    registerFocusListener()
+
     // buttons
     registerButtonClickListener('chat-button', Handlers.handleSendButtonClick)
     registerButtonClickListener('agent-button', Handlers.handleAgentButtonClick)
     registerButtonClickListener('toggle-sound', Handlers.handleToggleSoundButtonClick)
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
 
-    // dropdowns
-    await loadModels(Store.getModel())
-    await loadPatterns(Store.getPattern())
-    await loadMarkdown(Store.getMarkdown())
-    await loadMessage(Store.getMessage())
-
-    // version
-    Ui.version.innerHTML = APP_VERSION;
 }
 
 function registerButtonClickListener(buttonId, handler) {
@@ -32,6 +39,21 @@ function registerButtonClickListener(buttonId, handler) {
     }
 
     button.addEventListener('click', handler)
+}
+
+function registerKeyListener(buttonId, handler) {
+    document.addEventListener('keydown', event => {
+        if (event.code === 'Enter') {
+            Handlers.handleSendButtonClick()
+                .catch(err => console.error('Failed to send message', err))
+        }
+    });
+}
+
+function registerFocusListener() {
+    Ui.messageTextarea.addEventListener("focus", () => {
+        Ui.messageTextarea.select()
+    })
 }
 
 async function loadMessage(message) {
