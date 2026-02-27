@@ -11,4 +11,7 @@ const getRequiredElementById = (id) => {
 export const messageTextarea = getRequiredElementById("message");
 export const messagesDiv = getRequiredElementById("messages");
 export const modelDropdown = getRequiredElementById("model");
+export const patternDropdown = getRequiredElementById("pattern");
+export const markdownDropdown = getRequiredElementById("markdown");
 export const inputSection = getRequiredElementById("input-section");
+export const version = getRequiredElementById("version");

@@ -1,7 +1,7 @@
 import * as Backend from './backend.js'
 import * as Ui from './ui.js';
 import * as Store from "./store.js";
-import * as Msg from "./messages.js";
+import * as Msg from "./msgs.js";
 import * as Html from "./html.js";
 
 export async function handleSendButtonClick(event) {
@@ -17,7 +17,8 @@ export async function handleSendButtonClick(event) {
         return
     }
     const markdown = document.getElementById('markdown').value
-    Msg.addBotMessage(message)
+    Msg.addUserMessage(message)
+    Store.setMessage(message)
     Store.setMarkdown(markdown)
     Store.setModel(model)
     Store.setPattern(pattern)

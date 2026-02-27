@@ -2,6 +2,7 @@ import * as Backend from './backend.js'
 import * as Html from "./html.js";
 import * as Handlers from "./handlers.js";
 import * as Store from "./store.js";
+import * as Ui from "./ui.js";
 import {APP_VERSION} from "./sw.js";
 
 async function initializeApp() {
@@ -16,9 +17,10 @@ async function initializeApp() {
     await loadModels(Store.getModel())
     await loadPatterns(Store.getPattern())
     await loadMarkdown(Store.getMarkdown())
+    await loadMessage(Store.getMessage())
 
     // version
-    document.getElementById("version").innerHTML = APP_VERSION;
+    Ui.version.innerHTML = APP_VERSION;
 }
 
 function registerButtonClickListener(buttonId, handler) {
@@ -32,22 +34,23 @@ function registerButtonClickListener(buttonId, handler) {
     button.addEventListener('click', handler)
 }
 
+async function loadMessage(message) {
+    Ui.messageTextarea.value = message
+}
+
 async function loadModels(selected) {
     const models = await Backend.listModels()
-    let dd = document.getElementById("model");
-    Html.loadDropdown(models, dd, selected, selected ? false : "Please select")
+    Html.loadDropdown(models, Ui.modelDropdown, selected, selected ? false : "Please select")
 }
 
 async function loadPatterns(selected) {
     const data = await Backend.listPatterns()
-    let dd = document.getElementById("pattern");
-    Html.loadDropdown(data, dd, selected, selected ? false : "Please select")
+    Html.loadDropdown(data, Ui.patternDropdown, selected, selected ? false : "Please select")
 }
 
 async function loadMarkdown(selected) {
     const data = await Backend.listMarkdowns()
-    let dd = document.getElementById("markdown");
-    Html.loadDropdown(data, dd, selected, "None")
+    Html.loadDropdown(data, Ui.markdownDropdown, selected, "None")
 }
 
 document.addEventListener('DOMContentLoaded', () => {
