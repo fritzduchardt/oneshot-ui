@@ -4,6 +4,7 @@ import * as Handlers from "./handlers.js";
 import * as Store from "./store.js";
 import * as Ui from "./ui.js";
 import {APP_VERSION} from "./sw.js";
+import {handleShowMarkdown} from "./handlers.js"
 
 async function initializeApp() {
 
@@ -27,7 +28,8 @@ async function initializeApp() {
     registerButtonClickListener('agent-button', Handlers.handleAgentButtonClick)
     registerButtonClickListener('toggle-sound', Handlers.handleToggleSoundButtonClick)
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
-
+    registerButtonClickListener('show-pattern', Handlers.handleShowPattern)
+    registerButtonClickListener('show-markdown', Handlers.handleShowMarkdown)
 }
 
 function registerButtonClickListener(buttonId, handler) {
@@ -66,8 +68,13 @@ async function loadModels(selected) {
 }
 
 async function loadPatterns(selected) {
-    const data = await Backend.listPatterns()
-    Html.loadDropdown(data, Ui.patternDropdown, selected, selected ? false : "Please select")
+    await Backend.generatePatterns()
+        .then(() => {
+            Backend.listPatterns()
+                .then((patterns) => {
+                    Html.loadDropdown(patterns, Ui.patternDropdown, selected, selected ? false : "Please select")
+                })
+        })
 }
 
 async function loadMarkdown(selected) {

@@ -4,21 +4,38 @@ export async function listPatterns() {
     const url = `${Config.API_URL}/patterns/names`
     return await fetch(url)
         .then(res => res.json())
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
+}
+
+export async function getPattern(pattern) {
+    const url = `${Config.API_URL}/patterns/${pattern}`
+    return await fetch(url)
+        .then(res => res.text())
+        .catch(err => console.log(err))
 }
 
 export async function listModels() {
     const url = `${Config.API_URL}/models/names`
     return await fetch(url)
         .then(res => res.json())
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
 }
 
 export async function listMarkdowns() {
     const url = `${Config.API_URL}/markdown/paths`
     return await fetch(url)
         .then(res => res.json())
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
+}
+
+export async function getMarkdowns(path) {
+    const url = `${Config.API_URL}/markdown/file`
+    const params = new URLSearchParams({
+        "path": path,
+    });
+    return await fetch(`${url}?${params.toString()}`)
+        .then(res => res.text())
+        .catch(err => console.log(err))
 }
 
 export async function chat(message, model, pattern, markdown) {

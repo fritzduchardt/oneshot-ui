@@ -3,6 +3,8 @@ import * as Ui from './ui.js';
 import * as Store from "./store.js";
 import * as Msg from "./msgs.js";
 import * as Md from "./md.js";
+import {getMarkdowns, getPattern} from "./backend.js"
+import {addPendingMessage} from "./msgs.js"
 
 export async function handleSendButtonClick() {
     const message = document.getElementById('message').value
@@ -41,5 +43,25 @@ export function handleToggleSoundButtonClick() {
 }
 
 export function handleToggleInputButtonClick() {
-    Ui.inputSection.classList.toggle('hidden');
+    Ui.inputSection.classList.toggle('hidden')
+}
+
+export function handleShowPattern() {
+    const pattern = Ui.patternDropdown.value
+    Backend.getPattern(pattern)
+        .then((pattern) => {
+            const parent = Msg.addPendingMessage();
+            Ui.messagesDiv.append(parent)
+            Msg.addBotMessage(pattern, parent)
+        })
+}
+
+export function handleShowMarkdown() {
+    const md = Ui.markdownDropdown.value
+    Backend.getMarkdowns(md)
+        .then((markdown) => {
+            const parent = Msg.addPendingMessage();
+            Ui.messagesDiv.append(parent)
+            Msg.addBotMessage(markdown, parent)
+        })
 }
