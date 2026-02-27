@@ -3,6 +3,8 @@ import * as Html from './html.js'
 import * as Md from "./md.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
+import * as Sound from './sound.js'
+import {playAcknowledgementSound} from "./sound.js"
 
 export function addUserMessage(message, metadata) {
     let parent = document.createElement("div");
@@ -65,6 +67,9 @@ export function addBotMessage(plain_response, parent) {
     })
     parent.append(actionButtons)
     scrollMessagesToBottom()
+    if (!Ui.toggleSound.classList.contains("pressed")) {
+        Sound.playAcknowledgementSound()
+    }
 }
 
 export function addPendingMessage() {

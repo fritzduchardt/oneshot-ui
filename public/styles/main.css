@@ -6,6 +6,7 @@
     --background-color: #8fbb93;
     --button-background: #e6e6e6;
     --button-background-active: #bdbdbd;
+    --button-background-inactive: #a4a4a4;
     --button-text: #222;
     --dropdown-background: #e6e6e6;
     --dropdown-background-active: #ffffff;
@@ -213,6 +214,10 @@ body {
     padding: 6px;
     margin: 0;
     font-size: var(--small-font-size);
+}
+
+.pressed {
+    background-color: var(--button-background-inactive);
 }
 
 /*Message Text Area*/

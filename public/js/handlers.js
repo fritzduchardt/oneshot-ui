@@ -39,10 +39,11 @@ export function handleAgentButtonClick() {
 }
 
 export function handleToggleSoundButtonClick() {
-    console.log('Toggle sound clicked')
+    Ui.toggleSound.classList.toggle("pressed")
 }
 
 export function handleToggleInputButtonClick() {
+    Ui.toggleInput.classList.toggle("pressed")
     Ui.inputSection.classList.toggle('hidden')
 }
 
