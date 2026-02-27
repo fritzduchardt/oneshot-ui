@@ -17,9 +17,11 @@ export function loadDropdown(options, element, selected, none) {
     element.value = selected
 }
 
-export function createDiv(className, content) {
-    const html = `<div class="${className}">${content}</div>`
-    return html
+export function createDiv(id, className, content) {
+    if (id) {
+        return`<div id="${id}" class="${className}">${content}</div>`
+    }
+    return`<div class="${className}">${content}</div>`
 }
 
 export function convertMarkdownToHtml(markdown) {
