@@ -25,11 +25,10 @@ export async function handleSendButtonClick() {
 
     const botMessage = Msg.addPendingMessage()
     try {
-        const plain_response = await Backend.chat(message, model, pattern, markdown)
-        const response = Md.convertMarkdownToHtml(plain_response ?? "")
-        Msg.addBotMessage(response.html, response.metadata, botMessage)
+        const response = await Backend.chat(message, model, pattern, markdown)
+        Msg.addBotMessage(response, botMessage)
     } catch (error) {
-        Msg.addBotMessage("Request failed.", new Map([["error", String(error?.message ?? error)]]), botMessage)
+        Msg.addBotMessage("Request failed: " + String(error?.message ?? error), botMessage)
     }
 }
 

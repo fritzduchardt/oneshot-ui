@@ -1,5 +1,6 @@
 import * as Ui from './ui.js'
 import * as Html from './html.js'
+import * as Md from "./md.js"
 
 export function addUserMessage(message, metadata) {
     let parent = document.createElement("div");
@@ -16,15 +17,18 @@ export function addUserMessage(message, metadata) {
     }
     parent.append(Html.createDiv("user-message-content", message))
 
-    Ui.messagesDiv.append(parent)
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
     actionButtons.append(createPromptAgainButton(message))
     parent.append(actionButtons)
+
+    Ui.messagesDiv.append(parent)
     scrollMessagesToBottom()
 }
 
-export function addBotMessage(message, metadata, parent) {
+export function addBotMessage(plain_response, parent) {
+
+    const response = Md.convertMarkdownToHtml(plain_response)
 
     document.querySelector(".loading-dots").remove()
 
@@ -34,12 +38,18 @@ export function addBotMessage(message, metadata, parent) {
         parent.remove();
     });
 
-    if (metadata.size > 0) {
-        parent.append(addMetadata(metadata))
+    if (response.metadata.size > 0) {
+        parent.append(addMetadata(response.metadata))
     }
 
-    let botMessage = Html.createDiv("bot-message-text", message)
+    let botMessage = Html.createDiv("bot-message-text", response.html)
     parent.append(botMessage)
+
+    let actionButtons = document.createElement('div');
+    actionButtons.className = "action-buttons"
+    actionButtons.append(createCopyButton(plain_response, "Copy"))
+    actionButtons.append(createCopyButton(plain_response, "Copy MD"))
+    parent.append(actionButtons)
 
     scrollMessagesToBottom()
 }
@@ -86,6 +96,17 @@ function createPromptAgainButton(prompt) {
     btn.innerHTML = "Prompt again"
     btn.addEventListener('click', () => {
         Ui.messageTextarea.value = prompt
+    })
+    return btn;
+}
+
+function createCopyButton(message, label) {
+    const btn = document.createElement('button');
+    btn.className = "action-button"
+    btn.innerHTML = label
+    btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(message)
+            .catch(err => console.error('Failed to write to clipboard', err))
     })
     return btn;
 }
