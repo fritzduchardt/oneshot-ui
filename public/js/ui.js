@@ -8,7 +8,6 @@ const getRequiredElementById = (id) => {
     return element;
 };
 
-export const chatElement = getRequiredElementById("chat");
 export const messagesElement = getRequiredElementById("messages");
 export const toggleButtonsElement = getRequiredElementById("toggle-buttons");
 export const toggleSoundButton = getRequiredElementById("toggle-sound");
