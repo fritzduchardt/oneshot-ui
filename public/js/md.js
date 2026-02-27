@@ -13,12 +13,11 @@ export function convertMarkdownToHtml(markdown) {
     }
 
     const metadata = new Map()
-    const metadataHeaderPattern = /^---\n([\s\S]*?)\n---\n/
+    const metadataHeaderPattern = /^[\s\S]*?^---\n([\s\S]*?)\n---\n/m
     const metadataMatch = markdown.match(metadataHeaderPattern)
 
     let content = markdown
     if (metadataMatch) {
-        console.debug("Found metadata:", metadata)
         const metadataBlock = metadataMatch[1]
         content = markdown.slice(metadataMatch[0].length)
 
@@ -52,6 +51,7 @@ export function convertMarkdownToHtml(markdown) {
         .replace(/__(.+?)__/g, "<strong>$1</strong>")
         .replace(/_(.+?)_/g, "<em>$1</em>")
         .replace(/~~(.+?)~~/g, "<del>$1</del>")
+        .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
         .replace(/^\s*[-*+] (.+)$/gm, "<li>$1</li>")
         .replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`)
         .replace(/^\s*\d+\. (.+)$/gm, "<li>$1</li>")
@@ -65,6 +65,7 @@ export function convertMarkdownToHtml(markdown) {
     return {
         html: `<p>${html}</p>`,
         metadata,
+        markdown,
         filename
     }
 }
@@ -127,6 +128,7 @@ export function convertMarkdownToPlainText(markdown) {
     content = stripInlineCode(content)
     content = stripImages(content)
     content = stripLinks(content)
+    content = stripDoubleBrackets(content)
     content = stripEmphasis(content)
     content = stripBlockquotes(content)
     content = stripHorizontalRules(content)
@@ -140,7 +142,7 @@ export function convertMarkdownToPlainText(markdown) {
 }
 
 function stripMarkdownMetadata(markdown) {
-    const metadataHeaderPattern = /^---\n([\s\S]*?)\n---\n/
+    const metadataHeaderPattern = /^[\s\S]*?^---\n([\s\S]*?)\n---\n/m
     const metadataMatch = markdown.match(metadataHeaderPattern)
     let content = markdown
     if (metadataMatch) {
@@ -170,6 +172,10 @@ function stripLinks(text) {
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
         .replace(/\[([^\]]+)\]\[([^\]]+)\]/g, "$1")
         .replace(/<https?:\/\/[^>]+>/g, "")
+}
+
+function stripDoubleBrackets(text) {
+    return text.replace(/\[\[([\s\S]+?)\]\]/g, "$1")
 }
 
 function stripEmphasis(text) {

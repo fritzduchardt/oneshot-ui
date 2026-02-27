@@ -41,7 +41,7 @@ function registerButtonClickListener(buttonId, handler) {
     button.addEventListener('click', handler)
 }
 
-function registerKeyListener(buttonId, handler) {
+function registerKeyListener() {
     document.addEventListener('keydown', event => {
         if (event.code === 'Enter') {
             Handlers.handleSendButtonClick()
@@ -76,7 +76,7 @@ async function loadMarkdown(selected) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    let promise = initializeApp()
+    initializeApp().catch(reason => console.error(reason))
 })
 
 if ('serviceWorker' in navigator) {

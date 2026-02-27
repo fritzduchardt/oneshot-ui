@@ -20,6 +20,7 @@
     --default-font-size: 14px;
     --message-tag-background-color: #ffd9b3;
     --message-tag-border-color: #c9a07a;
+    --prompt-link-color: #1a43ad;
 }
 
 html,
@@ -167,6 +168,12 @@ body {
 
 .action-button {
     margin: 0 2px;
+}
+
+.prompt-link {
+    text-decoration: underline;
+    color: var(--prompt-link-color);
+    cursor: pointer;
 }
 
 /*Message Tags*/

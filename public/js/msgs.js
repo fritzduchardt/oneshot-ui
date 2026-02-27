@@ -2,6 +2,7 @@ import * as Ui from './ui.js'
 import * as Html from './html.js'
 import * as Md from "./md.js"
 import * as Backend from './backend.js'
+import * as Store from "./store.js"
 
 export function addUserMessage(message, metadata) {
     let parent = document.createElement("div");
@@ -48,15 +49,21 @@ export function addBotMessage(plain_response, parent) {
 
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
-    actionButtons.append(createCopyButton(plain_response, "Copy MD"))
+    actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
     actionButtons.append(createCopyButton(Md.convertMarkdownToPlainText(plain_response), "Copy"))
     const link = ""
     actionButtons.append(createShareButton(link))
     if (response.filename) {
         actionButtons.append(createStoreButton(response.filename, response.markdown))
     }
+    const links = parent.querySelectorAll(".prompt-link")
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            Ui.messageTextarea.value = link.innerHTML
+            Ui.chatButton.click()
+        })
+    })
     parent.append(actionButtons)
-
     scrollMessagesToBottom()
 }
 
@@ -131,11 +138,19 @@ function createShareButton(message) {
 
 function createStoreButton(filename, markdown) {
     const btn = document.createElement('button');
+    btn.title = filename
     btn.className = "action-button"
-    btn.innerHTML = `Store: ${filename}`
+    btn.innerHTML = `Store`
     btn.addEventListener('click', () => {
         Backend.storeMarkdown(filename, markdown)
-            .catch(err => console.error('Failed to save to backend', err))
+            .then(() => {
+                btn.innerText = `Stored: ${filename}`
+                btn.disabled = true
+            })
+        Backend.listMarkdowns()
+            .then(markdown => {
+                Html.loadDropdown(markdown, Ui.markdownDropdown, Store.getMarkdown(), "None")
+            })
     })
     return btn;
 }
