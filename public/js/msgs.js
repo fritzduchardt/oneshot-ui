@@ -6,13 +6,17 @@ export function addUserMessage(message) {
 }
 
 export function addBotMessage(message, metadata) {
-    let botMessage = Html.createDiv("bot-message", message)
+    let parent = document.createElement("div");
+    parent.className = "bot-message";
 
     if (metadata.size > 0) {
-        botMessage.append(createMetaDataDiv(metadata))
+        parent.append(createMetaDataDiv(metadata))
     }
 
-    Ui.messagesDiv.append(botMessage)
+    let botMessage = Html.createDiv("bot-message-text", message)
+    parent.append(botMessage)
+
+    Ui.messagesDiv.append(parent)
 }
 
 function createMetaDataDiv(metadata) {

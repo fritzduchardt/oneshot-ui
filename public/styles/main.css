@@ -18,6 +18,8 @@
     --bot-message-border-color: #3b6f81;
     --small-font-size: 10px;
     --default-font-size: 14px;
+    --message-tag-background-color: #ffd9b3;
+    --message-tag-border-color: #c9a07a;
 }
 
 html,
@@ -119,11 +121,12 @@ body {
     overflow-y: auto;
     margin: 6px;
     position: relative;
+    padding: 5px;
 }
 
 .user-message {
-    width: 80%;
-    max-width: 80%;
+    width: 50%;
+    max-width: 50%;
     background: var(--user-message-background-color);
     border-radius: var(--general-radius);
     padding: 6px 8px;
@@ -137,13 +140,36 @@ body {
     max-width: 100%;
     box-sizing: border-box;
     border-radius: var(--general-radius);
-    margin: 5px;
+    margin: 5px 0 5px 0;
     background: var(--bot-message-background-color);
     border: 1px solid var(--bot-message-border-color);
     padding: 6px 8px;
     overflow-x: hidden;
     word-break: break-word;
     overflow-wrap: break-word;
+}
+
+/*Message Tags*/
+
+.message-tags {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+    margin: 4px 0;
+}
+
+.message-tag {
+    display: inline-flex;
+    align-items: center;
+    background: var(--message-tag-background-color);
+    border: 1px solid var(--message-tag-border-color);
+    border-radius: var(--general-radius);
+    padding: 2px 6px;
+    font-size: var(--small-font-size);
+    white-space: nowrap;
+    line-height: 1.4;
 }
 
 /*Controls*/
