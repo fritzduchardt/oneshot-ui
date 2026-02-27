@@ -15,3 +15,4 @@ export const patternDropdown = getRequiredElementById("pattern");
 export const markdownDropdown = getRequiredElementById("markdown");
 export const inputSection = getRequiredElementById("input-section");
 export const version = getRequiredElementById("version");
+export const chatButton = getRequiredElementById("chat-button");

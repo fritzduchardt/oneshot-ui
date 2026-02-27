@@ -165,6 +165,10 @@ body {
     font-size: var(--small-font-size);
 }
 
+.action-button {
+    margin: 0 2px;
+}
+
 /*Message Tags*/
 
 .message-tags {

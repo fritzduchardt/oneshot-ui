@@ -1,6 +1,7 @@
 import * as Ui from './ui.js'
 import * as Html from './html.js'
 import * as Md from "./md.js"
+import * as Backend from './backend.js'
 
 export function addUserMessage(message, metadata) {
     let parent = document.createElement("div");
@@ -47,8 +48,10 @@ export function addBotMessage(plain_response, parent) {
 
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
-    actionButtons.append(createCopyButton(plain_response, "Copy"))
     actionButtons.append(createCopyButton(plain_response, "Copy MD"))
+    actionButtons.append(createCopyButton(Md.convertMarkdownToPlainText(plain_response), "Copy"))
+    const link = ""
+    actionButtons.append(createShareButton(link))
     parent.append(actionButtons)
 
     scrollMessagesToBottom()
@@ -96,6 +99,7 @@ function createPromptAgainButton(prompt) {
     btn.innerHTML = "Prompt again"
     btn.addEventListener('click', () => {
         Ui.messageTextarea.value = prompt
+        Ui.chatButton.click()
     })
     return btn;
 }
@@ -107,6 +111,17 @@ function createCopyButton(message, label) {
     btn.addEventListener('click', () => {
         navigator.clipboard.writeText(message)
             .catch(err => console.error('Failed to write to clipboard', err))
+    })
+    return btn;
+}
+
+function createShareButton(message) {
+    const btn = document.createElement('button');
+    btn.className = "action-button"
+    btn.innerHTML = "Share"
+    btn.addEventListener('click', () => {
+        Backend.telegramSend(message)
+            .catch(err => console.error('Failed to telegram send', err))
     })
     return btn;
 }
