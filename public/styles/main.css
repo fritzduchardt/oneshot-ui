@@ -1,15 +1,16 @@
 /*Background*/
 
 :root {
+    --general-border: #c9c9c9;
+    --general-radius: 8px;
     --background-color: #8fbb93;
     --button-background: #e6e6e6;
     --button-background-active: #bdbdbd;
-    --button-border: #c9c9c9;
     --button-text: #222;
-    --button-radius: 8px;
     --dropdown-background: #e6e6e6;
     --dropdown-background-active: #ffffff;
     --dropdown-text: #222;
+    --message-background-color: #ffffff;
     --messages-background-color: #fff6b3;
 }
 
@@ -37,13 +38,93 @@ body {
     flex-direction: column;
 }
 
+#input-section {
+    margin: 8px;
+}
+
+#message-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    margin-left: auto;
+    flex: 0 0 auto;
+}
+
+.dropdown-row-1,
+.dropdown-row-2 {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.dropdown-row-2 {
+    margin-bottom: 0;
+}
+
+.dropdown-row-1 select {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.dropdown-row-2 select {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+#footer {
+    margin: 0 8px 8px;
+}
+
+#footer-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 11px;
+}
+
+#version {
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+/*Messages Panel*/
+
 #messages {
     flex: 1 1 auto;
     min-height: 0;
     background: var(--messages-background-color);
     overflow: auto;
-    margin: 8px
+    margin: 8px;
 }
+
+/*Message Text Area*/
+
+#message {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    resize: vertical;
+    padding: 6px 8px;
+    font: inherit;
+    border: 1px solid var(--general-border);
+    border-radius: var(--general-radius);
+    color: var(--button-text);
+    background: var(--message-background-color);
+    line-height: 1.3;
+    box-sizing: border-box;
+}
+
 
 /*Buttons*/
 
@@ -52,9 +133,9 @@ button {
     -webkit-appearance: none;
     background: var(--button-background);
     color: var(--button-text);
-    border: 1px solid var(--button-border);
-    border-radius: var(--button-radius);
-    padding: 10px 12px;
+    border: 1px solid var(--general-border);
+    border-radius: var(--general-radius);
+    padding: 4px 8px;
     font: inherit;
     cursor: pointer;
     user-select: none;
@@ -77,9 +158,9 @@ select {
     -webkit-appearance: none;
     background: var(--dropdown-background);
     color: var(--button-text);
-    border: 1px solid var(--button-border);
-    border-radius: var(--button-radius);
-    padding: 10px 36px 10px 12px;
+    border: 1px solid var(--general-border);
+    border-radius: var(--general-radius);
+    padding: 4px 26px 4px 8px;
     font: inherit;
     cursor: pointer;
     user-select: none;
