@@ -133,6 +133,11 @@ body {
     margin-left: auto;
     box-sizing: border-box;
     border: 1px solid var(--user-message-border-color);
+    position: relative;
+}
+
+.user-message-content {
+    margin-top: 10px;
 }
 
 .bot-message {
@@ -147,6 +152,7 @@ body {
     overflow-x: hidden;
     word-break: break-word;
     overflow-wrap: break-word;
+    position: relative;
 }
 
 /*Message Tags*/
@@ -170,6 +176,7 @@ body {
     font-size: var(--small-font-size);
     white-space: nowrap;
     line-height: 1.4;
+    position: relative;
 }
 
 /*Controls*/
@@ -204,7 +211,6 @@ body {
     box-sizing: border-box;
 }
 
-
 /*Buttons*/
 
 button {
@@ -229,6 +235,42 @@ button:active {
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/*Close Button*/
+
+.close-button {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 12px;
+    line-height: 1;
+    background: var(--button-background);
+    border: 1px solid var(--general-border);
+    color: var(--button-text);
+    cursor: pointer;
+    user-select: none;
+    box-sizing: border-box;
+    opacity: 0.6;
+    z-index: 1;
+    transform: none;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.close-button:hover {
+    opacity: 1;
+}
+
+.close-button:active {
+    background: var(--button-background-active);
 }
 
 /*Dropdowns*/

@@ -17,7 +17,7 @@ export async function handleSendButtonClick() {
         return
     }
     const markdown = document.getElementById('markdown').value
-    Msg.addUserMessage(message)
+    Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern]]))
     Store.setMessage(message)
     Store.setMarkdown(markdown)
     Store.setModel(model)
