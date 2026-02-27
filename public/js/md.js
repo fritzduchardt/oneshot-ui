@@ -44,7 +44,7 @@ export function convertMarkdownToHtml(markdown) {
         .replace(/^\s*\d+\. (.+)$/gm, "<li>$1</li>")
         .replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>")
         .replace(/^---$/gm, "<hr>")
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a target="_blank" href="$2">$1</a>')
         .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">')
         .replace(/\n\n+/g, "</p><p>")
         .replace(/^(?!<[a-z])(.+)$/gm, (line) => line.trim() ? line : "")

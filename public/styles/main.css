@@ -12,6 +12,10 @@
     --dropdown-text: #222;
     --message-background-color: #ffffff;
     --messages-background-color: #fff6b3;
+    --user-message-border-color: #797979;
+    --user-message-background-color: #a4a4a4;
+    --bot-message-background-color: #65b8d5;
+    --bot-message-border-color: #3b6f81;
     --small-font-size: 10px;
     --default-font-size: 14px;
 }
@@ -105,7 +109,7 @@ body {
     display: none;
 }
 
-/*Messages Panel*/
+/*Messages Panels*/
 
 #messages {
     flex: 1 1 auto;
@@ -114,6 +118,27 @@ body {
     overflow: auto;
     margin: 6px;
     position: relative;
+}
+
+.user-message {
+    width: 80%;
+    max-width: 80%;
+    background: var(--user-message-background-color);
+    border-radius: var(--general-radius);
+    padding: 6px 8px;
+    margin-left: 5px;
+    box-sizing: border-box;
+    border: 1px solid var(--user-message-border-color);
+}
+
+.bot-message {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: var(--general-radius);
+    margin: 5px;
+    background: var(--bot-message-background-color);
+    border: 1px solid var(--bot-message-border-color);
+    padding: 6px 8px;
 }
 
 /*Controls*/
