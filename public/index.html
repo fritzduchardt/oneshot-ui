@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Oneshot UI</title>
-    <link rel="manifest" href="public/manifest.json">
-    <link rel="stylesheet" href="src/styles/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
 <div id="chat">
     <div id="messages">
+    </div>
+    <div id="input-section">
         <div id="toggle-buttons">
             <button id="toggle-sound">Mute Sound</button>
             <button id="toggle-input">Hide Input</button>
         </div>
-    </div>
-    <div id="input-section">
         <div id="message-row">
             <textarea id="message" placeholder="Type a message"></textarea>
             <div class="button-group">
-                <button id="send-button" type="button">Send</button>
+                <button id="chat-button" type="button">Chat</button>
+                <button id="agent-button" type="button">Agent</button>
             </div>
         </div>
         <div class="dropdown-row-1">
@@ -35,7 +37,9 @@
             </select>
         </div>
     </div>
+    <div id="version">
+    </div>
 </div>
-<script type="module" src="src/main.js"></script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>

@@ -1,12 +1,14 @@
-import * as Backend from './app/backend.js'
-import * as Html from "./app/html.js";
-import * as Handlers from "./app/handlers.js";
-import * as Store from "./app/store.js";
+import * as Backend from './backend.js'
+import * as Html from "./html.js";
+import * as Handlers from "./handlers.js";
+import * as Store from "./store.js";
+import {APP_VERSION} from "./sw.js";
 
 async function initializeApp() {
 
     // buttons
-    registerButtonClickListener('send-button', Handlers.handleSendButtonClick)
+    registerButtonClickListener('chat-button', Handlers.handleSendButtonClick)
+    registerButtonClickListener('agent-button', Handlers.handleAgentButtonClick)
     registerButtonClickListener('toggle-sound', Handlers.handleToggleSoundButtonClick)
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
 
@@ -14,6 +16,9 @@ async function initializeApp() {
     await loadModels(Store.getModel())
     await loadPatterns(Store.getPattern())
     await loadMarkdown(Store.getMarkdown())
+
+    // version
+    document.getElementById("version").innerHTML = APP_VERSION;
 }
 
 function registerButtonClickListener(buttonId, handler) {
@@ -51,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/public/sw.js')
+        navigator.serviceWorker.register('/js/sw.js', { type: 'module' })
             .then(reg => console.log('Service Worker registered', reg))
             .catch(err => console.error('Service Worker registration failed', err))
     })

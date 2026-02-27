@@ -14,6 +14,10 @@ export async function handleSendButtonClick(event) {
     Ui.messageTextarea.value += res
 }
 
+export function handleAgentButtonClick() {
+    console.log('Agent button clicked')
+}
+
 export function handleToggleSoundButtonClick() {
     console.log('Toggle sound clicked')
 }

@@ -1,18 +1,19 @@
-const CACHE_VERSION = "v1";
-const STATIC_CACHE_NAME = `static-${CACHE_VERSION}`;
+// sw.js
+export const APP_VERSION = "v1.0.3";
+const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
 const STATIC_ASSETS = [
     "/index.html",
-    "/public/manifest.json",
-    "/public/sw.js",
+    "/manifest.json",
     "/favicon.ico",
-    "/src/main.js",
-    "/src/config.js",
-    "/src/app/backend.js",
-    "/src/app/handlers.js",
-    "/src/app/html.js",
-    "/src/app/store.js",
-    "/src/app/ui.js",
-    "/src/styles/main.css",
+    "/js/sw.js",
+    "/js/main.js",
+    "/js/config.js",
+    "/js/backend.js",
+    "/js/handlers.js",
+    "/js/html.js",
+    "/js/store.js",
+    "/js/ui.js",
+    "/styles/main.css",
 ];
 
 self.addEventListener("install", (event) => {

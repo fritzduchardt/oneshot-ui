@@ -1,3 +1,4 @@
+import * as Config from './config.js'
 const PATTERN_STORAGE_KEY = "pattern";
 const MODEL_STORAGE_KEY = "model";
 const MARKDOWN_STORAGE_KEY = "markdown";
