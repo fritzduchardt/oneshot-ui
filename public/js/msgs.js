@@ -5,7 +5,6 @@ export function addUserMessage(message, metadata) {
     let parent = document.createElement("div");
     parent.className = "user-message"
 
-    // close button
     const closeBtn = createCloseButton()
     parent.append(closeBtn)
     closeBtn.addEventListener('click', () => {
@@ -15,35 +14,46 @@ export function addUserMessage(message, metadata) {
     if (metadata.size > 0) {
         parent.append(addMetadata(metadata))
     }
-    parent.append(Html.createDiv( "user-message-content", message))
+    parent.append(Html.createDiv("user-message-content", message))
 
     Ui.messagesDiv.append(parent)
-
+    scrollMessagesToBottom()
 }
 
-export function addBotMessage(message, metadata) {
-    // parent div
-    let parent = document.createElement("div");
-    parent.className = "bot-message";
+export function addBotMessage(message, metadata, parent) {
 
-    // close button
+    document.querySelector(".loading-dots").remove()
+
     const closeBtn = createCloseButton()
     parent.append(closeBtn)
     closeBtn.addEventListener('click', () => {
         parent.remove();
     });
 
-    // metadata divs
     if (metadata.size > 0) {
         parent.append(addMetadata(metadata))
     }
 
-    // actual message content
     let botMessage = Html.createDiv("bot-message-text", message)
     parent.append(botMessage)
 
-    Ui.messagesDiv.append(parent)
+    scrollMessagesToBottom()
 }
+
+export function addPendingMessage() {
+    let parent = document.createElement("div");
+    parent.className = "bot-message bot-message-pending";
+
+    const dots = document.createElement("div");
+    dots.className = "loading-dots"
+    dots.innerHTML = "<span></span><span></span><span></span>"
+    parent.append(dots)
+
+    Ui.messagesDiv.append(parent)
+    scrollMessagesToBottom()
+    return parent
+}
+
 
 function addMetadata(metadata) {
     let parent = document.createElement("div")
@@ -59,4 +69,8 @@ function createCloseButton() {
     closeBtn.className = "close-button"
     closeBtn.innerHTML = "x"
     return closeBtn;
+}
+
+function scrollMessagesToBottom() {
+    Ui.messagesDiv.scrollTop = Ui.messagesDiv.scrollHeight
 }

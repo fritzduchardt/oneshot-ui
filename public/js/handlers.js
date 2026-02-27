@@ -22,9 +22,15 @@ export async function handleSendButtonClick() {
     Store.setMarkdown(markdown)
     Store.setModel(model)
     Store.setPattern(pattern)
-    const plain_response = await Backend.chat(message, model, pattern, markdown).catch(error => console.log(error))
-    const response = Md.convertMarkdownToHtml(plain_response);
-    Msg.addBotMessage(response.html, response.metadata)
+
+    const botMessage = Msg.addPendingMessage()
+    try {
+        const plain_response = await Backend.chat(message, model, pattern, markdown)
+        const response = Md.convertMarkdownToHtml(plain_response ?? "")
+        Msg.addBotMessage(response.html, response.metadata, botMessage)
+    } catch (error) {
+        Msg.addBotMessage("Request failed.", new Map([["error", String(error?.message ?? error)]]), botMessage)
+    }
 }
 
 export function handleAgentButtonClick() {
