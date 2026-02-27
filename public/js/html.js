@@ -1,4 +1,3 @@
-// html utils
 
 export function loadDropdown(options, element, selected, none) {
     let html = ""
@@ -17,4 +16,9 @@ export function loadDropdown(options, element, selected, none) {
     }
 
     element.value = selected
+}
+
+export function createDiv(className, content) {
+    const html = `<div class="${className}">${content}</div>`
+    return html
 }
