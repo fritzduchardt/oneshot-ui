@@ -16,6 +16,10 @@ async function initializeApp() {
     await loadPatterns(Store.getPattern())
     await loadMarkdown(Store.getMarkdown())
     await loadMessage(Store.getMessage())
+    $("#markdown").select2()
+    $("#pattern").select2()
+    $("#model").select2({
+    })
 
     // keys
     registerKeyListener()
@@ -45,7 +49,7 @@ function registerButtonClickListener(buttonId, handler) {
 
 function registerKeyListener() {
     document.addEventListener('keydown', event => {
-        if (event.code === 'Enter') {
+        if (event.code === 'Enter' && document.activeElement ==  Ui.messageTextarea) {
             Handlers.handleSendButtonClick()
                 .catch(err => console.error('Failed to send message', err))
         }

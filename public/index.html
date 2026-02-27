@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body>
 <div id="oneshot">
@@ -18,7 +21,7 @@
     </div>
     <div id="input-section">
         <div id="message-row">
-            <textarea id="message" placeholder="Type a message"></textarea>
+            <textarea id="message" placeholder="Type a message" rows="3"></textarea>
             <div class="button-group">
                 <button id="chat-button" type="button">Chat</button>
                 <button id="agent-button" type="button">Agent</button>

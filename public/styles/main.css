@@ -89,8 +89,8 @@ body {
 
 .dropdown-row-1 #model {
     flex: 0 0 auto;
+    min-width: 50px;
     width: auto;
-    min-width: 0;
     max-width: 50%;
 }
 
