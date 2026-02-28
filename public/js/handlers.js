@@ -6,7 +6,7 @@ import * as Md from "./md.js";
 import {getMarkdowns, getPattern} from "./backend.js"
 import {addPendingMessage} from "./msgs.js"
 
-export async function handleSendButtonClick() {
+export async function handleSendButtonClick(withMcp) {
     const message = document.getElementById('message').value
     const model = document.getElementById('model').value
     if (!model) {
@@ -19,7 +19,7 @@ export async function handleSendButtonClick() {
         return
     }
     const markdown = document.getElementById('markdown').value
-    Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern]]))
+    Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern], ["mcp", withMcp]]))
     Store.setMessage(message)
     Store.setMarkdown(markdown)
     Store.setModel(model)
@@ -27,7 +27,7 @@ export async function handleSendButtonClick() {
 
     const botMessage = Msg.addPendingMessage()
     try {
-        const response = await Backend.chat(message, model, pattern, markdown)
+        const response = await Backend.chat(message, model, pattern, markdown, withMcp)
         Msg.addBotMessage(response, botMessage)
     } catch (error) {
         Msg.addBotMessage("Request failed: " + String(error?.message ?? error), botMessage)

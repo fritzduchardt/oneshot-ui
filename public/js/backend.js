@@ -38,9 +38,9 @@ export async function getMarkdowns(path) {
         .catch(err => console.log(err))
 }
 
-export async function chat(message, model, pattern, markdown) {
+export async function chat(message, model, pattern, markdown, withMcp) {
     const url = `${Config.API_URL}/completion`
-    const payload = { message, model, pattern, markdown }
+    const payload = { message, model, pattern, markdown, "with_mcp": withMcp}
     const abortController = new AbortController()
     setTimeout(() => abortController.abort(), Config.CHAT_TIMEOUT_MILLIS);
 

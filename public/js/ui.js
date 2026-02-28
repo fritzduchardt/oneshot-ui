@@ -16,5 +16,6 @@ export const markdownDropdown = getRequiredElementById("markdown");
 export const inputSection = getRequiredElementById("input-section");
 export const version = getRequiredElementById("version");
 export const chatButton = getRequiredElementById("chat-button");
+export const mcpButton = getRequiredElementById("mcp-button");
 export const toggleSound = getRequiredElementById("toggle-sound");
 export const toggleInput = getRequiredElementById("toggle-input");

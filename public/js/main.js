@@ -4,7 +4,6 @@ import * as Handlers from "./handlers.js";
 import * as Store from "./store.js";
 import * as Ui from "./ui.js";
 import {APP_VERSION} from "./sw.js";
-import {handleShowMarkdown} from "./handlers.js"
 
 async function initializeApp() {
 
@@ -28,7 +27,12 @@ async function initializeApp() {
     registerFocusListener()
 
     // buttons
-    registerButtonClickListener('chat-button', Handlers.handleSendButtonClick)
+    Ui.chatButton.addEventListener("click", function (e) {
+        Handlers.handleSendButtonClick(false)
+    })
+    Ui.mcpButton.addEventListener("click", function (e) {
+        Handlers.handleSendButtonClick(true)
+    })
     registerButtonClickListener('agent-button', Handlers.handleAgentButtonClick)
     registerButtonClickListener('toggle-sound', Handlers.handleToggleSoundButtonClick)
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
@@ -48,12 +52,21 @@ function registerButtonClickListener(buttonId, handler) {
 }
 
 function registerKeyListener() {
+    const keyPressed = new Set()
     document.addEventListener('keydown', event => {
-        if (event.code === 'Enter' && document.activeElement ==  Ui.messageTextarea) {
-            Handlers.handleSendButtonClick()
+        keyPressed.add(event.code)
+        if (keyPressed.has('Enter') && keyPressed.has('ControlLeft') && document.activeElement ==  Ui.messageTextarea) {
+            Handlers.handleSendButtonClick(true)
+                .catch(err => console.error('Failed to send message', err))
+        } else if (keyPressed.has('Enter') && document.activeElement ==  Ui.messageTextarea) {
+            Handlers.handleSendButtonClick(false)
                 .catch(err => console.error('Failed to send message', err))
         }
     });
+
+    document.addEventListener('keyup', event => {
+        keyPressed.delete(event.code)
+    })
 }
 
 function registerFocusListener() {
