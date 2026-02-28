@@ -6,7 +6,7 @@ import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
 
-export function addUserMessage(message, metadata) {
+export function addUserMessage(message, metadata, abortController) {
     let parent = Dom.createDivWithCloseButton("user-message");
 
     if (metadata.size > 0) {
@@ -16,8 +16,8 @@ export function addUserMessage(message, metadata) {
 
     let actionButtons = Dom.createDiv("action-buttons");
     actionButtons.append(createPromptAgainButton(message))
+    actionButtons.append(createCancelRequestButton(abortController))
     parent.append(actionButtons)
-
     Ui.messagesDiv.append(parent)
     scrollMessagesToBottom()
 }
@@ -195,14 +195,11 @@ function createDeleteMarkdownButton(path) {
     return btn;
 }
 
-function createCancelRequestButton() {
+function createCancelRequestButton(abortController) {
     const btn = Dom.createButton( "action-button", "Cancel")
     btn.addEventListener('click', () => {
-        Backend.deleteMarkdowns(path)
-            .then(() => {
-                btn.disabled = true
-            })
-            .catch(err => console.error('Failed to delete markdown', err))
+        abortController.abort()
+        btn.disabled = true
     })
     return btn;
 }

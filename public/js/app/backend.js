@@ -53,10 +53,9 @@ export async function deleteMarkdowns(path) {
         .catch(err => console.log(err))
 }
 
-export async function chat(message, model, pattern, markdown, withMcp) {
+export async function chat(message, model, pattern, markdown, abortController, withMcp) {
     const url = `${Config.API_URL}/completion`
     const payload = { message, model, pattern, markdown, "with_mcp": withMcp}
-    const abortController = new AbortController()
     setTimeout(() => abortController.abort(), Config.CHAT_TIMEOUT_MILLIS);
 
     return await fetch(url, {
@@ -64,7 +63,9 @@ export async function chat(message, model, pattern, markdown, withMcp) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
         signal: abortController.signal
-    }).then(response => response.text())
+    }).then(response => {
+        return response.text()
+    })
 }
 
 export async function storeMarkdown(path, markdown) {
