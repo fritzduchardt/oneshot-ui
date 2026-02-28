@@ -1,5 +1,5 @@
 import * as Backend from './app/backend.js'
-import * as Html from "./app/html.js";
+import * as Dom from "./app/dom.js";
 import * as Handlers from "./app/handlers.js";
 import * as Store from "./app/store.js";
 import * as Ui from "./app/ui.js";
@@ -27,10 +27,10 @@ async function initializeApp() {
     registerFocusListener()
 
     // buttons
-    Ui.chatButton.addEventListener("click", function (e) {
+    Ui.chatButton.addEventListener("click", () => {
         Handlers.handleSendButtonClick(false)
     })
-    Ui.mcpButton.addEventListener("click", function (e) {
+    Ui.mcpButton.addEventListener("click", () => {
         Handlers.handleSendButtonClick(true)
     })
     registerButtonClickListener('agent-button', Handlers.handleAgentButtonClick)
@@ -81,7 +81,7 @@ async function loadMessage(message) {
 
 async function loadModels(selected) {
     const models = await Backend.listModels()
-    Html.loadDropdown(models, Ui.modelDropdown, selected, selected ? false : "Please select")
+    Dom.loadDropdown(models, Ui.modelDropdown, selected, selected ? false : "Please select")
 }
 
 async function loadPatterns(selected) {
@@ -89,14 +89,14 @@ async function loadPatterns(selected) {
         .then(() => {
             Backend.listPatterns()
                 .then((patterns) => {
-                    Html.loadDropdown(patterns, Ui.patternDropdown, selected, selected ? false : "Please select")
+                    Dom.loadDropdown(patterns, Ui.patternDropdown, selected, selected ? false : "Please select")
                 })
         })
 }
 
 async function loadMarkdown(selected) {
     const data = await Backend.listMarkdowns()
-    Html.loadDropdown(data, Ui.markdownDropdown, selected, "None")
+    Dom.loadDropdown(data, Ui.markdownDropdown, selected, "None")
 }
 
 document.addEventListener('DOMContentLoaded', () => {

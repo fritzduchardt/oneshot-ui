@@ -1,6 +1,7 @@
 import * as Ui from './ui.js'
-import * as Html from './html.js'
-import * as Md from "./md.js"
+import * as Dom from './dom.js'
+import * as Html from "./formats/html.js"
+import * as Text from "./formats/text.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
@@ -18,7 +19,7 @@ export function addUserMessage(message, metadata) {
     if (metadata.size > 0) {
         parent.append(addMetadata(metadata))
     }
-    parent.append(Html.createDiv("user-message-content", message))
+    parent.append(Dom.createDiv("user-message-content", message))
 
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
@@ -31,7 +32,7 @@ export function addUserMessage(message, metadata) {
 
 export function addBotMessage(plain_response, parent) {
 
-    const response = Md.convertMarkdownToHtml(plain_response)
+    const response = Html.convertMarkdownToHtml(plain_response)
 
     document.querySelector(".loading-dots").remove()
 
@@ -45,13 +46,13 @@ export function addBotMessage(plain_response, parent) {
         parent.append(addMetadata(response.metadata))
     }
 
-    let botMessage = Html.createDiv("bot-message-text", response.html)
+    let botMessage = Dom.createDiv("bot-message-text", response.html)
     parent.append(botMessage)
 
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
     actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
-    actionButtons.append(createCopyButton(Md.convertMarkdownToPlainText(plain_response), "Copy"))
+    actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(plain_response), "Copy"))
     const link = ""
     actionButtons.append(createShareButton(link))
     if (response.filename) {
@@ -89,7 +90,7 @@ function addMetadata(metadata) {
     let parent = document.createElement("div")
     parent.className = "message-tags"
     for (const [key, value] of metadata) {
-        parent.append(Html.createDiv("message-tag", `${key}: ${value}`))
+        parent.append(Dom.createDiv("message-tag", `${key}: ${value}`))
     }
     return parent
 }
@@ -153,7 +154,7 @@ function createStoreButton(filename, markdown) {
             })
         Backend.listMarkdowns()
             .then(markdown => {
-                Html.loadDropdown(markdown, Ui.markdownDropdown, Store.getMarkdown(), "None")
+                Dom.loadDropdown(markdown, Ui.markdownDropdown, Store.getMarkdown(), "None")
             })
     })
     return btn;
