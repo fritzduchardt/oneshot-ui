@@ -33,7 +33,6 @@ async function initializeApp() {
     Ui.mcpButton.addEventListener("click", () => {
         Handlers.handleSendButtonClick(true)
     })
-    registerButtonClickListener('agent-button', Handlers.handleAgentButtonClick)
     registerButtonClickListener('toggle-sound', Handlers.handleToggleSoundButtonClick)
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
     registerButtonClickListener('show-pattern', Handlers.handleShowPattern)

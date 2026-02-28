@@ -1,20 +1,29 @@
-export function convertMarkdownToHtml(markdown) {
+export function convertMarkdownToHtml(markdown, skipTrimFilename , skipParseMetadata , skipCode ) {
 
     // strip spaces
     markdown = markdown.trim()
 
     // trim filename
-    const __ret = trimFilename(markdown)
-    markdown = __ret.markdown
-    let filename = __ret.filename
+    let filename = ""
+    if (!skipTrimFilename) {
+        const ret = trimFilename(markdown)
+        markdown = ret.markdown
+        filename = ret.filename
+    }
 
     // parse metadata
-    let {metadata, content} = parseMetadata(markdown)
+    let metadata
+    let content = markdown
+    if (!skipParseMetadata) {
+        let res = parseMetadata(markdown)
+        content = res.content
+        metadata = res.metadata
+    }
 
     // convert tables
     content = convertMarkdownTablesToHtml(content)
 
-    const html = convertContentToHtml(content)
+    const html = convertContentToHtml(content, skipCode)
 
     return {
         html: html,
@@ -95,22 +104,29 @@ function convertMarkdownTablesToHtml(content) {
     })
 }
 
-function convertContentToHtml(content) {
-    const codeBlocks = []
-    const contentWithPlaceholders = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
-        let htmlBlock = match
-        if (match.startsWith("```")) {
-            const langAttr = lang ? ` class="language-${lang}"` : ""
-            htmlBlock = `<pre><code${langAttr}>${escapeHtml(code.trimEnd())}</code></pre>`
-        }
-        const placeholder = `@@CODEBLOCK${codeBlocks.length}@@`
-        codeBlocks.push(htmlBlock)
-        return placeholder
-    })
+function convertContentToHtml(content, skipCode) {
 
-    let html = convertNonCodeMarkdownToHtml(contentWithPlaceholders)
-    html = restoreCodeBlocks(html, codeBlocks)
+    let codeBlocks = []
+    if (!skipCode) {
+        content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
+            let htmlBlock = match
+            if (match.startsWith("```")) {
+                const langAttr = lang ? ` class="language-${lang}"` : ""
+                htmlBlock = `<pre><code${langAttr}>${escapeHtml(code.trimEnd())}</code></pre>`
+            }
+            const placeholder = `@@CODEBLOCK${codeBlocks.length}@@`
+            codeBlocks.push(htmlBlock)
+            return placeholder
+        })
+    }
 
+    let html = convertNonCodeMarkdownToHtml(content)
+
+    if (!skipCode) {
+        html = restoreCodeBlocks(html, codeBlocks)
+        html.replace(/`([^`]+)`/g, "<code>$1</code>")
+
+    }
     return `<p>${html}</p>`
 }
 
@@ -122,7 +138,6 @@ function convertNonCodeMarkdownToHtml(content) {
         .replace(/^### (.+)$/gm, "<h3>$1</h3>")
         .replace(/^## (.+)$/gm, "<h2>$1</h2>")
         .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-        .replace(/`([^`]+)`/g, "<code>$1</code>")
         .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/\*(.+?)\*/g, "<em>$1</em>")

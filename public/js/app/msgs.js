@@ -7,26 +7,62 @@ import * as Store from "./store.js"
 import * as Sound from './sound.js'
 
 export function addUserMessage(message, metadata) {
-    let parent = document.createElement("div");
-    parent.className = "user-message"
-
-    const closeBtn = createCloseButton()
-    parent.append(closeBtn)
-    closeBtn.addEventListener('click', () => {
-        parent.remove();
-    });
+    let parent = Dom.createDivWithCloseButton("user-message");
 
     if (metadata.size > 0) {
         parent.append(addMetadata(metadata))
     }
     parent.append(Dom.createDiv("user-message-content", message))
 
-    let actionButtons = document.createElement('div');
-    actionButtons.className = "action-buttons"
+    let actionButtons = Dom.createDiv("action-buttons");
     actionButtons.append(createPromptAgainButton(message))
     parent.append(actionButtons)
 
     Ui.messagesDiv.append(parent)
+    scrollMessagesToBottom()
+}
+
+export function addBotMessageForPattern(patternName, patternContent) {
+
+    const parent = Dom.createDivWithCloseButton("bot-message");
+    Ui.messagesDiv.append(parent)
+
+    const response = Html.convertMarkdownToHtml(patternContent, true, true, true)
+
+    let metadata = new Map()
+    metadata.set("pattern", patternName)
+    parent.append(addMetadata(metadata))
+
+    let botMessage = Dom.createDiv("bot-message-text", response.html)
+    parent.append(botMessage)
+
+    let actionButtons = document.createElement('div');
+    actionButtons.className = "action-buttons"
+    actionButtons.append(createDeletePatternButton())
+    parent.append(actionButtons)
+
+    scrollMessagesToBottom()
+}
+
+export function addBotMessageForMarkdown(mdPath, md) {
+
+    const parent = Dom.createDivWithCloseButton("bot-message");
+    Ui.messagesDiv.append(parent)
+
+    const response = Html.convertMarkdownToHtml(md, true, false, false)
+
+    let metadata = response.metadata
+    metadata.set("path", mdPath)
+    parent.append(addMetadata(metadata))
+
+    let botMessage = Dom.createDiv("bot-message-text", response.html)
+    parent.append(botMessage)
+
+    let actionButtons = document.createElement('div');
+    actionButtons.className = "action-buttons"
+    actionButtons.append(createDeleteMarkdownButton())
+    parent.append(actionButtons)
+
     scrollMessagesToBottom()
 }
 
@@ -35,12 +71,6 @@ export function addBotMessage(plain_response, parent) {
     const response = Html.convertMarkdownToHtml(plain_response)
 
     document.querySelector(".loading-dots").remove()
-
-    const closeBtn = createCloseButton()
-    parent.append(closeBtn)
-    closeBtn.addEventListener('click', () => {
-        parent.remove();
-    });
 
     if (response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
@@ -73,12 +103,9 @@ export function addBotMessage(plain_response, parent) {
 }
 
 export function addPendingMessage() {
-    let parent = document.createElement("div");
-    parent.className = "bot-message bot-message-pending";
+    let parent = Dom.createDivWithCloseButton("bot-message bot-message-pending");
 
-    const dots = document.createElement("div");
-    dots.className = "loading-dots"
-    dots.innerHTML = "<span></span><span></span><span></span>"
+    const dots = Dom.createDiv("loading-dots", "<span></span><span></span><span></span>");
     parent.append(dots)
 
     Ui.messagesDiv.append(parent)
@@ -87,8 +114,7 @@ export function addPendingMessage() {
 }
 
 function addMetadata(metadata) {
-    let parent = document.createElement("div")
-    parent.className = "message-tags"
+    let parent = Dom.createDiv("message-tags")
     for (const [key, value] of metadata) {
         parent.append(Dom.createDiv("message-tag", `${key}: ${value}`))
     }
@@ -101,17 +127,8 @@ function scrollMessagesToBottom() {
 
 // Action Buttons
 
-function createCloseButton() {
-    const closeBtn = document.createElement('span');
-    closeBtn.className = "close-button"
-    closeBtn.innerHTML = "x"
-    return closeBtn;
-}
-
 function createPromptAgainButton(prompt) {
-    const btn = document.createElement('button');
-    btn.className = "action-button"
-    btn.innerHTML = "Prompt again"
+    const btn = Dom.createButton("action-button", "Prompt again");
     btn.addEventListener('click', () => {
         Ui.messageTextarea.value = prompt
         Ui.chatButton.click()
@@ -120,9 +137,7 @@ function createPromptAgainButton(prompt) {
 }
 
 function createCopyButton(message, label) {
-    const btn = document.createElement('button');
-    btn.className = "action-button"
-    btn.innerHTML = label
+    const btn = Dom.createButton("action-button", label);
     btn.addEventListener('click', () => {
         navigator.clipboard.writeText(message)
             .catch(err => console.error('Failed to write to clipboard', err))
@@ -131,9 +146,7 @@ function createCopyButton(message, label) {
 }
 
 function createShareButton(message) {
-    const btn = document.createElement('button');
-    btn.className = "action-button"
-    btn.innerHTML = "Share"
+    const btn = Dom.createButton("action-button", "Share");
     btn.addEventListener('click', () => {
         Backend.telegramSend(message)
             .catch(err => console.error('Failed to telegram send', err))
@@ -142,10 +155,8 @@ function createShareButton(message) {
 }
 
 function createStoreButton(filename, markdown) {
-    const btn = document.createElement('button');
+    const btn = Dom.createButton("action-button", "Store");
     btn.title = filename
-    btn.className = "action-button"
-    btn.innerHTML = `Store`
     btn.addEventListener('click', () => {
         Backend.storeMarkdown(filename, markdown)
             .then(() => {
@@ -156,6 +167,20 @@ function createStoreButton(filename, markdown) {
             .then(markdown => {
                 Dom.loadDropdown(markdown, Ui.markdownDropdown, Store.getMarkdown(), "None")
             })
+    })
+    return btn;
+}
+
+function createDeletePatternButton() {
+    const btn = Dom.createButton( "action-button", "Delete")
+    btn.addEventListener('click', () => {
+    })
+    return btn;
+}
+
+function createDeleteMarkdownButton() {
+    const btn = Dom.createButton( "action-button", "Delete")
+    btn.addEventListener('click', () => {
     })
     return btn;
 }

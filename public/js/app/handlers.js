@@ -45,12 +45,10 @@ export function handleToggleInputButtonClick() {
 }
 
 export function handleShowPattern() {
-    const pattern = Ui.patternDropdown.value
-    Backend.getPattern(pattern)
+    const pattern_name = Ui.patternDropdown.value
+    Backend.getPattern(pattern_name)
         .then((pattern) => {
-            const parent = Msg.addPendingMessage();
-            Ui.messagesDiv.append(parent)
-            Msg.addBotMessage(pattern, parent)
+            Msg.addBotMessageForPattern(pattern_name, pattern)
         })
 }
 
@@ -58,8 +56,6 @@ export function handleShowMarkdown() {
     const md = Ui.markdownDropdown.value
     Backend.getMarkdowns(md)
         .then((markdown) => {
-            const parent = Msg.addPendingMessage();
-            Ui.messagesDiv.append(parent)
-            Msg.addBotMessage(markdown, parent)
+            Msg.addBotMessageForMarkdown(md, markdown)
         })
 }
