@@ -3,7 +3,7 @@ export function convertMarkdownToPlainText(markdown) {
     content = stripFencedCodeBlocks(content)
     content = stripInlineCode(content)
     content = stripImages(content)
-    content = stripLinks(content)
+    content = convertLinksToHttpFormat(content)
     content = stripDoubleBrackets(content)
     content = stripEmphasis(content)
     content = stripBlockquotes(content)
@@ -43,11 +43,12 @@ function stripImages(text) {
     return text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, "$1").replace(/!\[([^\]]*)\]\[([^\]]+)\]/g, "$1")
 }
 
-function stripLinks(text) {
+function convertLinksToHttpFormat(text) {
     return text
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, "$2")
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
         .replace(/\[([^\]]+)\]\[([^\]]+)\]/g, "$1")
-        .replace(/<https?:\/\/[^>]+>/g, "")
+        .replace(/<(https?:\/\/[^>]+)>/g, "$1")
 }
 
 function stripDoubleBrackets(text) {
