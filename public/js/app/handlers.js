@@ -46,16 +46,20 @@ export function handleToggleInputButtonClick() {
 
 export function handleShowPattern() {
     const pattern_name = Ui.patternDropdown.value
-    Backend.getPattern(pattern_name)
-        .then((pattern) => {
-            Msg.addBotMessageForPattern(pattern_name, pattern)
-        })
+    if (pattern_name) {
+        Backend.getPattern(pattern_name)
+            .then((pattern) => {
+                Msg.addBotMessageForPattern(pattern_name, pattern)
+            })
+    }
 }
 
 export function handleShowMarkdown() {
     const md = Ui.markdownDropdown.value
-    Backend.getMarkdowns(md)
-        .then((markdown) => {
-            Msg.addBotMessageForMarkdown(md, markdown)
-        })
+    if (md) {
+        Backend.getMarkdowns(md)
+            .then((markdown) => {
+                Msg.addBotMessageForMarkdown(md, markdown)
+            })
+    }
 }
