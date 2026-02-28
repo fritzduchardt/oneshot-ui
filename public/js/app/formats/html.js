@@ -4,6 +4,27 @@ export function convertMarkdownToHtml(markdown) {
     markdown = markdown.trim()
 
     // trim filename
+    const __ret = trimFilename(markdown)
+    markdown = __ret.markdown
+    let filename = __ret.filename
+
+    // parse metadata
+    let {metadata, content} = parseMetadata(markdown)
+
+    // convert tables
+    content = convertMarkdownTablesToHtml(content)
+
+    const html = convertToHtml(content)
+
+    return {
+        html: html,
+        metadata,
+        markdown,
+        filename
+    }
+}
+
+function trimFilename(markdown) {
     const filenamePattern = /^FILENAME:\s+([\S]*?)\n/
     const filenameMatch = markdown.match(filenamePattern)
     let filename = ""
@@ -11,11 +32,13 @@ export function convertMarkdownToHtml(markdown) {
         markdown = markdown.slice(filenameMatch[0].length)
         filename = filenameMatch[1]
     }
+    return {markdown, filename}
+}
 
+function parseMetadata(markdown) {
     const metadata = new Map()
     const metadataHeaderPattern = /^[\s\S]*?^---\n([\s\S]*?)\n---\n/m
     const metadataMatch = markdown.match(metadataHeaderPattern)
-
     let content = markdown
     if (metadataMatch) {
         const metadataBlock = metadataMatch[1]
@@ -29,45 +52,7 @@ export function convertMarkdownToHtml(markdown) {
             if (key) metadata.set(key, value)
         })
     }
-
-    const contentWithTablesConverted = convertMarkdownTablesToHtml(content)
-
-    const html = contentWithTablesConverted
-        .replace(/^###### (.+)$/gm, "<h6>$1</h6>")
-        .replace(/^##### (.+)$/gm, "<h5>$1</h5>")
-        .replace(/^#### (.+)$/gm, "<h4>$1</h4>")
-        .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-        .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-        .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-        .replace(/```(\w+)?\n([\s\S]*?)```/gm, (_, lang, code) => {
-            const langAttr = lang ? ` class="language-${lang}"` : ""
-            return `<pre><code${langAttr}>${escapeHtml(code.trimEnd())}</code></pre>`
-        })
-        .replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
-        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-        .replace(/\*(.+?)\*/g, "<em>$1</em>")
-        .replace(/___(.+?)___/g, "<strong><em>$1</em></strong>")
-        .replace(/__(.+?)__/g, "<strong>$1</strong>")
-        .replace(/_(.+?)_/g, "<em>$1</em>")
-        .replace(/~~(.+?)~~/g, "<del>$1</del>")
-        .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
-        .replace(/^\s*[-*+] (.+)$/gm, "<li>$1</li>")
-        .replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`)
-        .replace(/^\s*\d+\. (.+)$/gm, "<li>$1</li>")
-        .replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>")
-        .replace(/^---$/gm, "<hr>")
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a target="_blank" href="$2">$1</a>')
-        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">')
-        .replace(/\n\n+/g, "</p><p>")
-        .replace(/^(?!<[a-z])(.+)$/gm, (line) => line.trim() ? line : "")
-
-    return {
-        html: `<p>${html}</p>`,
-        metadata,
-        markdown,
-        filename
-    }
+    return {metadata, content}
 }
 
 function convertMarkdownTablesToHtml(content) {
@@ -108,6 +93,39 @@ function convertMarkdownTablesToHtml(content) {
 
         return `<table class="content-table"><thead><tr>${headerCells}</tr></thead><tbody>${bodyHtml}</tbody></table>\n`
     })
+}
+
+function convertToHtml(content) {
+    const html = content
+        .replace(/^###### (.+)$/gm, "<h6>$1</h6>")
+        .replace(/^##### (.+)$/gm, "<h5>$1</h5>")
+        .replace(/^#### (.+)$/gm, "<h4>$1</h4>")
+        .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+        .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+        .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+        .replace(/```(\w+)?\n([\s\S]*?)```/gm, (_, lang, code) => {
+            const langAttr = lang ? ` class="language-${lang}"` : ""
+            return `<pre><code${langAttr}>${escapeHtml(code.trimEnd())}</code></pre>`
+        })
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.+?)\*/g, "<em>$1</em>")
+        .replace(/___(.+?)___/g, "<strong><em>$1</em></strong>")
+        .replace(/__(.+?)__/g, "<strong>$1</strong>")
+        .replace(/_(.+?)_/g, "<em>$1</em>")
+        .replace(/~~(.+?)~~/g, "<del>$1</del>")
+        .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
+        .replace(/^\s*[-*+] (.+)$/gm, "<li>$1</li>")
+        .replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`)
+        .replace(/^\s*\d+\. (.+)$/gm, "<li>$1</li>")
+        .replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>")
+        .replace(/^---$/gm, "<hr>")
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a target="_blank" href="$2">$1</a>')
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">')
+        .replace(/\n\n+/g, "</p><p>")
+        .replace(/^(?!<[a-z])(.+)$/gm, (line) => line.trim() ? line : "")
+    return `<p>${html}</p>`
 }
 
 function escapeHtml(text) {
