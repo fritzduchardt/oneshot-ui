@@ -1,31 +1,32 @@
 /*Background*/
 
 :root {
-    --general-border: #c9c9c9;
+    --general-border: #81c784;
     --general-radius: 8px;
-    --background-color: #8fbb93;
-    --button-background: #e6e6e6;
-    --button-background-active: #bdbdbd;
-    --button-background-inactive: #a4a4a4;
-    --button-text: #222;
-    --dropdown-background: #e6e6e6;
-    --dropdown-background-active: #ffffff;
-    --dropdown-text: #222;
+    --background-color: #143b17;
+    --button-background: #2e7d32;
+    --button-background-active: var(--message_color);
+    --button-background-inactive: #2e7d32;
+    --button-text: #e8f5e9;
+    --dropdown-background: #2e7d32;
+    --dropdown-background-active: #388e3c;
+    --dropdown-text: #e8f5e9;
     --message-background-color: #ffffff;
-    --messages-background-color: #fff6b3;
-    --user-message-border-color: #797979;
-    --user-message-background-color: #a4a4a4;
-    --bot-message-background-color: #65b8d5;
-    --bot-message-border-color: #3b6f81;
+    --messages-background-color: #e8f5e9;
+    --user-message-border-color: #2e7d32;
+    --user-message-background-color: #c8e6c9;
+    --bot-message-background-color: #ffffff;
+    --bot-message-border-color: #81c784;
     --small-font-size: 12px;
     --default-font-size: 16px;
-    --message-tag-background-color: #ffd9b3;
-    --message-tag-border-color: #c9a07a;
-    --prompt-link-color: #1a43ad;
-    --base-font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
-    --code-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
-    --code-text-color: #f1fffa;
-    --code-background-color: #3e4754;
+    --message-tag-background-color: #f1f8e9;
+    --message-tag-border-color: #aed581;
+    --prompt-link-color: var(--message_color);
+    --base-font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    --code-font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;
+    --code-text-color: #e8f5e9;
+    --code-background-color: #0a1f0a;
+    --message_color: #1b5e20;
 }
 
 html,
@@ -111,6 +112,7 @@ body {
     opacity: 0.85;
     white-space: nowrap;
     align-self: center;
+    color: var(--button-text);
 }
 
 .hidden {
@@ -128,6 +130,8 @@ body {
     margin: 6px;
     position: relative;
     padding: 5px;
+    border-radius: var(--general-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
 }
 
 .user-message {
@@ -141,6 +145,8 @@ body {
     box-sizing: border-box;
     border: 1px solid var(--user-message-border-color);
     position: relative;
+    color: var(--message_color);
+    box-shadow: 0 1px 3px rgba(27,94,32,0.15);
 }
 
 .user-message-content {
@@ -160,6 +166,8 @@ body {
     word-break: break-word;
     overflow-wrap: break-word;
     position: relative;
+    color: var(--message_color);
+    box-shadow: 0 1px 3px rgba(129,199,132,0.2);
 }
 
 .bot-message-pending {
@@ -203,6 +211,8 @@ body {
     white-space: nowrap;
     line-height: 1.4;
     position: relative;
+    color: #33691e;
+    font-weight: 500;
 }
 
 /*Controls*/
@@ -235,10 +245,11 @@ body {
     font: inherit;
     border: 1px solid var(--general-border);
     border-radius: var(--general-radius);
-    color: var(--button-text);
+    color: var(--message_color);
     background: var(--message-background-color);
     line-height: 1.3;
     box-sizing: border-box;
+    box-shadow: 0 1px 4px rgba(27,94,32,0.1);
 }
 
 /*Buttons*/
@@ -252,14 +263,19 @@ button {
     border-radius: var(--general-radius);
     padding: 6px 8px;
     font: inherit;
+    font-weight: 500;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     line-height: 1.1;
+    letter-spacing: 0.03em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+    transition: background 0.15s, box-shadow 0.15s;
 }
 
 button:active {
     background: var(--button-background-active);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.18);
 }
 
 button:disabled {
@@ -293,6 +309,7 @@ button:disabled {
     transform: none;
     margin: 0;
     flex-shrink: 0;
+    box-shadow: none;
 }
 
 .close-button:hover {
@@ -309,11 +326,12 @@ select {
     appearance: none;
     -webkit-appearance: none;
     background: var(--dropdown-background);
-    color: var(--button-text);
+    color: var(--dropdown-text);
     border: 1px solid var(--general-border);
     border-radius: var(--general-radius);
     padding: 6px 28px 6px 8px;
     font: inherit;
+    font-weight: 500;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
@@ -329,6 +347,8 @@ select {
         5px 5px;
     background-repeat: no-repeat;
     background-color: var(--dropdown-background-active);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+    letter-spacing: 0.02em;
 }
 
 /*Message Contents*/
@@ -349,6 +369,11 @@ table td {
     padding: 4px;
 }
 
+table th {
+    background: #c8e6c9;
+    color: var(--message_color);
+    font-weight: 600;
+}
 
 /*Loading Animation*/
 
@@ -363,7 +388,7 @@ table td {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(27, 94, 32, 0.5);
     animation: loadingDotBounce 1.1s infinite ease-in-out;
 }
 
