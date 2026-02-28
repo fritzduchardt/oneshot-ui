@@ -14,6 +14,12 @@ export async function getPattern(pattern) {
         .catch(err => console.log(err))
 }
 
+export async function deletePattern(pattern) {
+    const url = `${Config.API_URL}/patterns/${pattern}`
+    return await fetch(url, {method: 'DELETE'})
+        .catch(err => console.log(err))
+}
+
 export async function listModels() {
     const url = `${Config.API_URL}/models/names`
     return await fetch(url)
@@ -35,6 +41,15 @@ export async function getMarkdowns(path) {
     });
     return await fetch(`${url}?${params.toString()}`)
         .then(res => res.text())
+        .catch(err => console.log(err))
+}
+
+export async function deleteMarkdowns(path) {
+    const url = `${Config.API_URL}/markdown/file`
+    const params = new URLSearchParams({
+        "path": path,
+    });
+    return await fetch(`${url}?${params.toString()}`, {method: 'DELETE'})
         .catch(err => console.log(err))
 }
 

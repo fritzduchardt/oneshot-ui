@@ -38,7 +38,7 @@ export function addBotMessageForPattern(patternName, patternContent) {
 
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
-    actionButtons.append(createDeletePatternButton())
+    actionButtons.append(createDeletePatternButton(patternName))
     parent.append(actionButtons)
 
     scrollMessagesToBottom()
@@ -60,7 +60,7 @@ export function addBotMessageForMarkdown(mdPath, md) {
 
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
-    actionButtons.append(createDeleteMarkdownButton())
+    actionButtons.append(createDeleteMarkdownButton(mdPath))
     parent.append(actionButtons)
 
     scrollMessagesToBottom()
@@ -171,16 +171,26 @@ function createStoreButton(filename, markdown) {
     return btn;
 }
 
-function createDeletePatternButton() {
+function createDeletePatternButton(pattern) {
     const btn = Dom.createButton( "action-button", "Delete")
     btn.addEventListener('click', () => {
+        Backend.deletePattern(pattern)
+            .then(() => {
+                btn.disabled = true
+            })
+            .catch(err => console.error('Failed to delete pattern', err))
     })
     return btn;
 }
 
-function createDeleteMarkdownButton() {
+function createDeleteMarkdownButton(path) {
     const btn = Dom.createButton( "action-button", "Delete")
     btn.addEventListener('click', () => {
+        Backend.deleteMarkdowns(path)
+            .then(() => {
+                btn.disabled = true
+            })
+            .catch(err => console.error('Failed to delete markdown', err))
     })
     return btn;
 }
