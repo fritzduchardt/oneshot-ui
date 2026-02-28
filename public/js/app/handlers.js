@@ -2,9 +2,6 @@ import * as Backend from './backend.js'
 import * as Ui from './ui.js';
 import * as Store from "./store.js";
 import * as Msg from "./msgs.js";
-import * as Md from "./md.js";
-import {getMarkdowns, getPattern} from "./backend.js"
-import {addPendingMessage} from "./msgs.js"
 
 export async function handleSendButtonClick(withMcp) {
     const message = document.getElementById('message').value

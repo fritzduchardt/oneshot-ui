@@ -1,8 +1,8 @@
-import * as Backend from './backend.js'
-import * as Html from "./html.js";
-import * as Handlers from "./handlers.js";
-import * as Store from "./store.js";
-import * as Ui from "./ui.js";
+import * as Backend from './app/backend.js'
+import * as Html from "./app/html.js";
+import * as Handlers from "./app/handlers.js";
+import * as Store from "./app/store.js";
+import * as Ui from "./app/ui.js";
 import {APP_VERSION} from "./sw.js";
 
 async function initializeApp() {

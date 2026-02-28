@@ -1,4 +1,4 @@
-import * as Config from './config.js'
+import * as Config from './../config.js'
 
 export async function listPatterns() {
     const url = `${Config.API_URL}/patterns/names`
