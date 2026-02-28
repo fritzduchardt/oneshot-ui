@@ -194,3 +194,15 @@ function createDeleteMarkdownButton(path) {
     })
     return btn;
 }
+
+function createCancelRequestButton() {
+    const btn = Dom.createButton( "action-button", "Cancel")
+    btn.addEventListener('click', () => {
+        Backend.deleteMarkdowns(path)
+            .then(() => {
+                btn.disabled = true
+            })
+            .catch(err => console.error('Failed to delete markdown', err))
+    })
+    return btn;
+}
