@@ -383,3 +383,28 @@ table td {
         opacity: 0.85;
     }
 }
+
+/*Code*/
+code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+    color: #f1fffa !important;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background-color: #3e4754 !important;
+    padding: 4px 10px;
+}
+pre {
+    background-color: #3e4754 !important;
+    padding: 0.75rem;
+    border-radius: 6px;
+    overflow: auto;
+    max-width: 100%;
+    white-space: pre;
+    word-break: normal;
+    position: relative;
+}
+pre code {
+    padding: 0;
+}

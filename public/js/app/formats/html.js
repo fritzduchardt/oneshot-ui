@@ -14,7 +14,7 @@ export function convertMarkdownToHtml(markdown) {
     // convert tables
     content = convertMarkdownTablesToHtml(content)
 
-    const html = convertToHtml(content)
+    const html = convertContentToHtml(content)
 
     return {
         html: html,
@@ -95,18 +95,33 @@ function convertMarkdownTablesToHtml(content) {
     })
 }
 
-function convertToHtml(content) {
-    const html = content
+function convertContentToHtml(content) {
+    const codeBlocks = []
+    const contentWithPlaceholders = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
+        let htmlBlock = match
+        if (match.startsWith("```")) {
+            const langAttr = lang ? ` class="language-${lang}"` : ""
+            htmlBlock = `<pre><code${langAttr}>${escapeHtml(code.trimEnd())}</code></pre>`
+        }
+        const placeholder = `@@CODEBLOCK${codeBlocks.length}@@`
+        codeBlocks.push(htmlBlock)
+        return placeholder
+    })
+
+    let html = convertNonCodeMarkdownToHtml(contentWithPlaceholders)
+    html = restoreCodeBlocks(html, codeBlocks)
+
+    return `<p>${html}</p>`
+}
+
+function convertNonCodeMarkdownToHtml(content) {
+    return content
         .replace(/^###### (.+)$/gm, "<h6>$1</h6>")
         .replace(/^##### (.+)$/gm, "<h5>$1</h5>")
         .replace(/^#### (.+)$/gm, "<h4>$1</h4>")
         .replace(/^### (.+)$/gm, "<h3>$1</h3>")
         .replace(/^## (.+)$/gm, "<h2>$1</h2>")
         .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-        .replace(/```(\w+)?\n([\s\S]*?)```/gm, (_, lang, code) => {
-            const langAttr = lang ? ` class="language-${lang}"` : ""
-            return `<pre><code${langAttr}>${escapeHtml(code.trimEnd())}</code></pre>`
-        })
         .replace(/`([^`]+)`/g, "<code>$1</code>")
         .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
@@ -125,7 +140,13 @@ function convertToHtml(content) {
         .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">')
         .replace(/\n\n+/g, "</p><p>")
         .replace(/^(?!<[a-z])(.+)$/gm, (line) => line.trim() ? line : "")
-    return `<p>${html}</p>`
+}
+
+function restoreCodeBlocks(html, codeBlocks) {
+    return codeBlocks.reduce((acc, block, index) => {
+        const placeholderPattern = new RegExp(`@@CODEBLOCK${index}@@`, "g")
+        return acc.replace(placeholderPattern, block)
+    }, html)
 }
 
 function escapeHtml(text) {
