@@ -1,16 +1,18 @@
 import * as Ui from "./ui.js"
 import * as Handlers from "./handlers.js"
-import MessageHistory from "./history.js    "
+import MessageHistory from "./history.js"
 
 export function registerMessageKeyListener() {
     const keyPressed = new Set()
     document.addEventListener('keydown', event => {
         keyPressed.add(event.code)
-        event.preventDefault()
-        if (keyPressed.has('Enter') && keyPressed.has('ControlLeft') && document.activeElement ==  Ui.messageTextarea) {
+        if (document.activeElement !== Ui.messageTextarea) return
+        if (isCtrlEnter(keyPressed)) {
+            event.preventDefault()
             Handlers.handleSendButtonClick(true)
                 .catch(err => console.error('Failed to send message', err))
-        } else if (keyPressed.has('Enter') && document.activeElement ==  Ui.messageTextarea) {
+        } else if (isEnterOnly(keyPressed)) {
+            event.preventDefault()
             Handlers.handleSendButtonClick(false)
                 .catch(err => console.error('Failed to send message', err))
         }
@@ -37,4 +39,12 @@ export function registerHistoryKeyListener() {
             Ui.messageTextarea.value = next !== null ? next : ''
         }
     })
+}
+
+function isCtrlEnter(keyPressed) {
+    return keyPressed.has('Enter') && keyPressed.has('ControlLeft')
+}
+
+function isEnterOnly(keyPressed) {
+    return keyPressed.has('Enter') && !keyPressed.has('ControlLeft')
 }
