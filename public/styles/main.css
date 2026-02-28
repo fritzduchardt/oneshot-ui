@@ -144,6 +144,11 @@ body {
 
 .user-message-content {
     margin-top: 10px;
+    border-left: 4px solid var(--user-message-border-color);
+    padding-left: 10px;
+    font-style: italic;
+    color: var(--message_color);
+    opacity: 0.85;
 }
 
 .bot-message {
