@@ -3,13 +3,15 @@
 :root {
     --general-border: #81c784;
     --general-radius: 8px;
-    --background-color: #143b17;
+    --background-color: #2a5e2f;
     --button-background: #2e7d32;
     --button-background-active: var(--message_color);
     --button-background-inactive: #2e7d32;
+    --button-background-hover: #388e3c;
     --button-text: #e8f5e9;
     --dropdown-background: #2e7d32;
     --dropdown-background-active: #388e3c;
+    --dropdown-background-hover: #43a047;
     --dropdown-text: #e8f5e9;
     --message-background-color: #ffffff;
     --messages-background-color: #e8f5e9;
@@ -270,7 +272,13 @@ button {
     line-height: 1.1;
     letter-spacing: 0.03em;
     box-shadow: 0 2px 4px rgba(0,0,0,0.18);
-    transition: background 0.15s, box-shadow 0.15s;
+    transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+button:hover:not(:disabled) {
+    background: var(--button-background-hover);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.28);
+    border-color: #a5d6a7;
 }
 
 button:active {
@@ -310,10 +318,12 @@ button:disabled {
     margin: 0;
     flex-shrink: 0;
     box-shadow: none;
+    transition: opacity 0.15s, background 0.15s;
 }
 
 .close-button:hover {
     opacity: 1;
+    background: var(--button-background-hover);
 }
 
 .close-button:active {
@@ -349,6 +359,13 @@ select {
     background-color: var(--dropdown-background-active);
     box-shadow: 0 2px 4px rgba(0,0,0,0.18);
     letter-spacing: 0.02em;
+    transition: background-color 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+select:hover {
+    background-color: var(--dropdown-background-hover);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.28);
+    border-color: #a5d6a7;
 }
 
 /*Message Contents*/
