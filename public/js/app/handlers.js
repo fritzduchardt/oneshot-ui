@@ -2,6 +2,7 @@ import * as Backend from './backend.js'
 import * as Ui from './ui.js';
 import * as Store from "./store.js";
 import * as Msg from "./msgs.js";
+import * as History from "./history.js";
 
 export async function handleSendButtonClick(withMcp) {
     const message = document.getElementById('message').value
@@ -29,6 +30,7 @@ export async function handleSendButtonClick(withMcp) {
     } catch (error) {
         Msg.addBotMessage("Request failed: " + String(error?.message ?? error), botMessage)
     }
+    History.default.addMessage(message)
 }
 
 export function handleAgentButtonClick() {

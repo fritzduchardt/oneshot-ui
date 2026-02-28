@@ -3,6 +3,7 @@ import * as Dom from "./app/dom.js";
 import * as Handlers from "./app/handlers.js";
 import * as Store from "./app/store.js";
 import * as Ui from "./app/ui.js";
+import * as Keys from "./app/keys.js";
 import {APP_VERSION} from "./sw.js";
 
 async function initializeApp() {
@@ -21,7 +22,8 @@ async function initializeApp() {
     })
 
     // keys
-    registerKeyListener()
+    Keys.registerMessageKeyListener()
+    Keys.registerHistoryKeyListener()
 
     // focus
     registerFocusListener()
@@ -48,24 +50,6 @@ function registerButtonClickListener(buttonId, handler) {
     }
 
     button.addEventListener('click', handler)
-}
-
-function registerKeyListener() {
-    const keyPressed = new Set()
-    document.addEventListener('keydown', event => {
-        keyPressed.add(event.code)
-        if (keyPressed.has('Enter') && keyPressed.has('ControlLeft') && document.activeElement ==  Ui.messageTextarea) {
-            Handlers.handleSendButtonClick(true)
-                .catch(err => console.error('Failed to send message', err))
-        } else if (keyPressed.has('Enter') && document.activeElement ==  Ui.messageTextarea) {
-            Handlers.handleSendButtonClick(false)
-                .catch(err => console.error('Failed to send message', err))
-        }
-    });
-
-    document.addEventListener('keyup', event => {
-        keyPressed.delete(event.code)
-    })
 }
 
 function registerFocusListener() {
