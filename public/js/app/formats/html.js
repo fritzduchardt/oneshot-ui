@@ -132,9 +132,7 @@ function convertContentToHtml(content, skipCode) {
 
     if (!skipCode) {
         html = restoreCodeBlocks(html, codeBlocks)
-        // regex: match inline code
-        html.replace(/`([^`]+)`/g, "<code>$1</code>")
-
+        html = convertInlineCodeToCodeTags(html)
     }
     return `<p>${html}</p>`
 }
@@ -197,6 +195,24 @@ function restoreCodeBlocks(html, codeBlocks) {
         const placeholderPattern = new RegExp(`@@CODEBLOCK${index}@@`, "g")
         return acc.replace(placeholderPattern, block)
     }, html)
+}
+
+function convertInlineCodeToCodeTags(html) {
+    const placeholders = []
+    const protectedHtml = html.replace(/<pre><code[\s\S]*?<\/code><\/pre>/g, (match) => {
+        const placeholder = `@@INLINECODEPROTECT${placeholders.length}@@`
+        placeholders.push(match)
+        return placeholder
+    })
+
+    const convertedHtml = protectedHtml.replace(/`([^`]+)`/g, (_, inlineCode) => {
+        return `<code>${escapeHtml(inlineCode)}</code>`
+    })
+
+    return placeholders.reduce((acc, block, index) => {
+        const placeholderPattern = new RegExp(`@@INLINECODEPROTECT${index}@@`, "g")
+        return acc.replace(placeholderPattern, block)
+    }, convertedHtml)
 }
 
 function escapeHtml(text) {

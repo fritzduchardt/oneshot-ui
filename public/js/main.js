@@ -68,13 +68,13 @@ async function loadModels(selected) {
 }
 
 async function loadPatterns(selected) {
-    // await Backend.generatePatterns()
-    //     .then(() => {
+    await Backend.generatePatterns()
+        .then(() => {
             Backend.listPatterns()
                 .then((patterns) => {
                     Dom.loadDropdown(patterns, Ui.patternDropdown, selected, selected ? false : "Please select")
                 })
-        // })
+        })
 }
 
 async function loadMarkdown(selected) {
