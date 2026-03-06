@@ -7,7 +7,6 @@ const STATIC_ASSETS = [
     "/favicon.ico",
     "/js/sw.js",
     "/js/main.js",
-    "/js/config.js",
     "/js/app/backend.js",
     "/js/app/handlers.js",
     "/js/app/html.js",
