@@ -98,9 +98,9 @@ export function addBotMessage(plain_response, parent) {
     })
     parent.append(actionButtons)
 
-    // add buttons inside message
-    botMessage.querySelector("pre code").forEach(codeBlock => {
-        codeBlock.append(createCopyButton(codeBlock.innerText, "Copy"))
+    // add copy buttons inside each code block
+    botMessage.querySelectorAll("pre code").forEach(codeBlock => {
+        codeBlock.parentElement.append(createCopyButton(codeBlock.innerText, "Copy"))
     })
 
     scrollMessagesToBottom()

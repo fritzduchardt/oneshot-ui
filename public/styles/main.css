@@ -5,7 +5,7 @@
     --general-radius: 8px;
     --background-color: #2a5e2f;
     --button-background: #2e7d32;
-    --button-background-active: var(--message_color);
+    --button-background-active: #1b5e20;
     --button-background-inactive: #606261;
     --button-background-hover: #388e3c;
     --button-text: #e8f5e9;
@@ -181,6 +181,25 @@ body {
     margin: 0 2px;
 }
 
+.action-button:active {
+    transform: translateY(1px);
+}
+
+pre .action-button {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    margin: 0;
+    z-index: 1;
+    font-size: var(--very-small-font-size);
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+
+pre .action-button:hover {
+    opacity: 1;
+}
+
 .prompt-link {
     text-decoration: underline;
     color: var(--prompt-link-color);
@@ -282,8 +301,7 @@ button:hover:not(:disabled) {
 }
 
 button:active {
-    background: var(--button-background-active);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+    transform: translateY(1px);
 }
 
 button:disabled {
@@ -332,6 +350,7 @@ button:disabled {
 
 .close-button:active {
     background: var(--button-background-active);
+    transform: translateY(1px);
 }
 
 /*Dropdowns*/
@@ -447,6 +466,7 @@ code {
     border: 1px solid var(--general-border);
     box-sizing: border-box;
 }
+
 pre {
     background-color: var(--code-background-color) !important;
     padding: 0.75rem;
@@ -459,6 +479,7 @@ pre {
     border: 1px solid var(--general-border);
     box-sizing: border-box;
 }
+
 pre code {
     padding: 0;
     border: 0;
