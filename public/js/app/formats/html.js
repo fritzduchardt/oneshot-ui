@@ -1,4 +1,4 @@
-export function convertMarkdownToHtml(markdown, skipTrimFilename , skipParseMetadata , skipCode ) {
+export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetadata, skipCode) {
 
     // strip spaces
     markdown = markdown.trim()
@@ -114,16 +114,24 @@ function convertMarkdownTablesToHtml(content) {
 function convertContentToHtml(content, skipCode) {
 
     let codeBlocks = []
+    let inlineCodeBlocks = []
     if (!skipCode) {
         // regex: match fenced code blocks and HTML <pre><code> blocks
         content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
             let htmlBlock = match
             if (match.startsWith("```")) {
                 const langAttr = lang ? ` class="language-${lang}"` : ""
-                htmlBlock = `<pre><code${langAttr}>${escapeHtml(code.trimEnd())}</code></pre>`
+                code = code.trimEnd()
+                htmlBlock = `<pre><code${langAttr}>${escapeHtml(code)}</code></pre>`
             }
             const placeholder = `@@CODEBLOCK${codeBlocks.length}@@`
             codeBlocks.push(htmlBlock)
+            return placeholder
+        })
+
+        content = content.replace(/`([\s\S]*?)`/g, (match) => {
+            const placeholder = `@@INLINECODEPROTECT${inlineCodeBlocks.length}@@`
+            inlineCodeBlocks.push(`<code>${match}</code>`)
             return placeholder
         })
     }
@@ -132,7 +140,7 @@ function convertContentToHtml(content, skipCode) {
 
     if (!skipCode) {
         html = restoreCodeBlocks(html, codeBlocks)
-        html = convertInlineCodeToCodeTags(html)
+        html = restoreInlineCodeBlocks(html, inlineCodeBlocks)
     }
     return `<p>${html}</p>`
 }
@@ -197,22 +205,11 @@ function restoreCodeBlocks(html, codeBlocks) {
     }, html)
 }
 
-function convertInlineCodeToCodeTags(html) {
-    const placeholders = []
-    const protectedHtml = html.replace(/<pre><code[\s\S]*?<\/code><\/pre>/g, (match) => {
-        const placeholder = `@@INLINECODEPROTECT${placeholders.length}@@`
-        placeholders.push(match)
-        return placeholder
-    })
-
-    const convertedHtml = protectedHtml.replace(/`([^`]+)`/g, (_, inlineCode) => {
-        return `<code>${escapeHtml(inlineCode)}</code>`
-    })
-
-    return placeholders.reduce((acc, block, index) => {
+function restoreInlineCodeBlocks(html, inlineCodeBlocks) {
+    return inlineCodeBlocks.reduce((acc, block, index) => {
         const placeholderPattern = new RegExp(`@@INLINECODEPROTECT${index}@@`, "g")
         return acc.replace(placeholderPattern, block)
-    }, convertedHtml)
+    }, html)
 }
 
 function escapeHtml(text) {

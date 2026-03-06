@@ -5,8 +5,9 @@ import * as Text from "./formats/text.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
+import {mcpButton} from "./ui.js"
 
-export function addUserMessage(message, metadata, abortController) {
+export function addUserMessage(message, metadata, abortController, withMcp) {
     let parent = Dom.createDivWithCloseButton("user-message");
 
     if (metadata.size > 0) {
@@ -15,7 +16,7 @@ export function addUserMessage(message, metadata, abortController) {
     parent.append(Dom.createDiv("user-message-content", message))
 
     let actionButtons = Dom.createDiv("action-buttons");
-    actionButtons.append(createPromptAgainButton(message))
+    actionButtons.append(createPromptAgainButton(message, withMcp))
     actionButtons.append(createCancelRequestButton(abortController))
     parent.append(actionButtons)
     Ui.messagesDiv.append(parent)
@@ -127,11 +128,15 @@ function scrollMessagesToBottom() {
 
 // Action Buttons
 
-function createPromptAgainButton(prompt) {
+function createPromptAgainButton(prompt, withMcp) {
     const btn = Dom.createButton("action-button", "Prompt again");
     btn.addEventListener('click', () => {
         Ui.messageTextarea.value = prompt
-        Ui.chatButton.click()
+        if (withMcp) {
+            Ui.mcpButton.click()
+        } else {
+            Ui.chatButton.click()
+        }
     })
     return btn;
 }

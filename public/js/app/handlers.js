@@ -18,7 +18,7 @@ export async function handleSendButtonClick(withMcp) {
     }
     const markdown = document.getElementById('markdown').value
     const abortController = new AbortController()
-    Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern], ["mcp", withMcp]]), abortController)
+    Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern], ["mcp", withMcp]]), abortController, withMcp)
     Store.setMessage(message)
     Store.setMarkdown(markdown)
     Store.setModel(model)
