@@ -129,9 +129,9 @@ function convertContentToHtml(content, skipCode) {
             return placeholder
         })
 
-        content = content.replace(/`([\s\S]*?)`/g, (match) => {
+        content = content.replace(/`([^`]+)`/g, (match, code) => {
             const placeholder = `@@INLINECODEPROTECT${inlineCodeBlocks.length}@@`
-            inlineCodeBlocks.push(`<code>${match}</code>`)
+            inlineCodeBlocks.push(`<code>${escapeHtml(code)}</code>`)
             return placeholder
         })
     }
