@@ -5,7 +5,6 @@ import * as Text from "./formats/text.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
-import {mcpButton} from "./ui.js"
 
 export function addUserMessage(message, metadata, abortController, withMcp) {
     let parent = Dom.createDivWithCloseButton("user-message");
@@ -80,6 +79,7 @@ export function addBotMessage(plain_response, parent) {
     let botMessage = Dom.createDiv("bot-message-text", response.html)
     parent.append(botMessage)
 
+    // add action buttons at bottom of message
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
     actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
@@ -97,6 +97,12 @@ export function addBotMessage(plain_response, parent) {
         })
     })
     parent.append(actionButtons)
+
+    // add buttons inside message
+    botMessage.querySelector("pre code").forEach(codeBlock => {
+        codeBlock.append(createCopyButton(codeBlock.innerText, "Copy"))
+    })
+
     scrollMessagesToBottom()
     if (!Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
