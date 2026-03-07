@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/js/sw.js', { type: 'module', scope: '/'})
+        navigator.serviceWorker.register('/js/sw.js', { type: 'module'})
             .then(reg => console.log('Service Worker registered', reg))
             .catch(err => console.error('Service Worker registration failed', err))
     })
