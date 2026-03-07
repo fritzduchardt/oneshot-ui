@@ -4,7 +4,7 @@ import * as Handlers from "./app/handlers.js";
 import * as Store from "./app/store.js";
 import * as Ui from "./app/ui.js";
 import * as Keys from "./app/keys.js";
-import {APP_VERSION} from "./sw.js";
+import {APP_VERSION} from "../sw.js";
 
 async function initializeApp() {
 
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/js/sw.js', { type: 'module'})
+        navigator.serviceWorker.register('/sw.js', { type: 'module'})
             .then(reg => console.log('Service Worker registered', reg))
             .catch(err => console.error('Service Worker registration failed', err))
     })
