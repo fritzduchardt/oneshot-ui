@@ -68,7 +68,7 @@ function serveStaticFile(filePath, res) {
 }
 
 function respondWithDynamicConfig(res) {
-    const apiUrl = process.env.API_URL || "http://localhost:8082"
+    const apiUrl = process.env.API_URL || "http://localhost:8000"
     const chatTimeoutMillis = Number(process.env.CHAT_TIMEOUT_MILLIS || 60000)
     const body = [
         `export const API_URL = ${JSON.stringify(apiUrl)};`,
