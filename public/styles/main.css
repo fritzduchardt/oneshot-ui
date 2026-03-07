@@ -232,6 +232,14 @@ pre .action-button:hover {
     font-weight: 500;
 }
 
+@media (max-width: 640px) {
+    .message-tag {
+        max-width: 300px;
+        overflow: scroll;
+        text-overflow: revert;
+    }
+}
+
 /*Controls*/
 
 #controls {
