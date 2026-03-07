@@ -3,9 +3,7 @@ export const APP_VERSION = "v1.0.3";
 const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
 const STATIC_ASSETS = [
     "/index.html",
-    "/manifest.json",
     "/favicon.ico",
-    "/js/sw.js",
     "/js/main.js",
     "/js/app/backend.js",
     "/js/app/handlers.js",
