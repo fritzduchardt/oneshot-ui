@@ -79,6 +79,7 @@ async function loadPatterns(selected) {
 
 async function loadMarkdown(selected) {
     const data = await Backend.listMarkdowns()
+    data[data.length] = "weaviate"
     Dom.loadDropdown(data, Ui.markdownDropdown, selected, "None")
 }
 
