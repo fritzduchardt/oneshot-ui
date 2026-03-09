@@ -30,6 +30,8 @@
     --code-text-color: #e8f5e9;
     --code-background-color: #0a1f0a;
     --message_color: #1b5e20;
+    --version-border-color: #a8a75e;
+    --version-background-color: #fcfa77;
 }
 
 html,
@@ -256,7 +258,19 @@ pre .action-button:hover {
 }
 
 #version {
+    position: absolute;
+    top: 0;
+    left: 5px;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 4px 6px 2px 6px;
+    margin: 4px;
+    border-radius: 10px;
     font-size: var(--small-font-size);
+    border: 2px solid var(--version-border-color);
+    background-color: var(--version-background-color);
 }
 
 .pressed {
