@@ -104,7 +104,7 @@ export function addBotMessage(plain_response, parent) {
     })
 
     scrollMessagesToBottom()
-    if (!Ui.toggleSound.classList.contains("pressed")) {
+    if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
 }
@@ -213,4 +213,11 @@ function createCancelRequestButton(abortController) {
         btn.disabled = true
     })
     return btn;
+}
+
+function isMobileDevice() {
+    if (navigator.userAgentData && typeof navigator.userAgentData.mobile === "boolean") {
+        return navigator.userAgentData.mobile
+    }
+    return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent || "")
 }

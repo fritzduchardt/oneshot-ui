@@ -265,7 +265,7 @@ pre .action-button:hover {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 4px 6px 2px 6px;
+    padding: 2px 6px 2px 6px;
     margin: 4px;
     border-radius: 10px;
     font-size: var(--small-font-size);
@@ -275,6 +275,20 @@ pre .action-button:hover {
 
 .pressed {
     background-color: var(--button-background-inactive);
+}
+
+@media (max-width: 640px) {
+    #toggle-sound,
+    #toggle-sound-button,
+    .toggle-sound-button {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    pre .action-button {
+        display: none;
+    }
 }
 
 /*Message Text Area*/
