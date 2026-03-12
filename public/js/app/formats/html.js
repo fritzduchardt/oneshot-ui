@@ -1,4 +1,6 @@
-export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetadata, skipCode) {
+import * as Config from "../../config.js"
+
+export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetadata, skipCode, mdPath) {
 
     // strip spaces
     markdown = markdown.trim()
@@ -23,7 +25,7 @@ export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetad
     // convert tables
     content = convertMarkdownTablesToHtml(content)
 
-    const html = convertContentToHtml(content, skipCode)
+    const html = convertContentToHtml(content, skipCode, mdPath)
 
     return {
         html: html,
@@ -111,7 +113,7 @@ function convertMarkdownTablesToHtml(content) {
     })
 }
 
-function convertContentToHtml(content, skipCode) {
+function convertContentToHtml(content, skipCode, mdPath) {
 
     let codeBlocks = []
     let inlineCodeBlocks = []
@@ -136,7 +138,7 @@ function convertContentToHtml(content, skipCode) {
         })
     }
 
-    let html = convertNonCodeMarkdownToHtml(content)
+    let html = convertNonCodeMarkdownToHtml(content, mdPath)
 
     if (!skipCode) {
         html = restoreCodeBlocks(html, codeBlocks)
@@ -145,8 +147,16 @@ function convertContentToHtml(content, skipCode) {
     return `<p>${html}</p>`
 }
 
-function convertNonCodeMarkdownToHtml(content) {
-    return content
+function convertNonCodeMarkdownToHtml(content, mdPath) {
+    let mdBasePath = ""
+    if (mdPath) {
+        mdBasePath = getMarkdownBasePath(mdPath)
+        // regex: pngs
+        content = content.replace(/!\[([^\]]*)\]\(([^)]+png)\)/g, (_, alt, src) => `<img class="md" alt="${alt}" src="${Config.API_URL}/image/${mdBasePath}/${src}">`)
+    }
+
+
+    content = content
         // regex: h6 heading
         .replace(/^###### (.+)$/gm, "<h6>$1</h6>")
         // regex: h5 heading
@@ -189,12 +199,12 @@ function convertNonCodeMarkdownToHtml(content) {
         .replace(/^---$/gm, "<hr>")
         // regex: links
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a target="_blank" href="$2">$1</a>')
-        // regex: images
-        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">')
         // regex: paragraph breaks
         .replace(/\n\n+/g, "</p><p>")
         // regex: trim plain lines that are not HTML tags
         .replace(/^(?!<[a-z])(.+)$/gm, (line) => line.trim() ? line : "")
+
+        return content
 }
 
 function restoreCodeBlocks(html, codeBlocks) {
@@ -224,4 +234,10 @@ function escapeHtml(text) {
         .replace(/"/g, "&quot;")
         // regex: escape '
         .replace(/'/g, "&#039;")
+}
+
+function getMarkdownBasePath(mdPath) {
+    if (!mdPath) return ""
+    const lastSlash = mdPath.lastIndexOf("/")
+    return mdPath.slice(0, lastSlash)
 }

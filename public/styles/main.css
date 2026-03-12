@@ -4,6 +4,7 @@
     --general-border: #81c784;
     --general-radius: 8px;
     --background-color: #2a5e2f;
+    --md-image-border-color: #2a5e2f;
     --button-background: #2e7d32;
     --button-background-active: #1b5e20;
     --button-background-inactive: #606261;
@@ -449,6 +450,23 @@ table th {
     background: #c8e6c9;
     color: var(--message_color);
     font-weight: 600;
+}
+
+img.md {
+    display: block;
+    max-width: 800px;
+    height: auto;
+    border: 1px solid var(--md-image-border-color);
+    box-sizing: border-box;
+}
+
+/* below 100px viewport width: image fills full width with 10px right margin */
+@media (max-width: 100px) {
+    img.md {
+        width: calc(100% - 10px);
+        max-width: calc(100% - 10px);
+        margin-right: 10px;
+    }
 }
 
 /*Loading Animation*/

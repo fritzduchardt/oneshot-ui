@@ -40,8 +40,6 @@ export function addBotMessageForPattern(patternName, patternContent) {
     actionButtons.className = "action-buttons"
     actionButtons.append(createDeletePatternButton(patternName))
     parent.append(actionButtons)
-
-    scrollMessagesToBottom()
 }
 
 export function addBotMessageForMarkdown(mdPath, md) {
@@ -49,7 +47,7 @@ export function addBotMessageForMarkdown(mdPath, md) {
     const parent = Dom.createDivWithCloseButton("bot-message");
     Ui.messagesDiv.append(parent)
 
-    const response = Html.convertMarkdownToHtml(md, true, false, false)
+    const response = Html.convertMarkdownToHtml(md, true, false, false, mdPath)
 
     let metadata = response.metadata
     metadata.set("path", mdPath)
@@ -62,8 +60,6 @@ export function addBotMessageForMarkdown(mdPath, md) {
     actionButtons.className = "action-buttons"
     actionButtons.append(createDeleteMarkdownButton(mdPath))
     parent.append(actionButtons)
-
-    scrollMessagesToBottom()
 }
 
 export function addBotMessage(plain_response, parent) {
@@ -103,7 +99,6 @@ export function addBotMessage(plain_response, parent) {
         codeBlock.parentElement.append(createCopyButton(codeBlock.innerText, "Copy"))
     })
 
-    scrollMessagesToBottom()
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
