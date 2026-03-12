@@ -37,10 +37,6 @@ export async function handleSendButtonClick(withMcp) {
     History.default.addMessage(message)
 }
 
-export function handleAgentButtonClick() {
-    console.log('Agent button clicked')
-}
-
 export function handleToggleSoundButtonClick() {
     Ui.toggleSound.classList.toggle("pressed")
 }

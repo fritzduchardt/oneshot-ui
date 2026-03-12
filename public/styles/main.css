@@ -461,11 +461,11 @@ img.md {
 }
 
 /* below 100px viewport width: image fills full width with 10px right margin */
-@media (max-width: 100px) {
+@media (max-width: 800px) {
     img.md {
-        width: calc(100% - 10px);
-        max-width: calc(100% - 10px);
-        margin-right: 10px;
+        width: calc(100% - 3px);
+        max-width: calc(100% - 3px);
+        margin-right: 3px;
     }
 }
 

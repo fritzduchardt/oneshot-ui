@@ -46,5 +46,5 @@ function isCtrlEnter(keyPressed) {
 }
 
 function isEnterOnly(keyPressed) {
-    return keyPressed.has('Enter') && !keyPressed.has('ControlLeft')
+    return keyPressed.has('Enter') && !keyPressed.has('ControlLeft') && !keyPressed.has('ShiftLeft') && !keyPressed.has('ShiftRight')
 }
