@@ -115,6 +115,16 @@ export function addBotMessage(plain_response, parent) {
     })
 
     addMarkdownLinks(botMessage)
+    botMessage.querySelectorAll("script").forEach(scriptTag => {
+        const code = scriptTag.textContent || scriptTag.innerText
+        try {
+            const fn = new Function(code)
+            fn()
+        } catch (err) {
+            console.error('Failed to execute script from bot message:', err)
+        }
+    })
+
     scrollToTop(parent)
 
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {

@@ -452,7 +452,7 @@ table th {
     font-weight: 600;
 }
 
-img.md {
+img.md, canvas.md {
     display: block;
     max-width: 800px;
     height: auto;
@@ -460,9 +460,14 @@ img.md {
     box-sizing: border-box;
 }
 
+canvas.md {
+    max-height: 400px;
+    margin-bottom: 20px;
+}
+
 /* below 100px viewport width: image fills full width with 10px right margin */
 @media (max-width: 640px) {
-    img.md {
+    img.md, canvas.md {
         width: calc(100% - 3px);
         max-width: calc(100% - 3px);
         margin-right: 3px;

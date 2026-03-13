@@ -117,6 +117,7 @@ function convertContentToHtml(content, skipCode, mdPath) {
 
     let codeBlocks = []
     let inlineCodeBlocks = []
+    let chartBlocks = []
     if (!skipCode) {
         // regex: match fenced code blocks and HTML <pre><code> blocks
         content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
@@ -138,12 +139,20 @@ function convertContentToHtml(content, skipCode, mdPath) {
         })
     }
 
+    content = content.replace(/<!-- CHART -->([\s\S]*?)<!-- CHART -->/g, (match, chartHtml) => {
+        const placeholder = `@@CHARTBLOCK${chartBlocks.length}@@`
+        chartBlocks.push(chartHtml)
+        return placeholder
+    })
+
     let html = convertNonCodeMarkdownToHtml(content, mdPath)
 
     if (!skipCode) {
         html = restoreCodeBlocks(html, codeBlocks)
         html = restoreInlineCodeBlocks(html, inlineCodeBlocks)
     }
+
+    html = restoreChartBlocks(html, chartBlocks)
 
     return `<p>${html}</p>`
 }
@@ -220,6 +229,14 @@ function restoreCodeBlocks(html, codeBlocks) {
 function restoreInlineCodeBlocks(html, inlineCodeBlocks) {
     return inlineCodeBlocks.reduce((acc, block, index) => {
         const placeholderPattern = new RegExp(`@@INLINECODEPROTECT${index}@@`, "g")
+        return acc.replace(placeholderPattern, block)
+    }, html)
+}
+
+function restoreChartBlocks(html, chartBlocks) {
+    return chartBlocks.reduce((acc, block, index) => {
+        // regex: match code block placeholder for given index
+        const placeholderPattern = new RegExp(`@@CHARTBLOCK${index}@@`, "g")
         return acc.replace(placeholderPattern, block)
     }, html)
 }
