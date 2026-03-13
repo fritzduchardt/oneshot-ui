@@ -35,21 +35,15 @@ export async function listMarkdowns() {
 }
 
 export async function getMarkdowns(path) {
-    const url = `${Config.API_URL}/markdown/file`
-    const params = new URLSearchParams({
-        "path": path,
-    });
-    return await fetch(`${url}?${params.toString()}`)
+    const url = `${Config.API_URL}/markdown/${path}`
+    return await fetch(`${url}`)
         .then(res => res.text())
         .catch(err => console.log(err))
 }
 
 export async function deleteMarkdowns(path) {
-    const url = `${Config.API_URL}/markdown/file`
-    const params = new URLSearchParams({
-        "path": path,
-    });
-    return await fetch(`${url}?${params.toString()}`, {method: 'DELETE'})
+    const url = `${Config.API_URL}/markdown/${path}`
+    return await fetch(`${url}`, {method: 'DELETE'})
         .catch(err => console.log(err))
 }
 

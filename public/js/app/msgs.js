@@ -40,6 +40,7 @@ export function addBotMessageForPattern(patternName, patternContent) {
     actionButtons.className = "action-buttons"
     actionButtons.append(createDeletePatternButton(patternName))
     parent.append(actionButtons)
+    scrollToTop(parent)
 }
 
 export function addBotMessageForMarkdown(mdPath, md) {
@@ -47,7 +48,7 @@ export function addBotMessageForMarkdown(mdPath, md) {
     const parent = Dom.createDivWithCloseButton("bot-message");
     Ui.messagesDiv.append(parent)
 
-    const response = Html.convertMarkdownToHtml(md, true, false, false, mdPath)
+    const response = Html.convertMarkdownToHtml(md, false, false, false, mdPath)
 
     let metadata = response.metadata
     metadata.set("path", mdPath)
@@ -55,11 +56,25 @@ export function addBotMessageForMarkdown(mdPath, md) {
 
     let botMessage = Dom.createDiv("bot-message-text", response.html)
     parent.append(botMessage)
+    addMarkdownLinks(botMessage)
 
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
     actionButtons.append(createDeleteMarkdownButton(mdPath))
     parent.append(actionButtons)
+    scrollToTop(parent)
+}
+
+function addMarkdownLinks(botMessage) {
+    botMessage.querySelectorAll("a.md").forEach(mdLink => {
+        mdLink.addEventListener('click', event => {
+            event.preventDefault()
+            Backend.getMarkdowns(mdLink.title)
+                .then(markdown => {
+                    addBotMessageForMarkdown(mdLink.title, markdown)
+                })
+        })
+    })
 }
 
 export function addBotMessage(plain_response, parent) {
@@ -99,6 +114,9 @@ export function addBotMessage(plain_response, parent) {
         codeBlock.parentElement.append(createCopyButton(codeBlock.innerText, "Copy"))
     })
 
+    addMarkdownLinks(botMessage)
+    scrollToTop(parent)
+
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
@@ -126,6 +144,14 @@ function addMetadata(metadata) {
 function scrollMessagesToBottom() {
     Ui.messagesDiv.scrollTop = Ui.messagesDiv.scrollHeight
 }
+
+export function scrollToTop(domElement) {
+    if (!domElement) {
+        return
+    }
+    domElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 
 // Action Buttons
 

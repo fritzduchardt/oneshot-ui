@@ -237,7 +237,7 @@ pre .action-button:hover {
 
 @media (max-width: 640px) {
     .message-tag {
-        max-width: 300px;
+        max-width: 280px;
         overflow: scroll;
         text-overflow: revert;
     }
@@ -461,7 +461,7 @@ img.md {
 }
 
 /* below 100px viewport width: image fills full width with 10px right margin */
-@media (max-width: 800px) {
+@media (max-width: 640px) {
     img.md {
         width: calc(100% - 3px);
         max-width: calc(100% - 3px);

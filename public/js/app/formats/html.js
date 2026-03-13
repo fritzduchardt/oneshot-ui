@@ -144,6 +144,7 @@ function convertContentToHtml(content, skipCode, mdPath) {
         html = restoreCodeBlocks(html, codeBlocks)
         html = restoreInlineCodeBlocks(html, inlineCodeBlocks)
     }
+
     return `<p>${html}</p>`
 }
 
@@ -154,7 +155,8 @@ function convertNonCodeMarkdownToHtml(content, mdPath) {
         // regex: pngs
         content = content.replace(/!\[([^\]]*)\]\(([^)]+png)\)/g, (_, alt, src) => `<img class="md" alt="${alt}" src="${Config.API_URL}/image/${mdBasePath}/${src}">`)
     }
-
+    // regex: markdown links
+    content =  content.replace(/\[([^\]]+)\]\(([^)]+md)\)/g, '<a target="_blank" title="$2" class="md" href="$2">$1</a>')
 
     content = content
         // regex: h6 heading

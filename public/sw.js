@@ -1,5 +1,5 @@
 // sw.js
-export const APP_VERSION = "v1.0.5";
+export const APP_VERSION = "v1.0.6";
 const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
 const STATIC_ASSETS = [
     "/index.html",
@@ -21,8 +21,9 @@ const STATIC_ASSETS = [
     "/assets/turtle/icon-192.png",
     "/assets/turtle/icon-512.png",
     "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js",
+    "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css",
     "https://code.jquery.com/jquery-4.0.0.min.js",
-    "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+    "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"
 ];
 
 self.addEventListener("install", (event) => {
