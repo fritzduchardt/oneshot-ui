@@ -506,7 +506,7 @@ canvas.md {
  * a viewport-relative max-height to canvas to prevent it from dominating the
  * visible area, while still allowing it to be as wide as possible.
  */
-@media (max-width: 900px) and (orientation: landscape) {
+@media (orientation: landscape) {
     canvas.md {
         width: calc(100% - 3px);
         max-width: calc(100% - 3px);
