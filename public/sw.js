@@ -1,5 +1,5 @@
 // sw.js
-export const APP_VERSION = "v1.1.5";
+export const APP_VERSION = "v1.1.6";
 const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
 const STATIC_ASSETS = [
     "/index.html",
