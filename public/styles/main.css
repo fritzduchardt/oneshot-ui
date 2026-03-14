@@ -235,7 +235,7 @@ pre .action-button:hover {
     font-weight: 500;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 400px) {
     .message-tag {
         max-width: 280px;
         overflow: scroll;
@@ -473,7 +473,7 @@ canvas.md {
  * reflow immediately without waiting for a repaint cycle.
  */
 
-@media (max-width: 800px) {
+@media (max-width: 400px) {
     img.md, canvas.md {
         width: calc(100% - 3px);
         max-width: calc(100% - 3px);
@@ -506,7 +506,7 @@ canvas.md {
  * a viewport-relative max-height to canvas to prevent it from dominating the
  * visible area, while still allowing it to be as wide as possible.
  */
-@media (orientation: landscape) {
+@media (max-width: 800px) and (orientation: landscape) {
     canvas.md {
         width: calc(100% - 3px);
         max-width: calc(100% - 3px);
