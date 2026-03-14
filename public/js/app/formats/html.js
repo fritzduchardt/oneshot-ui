@@ -136,10 +136,8 @@ function convertContentToHtml(content, skipCode, mdPath) {
         })
     }
 
-    console.log(`Handling chart blocks in: ${content}`)
     content = content.replace(/<!--\s*CHART\s*-->([\s\S]*?)<!--\s*CHART\s*-->/g, (match, chartHtml) => {
         const placeholder = `@@CHARTBLOCK${chartBlocks.length}@@`
-        console.log("Found charts block")
         chartBlocks.push(chartHtml)
         return placeholder
     })
