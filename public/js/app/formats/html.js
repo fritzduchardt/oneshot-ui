@@ -136,7 +136,8 @@ function convertContentToHtml(content, skipCode, mdPath) {
         })
     }
 
-    content = content.replace(/<!-- CHART -->([\s\S]*?)<!-- CHART -->/g, (match, chartHtml) => {
+    console.log(`Handling chart blocks in: ${content}`)
+    content = content.replace(/<!--\s*CHART\s*-->([\s\S]*?)<!--\s*CHART\s*-->/g, (match, chartHtml) => {
         const placeholder = `@@CHARTBLOCK${chartBlocks.length}@@`
         console.log("Found charts block")
         chartBlocks.push(chartHtml)
@@ -229,23 +230,24 @@ function convertNonCodeMarkdownToHtml(content, mdPath) {
 
 function restoreCodeBlocks(html, codeBlocks) {
     return codeBlocks.reduce((acc, block, index) => {
-        // regex: match code block placeholder for given index
-        const placeholderPattern = new RegExp(`@@CODEBLOCK${index}@@`, "g")
+        // regex: match code block placeholder for given index, tolerating surrounding whitespace and line breaks introduced by markdown processing
+        const placeholderPattern = new RegExp(`\\s*@@CODEBLOCK${index}@@\\s*`, "g")
         return acc.replace(placeholderPattern, block)
     }, html)
 }
 
 function restoreInlineCodeBlocks(html, inlineCodeBlocks) {
     return inlineCodeBlocks.reduce((acc, block, index) => {
-        const placeholderPattern = new RegExp(`@@INLINECODEPROTECT${index}@@`, "g")
+        // regex: match inline code placeholder for given index, tolerating surrounding whitespace and line breaks
+        const placeholderPattern = new RegExp(`\\s*@@INLINECODEPROTECT${index}@@\\s*`, "g")
         return acc.replace(placeholderPattern, block)
     }, html)
 }
 
 function restoreChartBlocks(html, chartBlocks) {
     return chartBlocks.reduce((acc, block, index) => {
-        // regex: match code block placeholder for given index
-        const placeholderPattern = new RegExp(`@@CHARTBLOCK${index}@@`, "g")
+        // regex: match chart block placeholder for given index, tolerating surrounding whitespace and line breaks introduced by markdown processing
+        const placeholderPattern = new RegExp(`\\s*@@CHARTBLOCK${index}@@\\s*`, "g")
         return acc.replace(placeholderPattern, block)
     }, html)
 }
