@@ -138,6 +138,7 @@ function convertContentToHtml(content, skipCode, mdPath) {
 
     content = content.replace(/<!-- CHART -->([\s\S]*?)<!-- CHART -->/g, (match, chartHtml) => {
         const placeholder = `@@CHARTBLOCK${chartBlocks.length}@@`
+        console.log("Found charts block")
         chartBlocks.push(chartHtml)
         return placeholder
     })
@@ -153,8 +154,7 @@ function convertContentToHtml(content, skipCode, mdPath) {
         content = restoreInlineCodeBlocks(content, inlineCodeBlocks)
     }
 
-
-    return `<p>${content}</p>`
+    return content
 }
 
 function escapeRawHtmlTags(content) {
