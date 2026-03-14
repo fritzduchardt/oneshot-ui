@@ -22,9 +22,6 @@ export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetad
         metadata = res.metadata
     }
 
-    // convert tables
-    content = convertMarkdownTablesToHtml(content)
-
     const html = convertContentToHtml(content, skipCode, mdPath)
 
     return {
@@ -145,16 +142,28 @@ function convertContentToHtml(content, skipCode, mdPath) {
         return placeholder
     })
 
-    let html = convertNonCodeMarkdownToHtml(content, mdPath)
+    // escape any raw html tags in the markdown content so they are not interpreted by the browser
+    content = escapeRawHtmlTags(content)
+    content = convertMarkdownTablesToHtml(content)
+    content = convertNonCodeMarkdownToHtml(content, mdPath)
+    content = restoreChartBlocks(content, chartBlocks)
 
     if (!skipCode) {
-        html = restoreCodeBlocks(html, codeBlocks)
-        html = restoreInlineCodeBlocks(html, inlineCodeBlocks)
+        content = restoreCodeBlocks(content, codeBlocks)
+        content = restoreInlineCodeBlocks(content, inlineCodeBlocks)
     }
 
-    html = restoreChartBlocks(html, chartBlocks)
 
-    return `<p>${html}</p>`
+    return `<p>${content}</p>`
+}
+
+function escapeRawHtmlTags(content) {
+    return content.replace(/<\/?[a-zA-Z][^>]*>/g, (tag) => {
+        return tag
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+    })
 }
 
 function convertNonCodeMarkdownToHtml(content, mdPath) {
