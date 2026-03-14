@@ -11,6 +11,9 @@ async function initializeApp() {
     // version
     Ui.version.innerHTML = APP_VERSION;
 
+    // screen resolution
+    console.log(`Screen resolution: ${window.screen.width}x${window.screen.height}`)
+
     // all the loading
     await loadModels(Store.getModel())
     await loadPatterns(Store.getPattern())
