@@ -146,12 +146,12 @@ function convertContentToHtml(content, skipCode, mdPath) {
     content = escapeRawHtmlTags(content)
     content = convertMarkdownTablesToHtml(content)
     content = convertNonCodeMarkdownToHtml(content, mdPath)
-    content = restoreChartBlocks(content, chartBlocks)
-
     if (!skipCode) {
         content = restoreCodeBlocks(content, codeBlocks)
         content = restoreInlineCodeBlocks(content, inlineCodeBlocks)
     }
+    // must be last since it contains backticks
+    content = restoreChartBlocks(content, chartBlocks)
 
     return content
 }

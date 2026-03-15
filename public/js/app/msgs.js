@@ -119,6 +119,7 @@ export function addBotMessage(plain_response, parent) {
         botMessage.querySelectorAll("script").forEach(scriptTag => {
             const code = scriptTag.textContent || scriptTag.innerText
             try {
+                console.log(code)
                 const fn = new Function(code)
                 fn()
             } catch (err) {
@@ -203,8 +204,8 @@ function createStoreButton(filename, markdown) {
     btn.addEventListener('click', () => {
         Backend.storeMarkdown(filename, markdown)
             .then(() => {
-                btn.innerText = `Stored: ${filename}`
-                btn.disabled = true
+                // btn.innerText = `Stored: ${filename}`
+                // btn.disabled = true
             })
         Backend.listMarkdowns()
             .then(markdown => {
