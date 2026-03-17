@@ -204,8 +204,8 @@ function createStoreButton(filename, markdown) {
     btn.addEventListener('click', () => {
         Backend.storeMarkdown(filename, markdown)
             .then(() => {
-                // btn.innerText = `Stored: ${filename}`
-                // btn.disabled = true
+                btn.innerText = `Stored: ${filename}`
+                btn.disabled = true
             })
         Backend.listMarkdowns()
             .then(markdown => {
