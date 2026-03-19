@@ -98,10 +98,9 @@ export function addBotMessage(plain_response, parent) {
     actionButtons.className = "action-buttons"
     actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
     actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(plain_response), "Copy"))
-    const link = ""
     if (response.filename) {
         if (response.filename.match("/Food/")) {
-            actionButtons.append(createShareButton(link))
+            actionButtons.append(createShareButton(response.filename))
         }
         actionButtons.append(createStoreButton(response.filename, response.markdown))
     }
