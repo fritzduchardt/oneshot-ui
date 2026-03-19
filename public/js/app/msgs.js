@@ -99,8 +99,10 @@ export function addBotMessage(plain_response, parent) {
     actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
     actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(plain_response), "Copy"))
     const link = ""
-    actionButtons.append(createShareButton(link))
     if (response.filename) {
+        if (response.filename.match("/Food/")) {
+            actionButtons.append(createShareButton(link))
+        }
         actionButtons.append(createStoreButton(response.filename, response.markdown))
     }
     const links = parent.querySelectorAll(".prompt-link")
