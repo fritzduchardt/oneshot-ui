@@ -292,6 +292,14 @@ pre .action-button:hover {
     }
 }
 
+@media (max-width: 800px) {
+    img.md,
+    canvas.md {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
 /*Message Text Area*/
 
 #message {

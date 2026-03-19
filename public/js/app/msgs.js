@@ -61,6 +61,9 @@ export function addBotMessageForMarkdown(mdPath, md) {
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
     actionButtons.append(createDeleteMarkdownButton(mdPath))
+    if (mdPath.match("/Food/")) {
+        actionButtons.append(createShareButton(mdPath))
+    }
     parent.append(actionButtons)
     scrollToTop(parent)
 }

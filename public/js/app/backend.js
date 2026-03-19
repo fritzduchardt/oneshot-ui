@@ -79,11 +79,12 @@ export async function generatePatterns() {
     }).then(response => response.text())
 }
 
-export async function telegramSend(message) {
+export async function telegramSend(mdPath) {
     const url = `${Config.API_URL}/telegram/send`
-    const payload = { message }
+    const payload = { markdown: mdPath}
     return await fetch(url, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
     }).then(response => response.text())
 }
