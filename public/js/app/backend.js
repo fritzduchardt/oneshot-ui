@@ -1,5 +1,4 @@
 import * as Config from './../config.js'
-const CHAT_TIMEOUT_MILLIS = 300000;
 
 export async function listPatterns() {
     const url = `${Config.API_URL}/patterns/names`
@@ -52,32 +51,19 @@ export async function chat(message, model, pattern, markdown, abortController, w
     const url = `${Config.API_URL}/completion`
     const payload = { message, model, pattern, markdown, "with_mcp": withMcp}
 
-    const timeoutController = new AbortController()
-    if (abortController.signal.aborted) {
-        timeoutController.abort()
-    } else {
-        abortController.signal.addEventListener('abort', () => timeoutController.abort(), {once: true})
-    }
-
-    const timeoutId = setTimeout(() => {
-        console.warn(`chat: timeout after ${CHAT_TIMEOUT_MILLIS}ms – aborting request`)
-        timeoutController.abort()
-    }, CHAT_TIMEOUT_MILLIS)
-
     return await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-        // Use our internal signal so only we control when the timeout fires
-        signal: timeoutController.signal
+        signal: abortController.signal
     }).then(response => {
         return response.text()
     }).catch(err => {
         if (err.name === 'AbortError') {
-            console.error('chat: request aborted (timeout or manual cancel)', err)
+            console.error('chat: request aborted', err)
         }
         throw err
-    }).finally(() => clearTimeout(timeoutId))
+    })
 }
 
 export async function storeMarkdown(path, markdown) {
