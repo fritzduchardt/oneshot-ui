@@ -1,5 +1,5 @@
 import * as Config from './../config.js'
-import {CHAT_TIMEOUT_MILLIS} from "./../config.js"
+const CHAT_TIMEOUT_MILLIS = 300000;
 
 export async function listPatterns() {
     const url = `${Config.API_URL}/patterns/names`
@@ -52,14 +52,7 @@ export async function chat(message, model, pattern, markdown, abortController, w
     const url = `${Config.API_URL}/completion`
     const payload = { message, model, pattern, markdown, "with_mcp": withMcp}
 
-    // Use a separate internal AbortController for the timeout so that the
-    // caller-supplied abortController is never triggered by our own timeout.
-    // A 499 means the client closed the connection – most likely the timeout
-    // was firing and aborting the signal that was passed to fetch().
     const timeoutController = new AbortController()
-
-    // Link the caller's signal to our internal one so that an explicit cancel
-    // from the UI still propagates correctly.
     if (abortController.signal.aborted) {
         timeoutController.abort()
     } else {
@@ -80,7 +73,6 @@ export async function chat(message, model, pattern, markdown, abortController, w
     }).then(response => {
         return response.text()
     }).catch(err => {
-        // Surface abort/timeout errors clearly instead of swallowing them
         if (err.name === 'AbortError') {
             console.error('chat: request aborted (timeout or manual cancel)', err)
         }
