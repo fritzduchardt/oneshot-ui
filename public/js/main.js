@@ -9,7 +9,7 @@ import {APP_VERSION} from "../sw.js";
 async function initializeApp() {
 
     // version
-    Ui.version.innerHTML = APP_VERSION + ` ${window.screen.width} x ${window.screen.height}`;
+    Ui.version.innerHTML = APP_VERSION;
 
     // all the loading
     await loadModels(Store.getModel())
