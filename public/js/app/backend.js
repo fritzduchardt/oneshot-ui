@@ -1,4 +1,5 @@
 import * as Config from './../config.js'
+import {CHAT_TIMEOUT_MILLIS} from "./../config.js"
 
 export async function listPatterns() {
     const url = `${Config.API_URL}/patterns/names`
@@ -50,7 +51,7 @@ export async function deleteMarkdowns(path) {
 export async function chat(message, model, pattern, markdown, abortController, withMcp) {
     const url = `${Config.API_URL}/completion`
     const payload = { message, model, pattern, markdown, "with_mcp": withMcp}
-    setTimeout(() => abortController.abort(), Config.CHAT_TIMEOUT_MILLIS);
+    const timeoutId = setTimeout(() => abortController.abort(), CHAT_TIMEOUT_MILLIS);
 
     return await fetch(url, {
         method: 'POST',
@@ -59,7 +60,7 @@ export async function chat(message, model, pattern, markdown, abortController, w
         signal: abortController.signal
     }).then(response => {
         return response.text()
-    })
+    }).finally(() => clearTimeout(timeoutId))
 }
 
 export async function storeMarkdown(path, markdown) {
