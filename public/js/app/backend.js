@@ -51,15 +51,40 @@ export async function deleteMarkdowns(path) {
 export async function chat(message, model, pattern, markdown, abortController, withMcp) {
     const url = `${Config.API_URL}/completion`
     const payload = { message, model, pattern, markdown, "with_mcp": withMcp}
-    const timeoutId = setTimeout(() => abortController.abort(), CHAT_TIMEOUT_MILLIS);
+
+    // Use a separate internal AbortController for the timeout so that the
+    // caller-supplied abortController is never triggered by our own timeout.
+    // A 499 means the client closed the connection – most likely the timeout
+    // was firing and aborting the signal that was passed to fetch().
+    const timeoutController = new AbortController()
+
+    // Link the caller's signal to our internal one so that an explicit cancel
+    // from the UI still propagates correctly.
+    if (abortController.signal.aborted) {
+        timeoutController.abort()
+    } else {
+        abortController.signal.addEventListener('abort', () => timeoutController.abort(), {once: true})
+    }
+
+    const timeoutId = setTimeout(() => {
+        console.warn(`chat: timeout after ${CHAT_TIMEOUT_MILLIS}ms – aborting request`)
+        timeoutController.abort()
+    }, CHAT_TIMEOUT_MILLIS)
 
     return await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-        signal: abortController.signal
+        // Use our internal signal so only we control when the timeout fires
+        signal: timeoutController.signal
     }).then(response => {
         return response.text()
+    }).catch(err => {
+        // Surface abort/timeout errors clearly instead of swallowing them
+        if (err.name === 'AbortError') {
+            console.error('chat: request aborted (timeout or manual cancel)', err)
+        }
+        throw err
     }).finally(() => clearTimeout(timeoutId))
 }
 
