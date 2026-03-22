@@ -246,7 +246,7 @@ function createDeleteMarkdownButton(path) {
 function createCancelRequestButton(abortController) {
     const btn = Dom.createButton( "action-button", "Cancel")
     btn.addEventListener('click', () => {
-        abortController.abort()
+        abortController.abort("user abort")
         btn.disabled = true
     })
     return btn;
