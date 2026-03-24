@@ -84,10 +84,19 @@ function convertMarkdownTablesToHtml(content) {
             return ""
         })
 
+        const isNoWrapCell = (cell) => !/\s/.test(cell) && cell.length > 0
+
+        const buildStyleAttr = (cell, i) => {
+            const styles = []
+            if (alignments[i]) styles.push(`text-align:${alignments[i]}`)
+            if (isNoWrapCell(cell)) styles.push("white-space:nowrap")
+            return styles.length ? ` style="${styles.join(";")}"` : ""
+        }
+
         const headerCells = parseColumns(headerRow)
             .map((cell, i) => {
-                const alignAttr = alignments[i] ? ` style="text-align:${alignments[i]}"` : ""
-                return `<th${alignAttr}>${cell}</th>`
+                const styleAttr = buildStyleAttr(cell, i)
+                return `<th${styleAttr}>${cell}</th>`
             })
             .join("")
 
@@ -98,8 +107,8 @@ function convertMarkdownTablesToHtml(content) {
             .map((row) => {
                 const cells = parseColumns(row)
                     .map((cell, i) => {
-                        const alignAttr = alignments[i] ? ` style="text-align:${alignments[i]}"` : ""
-                        return `<td${alignAttr}>${cell}</td>`
+                        const styleAttr = buildStyleAttr(cell, i)
+                        return `<td${styleAttr}>${cell}</td>`
                     })
                     .join("")
                 return `<tr>${cells}</tr>`
