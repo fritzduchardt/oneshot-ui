@@ -1,6 +1,6 @@
 const MessageHistory = (() => {
     const STORAGE_KEY = 'chat_message_history';
-    const MAX_HISTORY_SIZE = 100;
+    const MAX_HISTORY_SIZE = 1000;
 
     let currentIndex = -1;
 
@@ -38,12 +38,13 @@ const MessageHistory = (() => {
     const navigateToPrevious = () => {
         const history = loadHistory();
         if (history.length === 0) return null;
-
         if (currentIndex > 0) {
             currentIndex--;
+            return history[currentIndex] || null;
+        } else {
+            currentIndex = history.length - 1;
+            return history[currentIndex] || null;
         }
-
-        return history[currentIndex] || null;
     };
 
     const navigateToNext = () => {
@@ -52,10 +53,10 @@ const MessageHistory = (() => {
         if (currentIndex < history.length - 1) {
             currentIndex++;
             return history[currentIndex];
+        } else {
+            currentIndex = 0;
+            return history[currentIndex];
         }
-
-        currentIndex = history.length;
-        return null;
     };
 
     const clearHistory = () => {
