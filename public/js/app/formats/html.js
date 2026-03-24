@@ -255,7 +255,7 @@ function restoreChartBlocks(html, chartBlocks) {
     return chartBlocks.reduce((acc, block, index) => {
         // regex: match chart block placeholder for given index, tolerating surrounding whitespace and line breaks introduced by markdown processing
         const placeholderPattern = new RegExp(`\\s*@@CHARTBLOCK${index}@@\\s*`, "g")
-        return acc.replace(placeholderPattern, block)
+        return acc.replace(placeholderPattern, `<p class="chart">${block}</p>`)
     }, html)
 }
 

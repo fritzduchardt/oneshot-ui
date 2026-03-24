@@ -123,7 +123,6 @@ export function addBotMessage(plain_response, parent) {
         botMessage.querySelectorAll("script").forEach(scriptTag => {
             const code = scriptTag.textContent || scriptTag.innerText
             try {
-                console.log(code)
                 const fn = new Function(code)
                 fn()
             } catch (err) {
@@ -131,7 +130,7 @@ export function addBotMessage(plain_response, parent) {
             }
         })
     })
-    scrollToTop(parent)
+    // scrollToTop(parent)
 
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()

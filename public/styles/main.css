@@ -468,8 +468,10 @@ img.md, canvas.md {
     box-sizing: border-box;
 }
 
+p.chart, canvas.md {
+    height: 400px;
+}
 canvas.md {
-    max-height: 400px;
     margin-bottom: 20px;
 }
 
