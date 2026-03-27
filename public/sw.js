@@ -24,7 +24,9 @@ const STATIC_ASSETS = [
     "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css",
     "https://code.jquery.com/jquery-4.0.0.min.js",
     "https://cdn.jsdelivr.net/npm/chart.js",
-    "https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"
+    "https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation",
+    "https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom",
+    "https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"
 ];
 
 self.addEventListener("install", (event) => {
