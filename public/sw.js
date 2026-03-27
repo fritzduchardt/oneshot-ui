@@ -1,5 +1,5 @@
 // sw.js
-export const APP_VERSION = "v1.1.15";
+export const APP_VERSION = "v1.1.16";
 const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
 const STATIC_ASSETS = [
     "/index.html",
@@ -23,7 +23,8 @@ const STATIC_ASSETS = [
     "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js",
     "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css",
     "https://code.jquery.com/jquery-4.0.0.min.js",
-    "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"
+    "https://cdn.jsdelivr.net/npm/chart.js",
+    "https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"
 ];
 
 self.addEventListener("install", (event) => {
