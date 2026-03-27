@@ -460,16 +460,22 @@ table th {
     font-weight: 600;
 }
 
+img.md {
+    max-width: 800px;
+}
+canvas.md {
+    width: 100%;
+}
+
 img.md, canvas.md {
     display: block;
-    max-width: 800px;
     height: auto;
     border: 1px solid var(--md-image-border-color);
     box-sizing: border-box;
 }
 
 p.chart, canvas.md {
-    height: 400px;
+    height: 600px;
 }
 canvas.md {
     margin-bottom: 20px;
