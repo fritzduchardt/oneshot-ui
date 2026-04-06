@@ -84,7 +84,7 @@ function convertMarkdownTablesToHtml(content) {
             return ""
         })
 
-        const isNoWrapCell = (cell) => !/\s/.test(cell) && cell.length > 0
+        const isNoWrapCell = (cell) => cell.length < 20
 
         const buildStyleAttr = (cell, i) => {
             const styles = []

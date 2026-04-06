@@ -1,5 +1,5 @@
 // sw.js
-export const APP_VERSION = "v1.1.16";
+export const APP_VERSION = "v1.1.17";
 const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
 const STATIC_ASSETS = [
     "/index.html",
@@ -25,7 +25,6 @@ const STATIC_ASSETS = [
     "https://code.jquery.com/jquery-4.0.0.min.js",
     "https://cdn.jsdelivr.net/npm/chart.js",
     "https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation",
-    "https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom",
     "https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"
 ];
 
