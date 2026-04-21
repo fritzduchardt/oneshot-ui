@@ -18,7 +18,7 @@ export async function handleSendButtonClick(withMcp) {
     }
     const markdown = document.getElementById('markdown').value
     const abortController = new AbortController()
-    Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern], ["mcp", withMcp]]), abortController, withMcp)
+    const userMessageEl = Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern], ["mcp", withMcp]]), abortController, withMcp)
     Store.setMessage(message)
     Store.setMarkdown(markdown)
     Store.setModel(model)
@@ -27,10 +27,13 @@ export async function handleSendButtonClick(withMcp) {
     const botMessage = Msg.addPendingMessage()
     try {
         const response = await Backend.chat(message, model, pattern, markdown, abortController, withMcp)
+        userMessageEl.cancelBtn.disabled = true
         Msg.addBotMessage(response, botMessage)
     } catch (error) {
+        userMessageEl.cancelBtn.disabled = true
         if (error.name === "AbortError") {
             botMessage.remove()
+            return
         }
         Msg.addBotMessage("Request failed: " + String(error?.message ?? error), botMessage)
     }

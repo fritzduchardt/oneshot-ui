@@ -16,10 +16,15 @@ export function addUserMessage(message, metadata, abortController, withMcp) {
 
     let actionButtons = Dom.createDiv("action-buttons");
     actionButtons.append(createPromptAgainButton(message, withMcp))
-    actionButtons.append(createCancelRequestButton(abortController))
+    // store reference to cancel button so it can be disabled when response arrives
+    const cancelBtn = createCancelRequestButton(abortController)
+    actionButtons.append(cancelBtn)
     parent.append(actionButtons)
+    // attach cancel button reference to parent so handlers.js can disable it
+    parent.cancelBtn = cancelBtn
     Ui.messagesDiv.append(parent)
     scrollMessagesToBottom()
+    return parent
 }
 
 export function addBotMessageForPattern(patternName, patternContent) {
@@ -84,7 +89,10 @@ export function addBotMessage(plain_response, parent) {
 
     const response = Html.convertMarkdownToHtml(plain_response)
 
-    document.querySelector(".loading-dots").remove()
+    const loadingDots = parent.querySelector(".loading-dots")
+    if (loadingDots) {
+        loadingDots.remove()
+    }
 
     if (response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
