@@ -213,11 +213,22 @@ function createStoreButton(filename, markdown) {
     const btn = Dom.createButton("action-button", "Store");
     btn.title = filename
     btn.addEventListener('click', () => {
+        // show loading animation while waiting for server response
+        btn.classList.add("button-loading")
+        btn.disabled = true
+
         Backend.storeMarkdown(filename, markdown)
             .then(() => {
+                btn.classList.remove("button-loading")
                 btn.innerText = `Stored: ${filename}`
-                btn.disabled = true
             })
+            .catch(err => {
+                // restore button state on error so user can retry
+                btn.classList.remove("button-loading")
+                btn.disabled = false
+                console.error('Failed to store markdown', err)
+            })
+
         Backend.listMarkdowns()
             .then(markdown => {
                 Dom.loadDropdown(markdown, Ui.markdownDropdown, Store.getMarkdown(), "None")

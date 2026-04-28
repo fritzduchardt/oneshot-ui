@@ -531,6 +531,35 @@ canvas.md {
     }
 }
 
+/*Button Loading Spinner - shown on store button while waiting for server response*/
+
+.button-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.button-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    margin-left: -7px;
+    border: 2px solid rgba(232, 245, 233, 0.35);
+    border-top-color: rgba(232, 245, 233, 0.9);
+    border-radius: 50%;
+    animation: buttonSpinner 0.7s linear infinite;
+}
+
+@keyframes buttonSpinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /*Code*/
 code {
     font-family: var(--code-font-family);
