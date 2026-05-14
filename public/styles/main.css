@@ -19,6 +19,7 @@
     --user-message-border-color: #2e7d32;
     --user-message-background-color: #c8e6c9;
     --bot-message-background-color: #ffffff;
+    --bot-message-background-error-color: #f3c1c1;
     --bot-message-border-color: #81c784;
     --small-font-size: 12px;
     --very-small-font-size: 10px;
@@ -152,6 +153,10 @@ body {
     font-style: italic;
     color: var(--message-color);
     opacity: 0.85;
+}
+
+.bot-message.bot-message-error {
+    background: var(--bot-message-background-error-color);
 }
 
 .bot-message {

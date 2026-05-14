@@ -26,7 +26,6 @@ export function registerMessageKeyListener() {
 export function registerHistoryKeyListener() {
     document.addEventListener('keydown', event => {
         if (document.activeElement !== Ui.messageTextarea) return
-
         if (event.code === 'ArrowUp') {
             event.preventDefault()
             const previous = MessageHistory.navigateToPrevious()

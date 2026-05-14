@@ -4,6 +4,7 @@ import * as Handlers from "./app/handlers.js";
 import * as Store from "./app/store.js";
 import * as Ui from "./app/ui.js";
 import * as Keys from "./app/keys.js";
+import * as Msg from "./app/msgs.js";
 import {APP_VERSION} from "../sw.js";
 
 async function initializeApp() {
@@ -39,6 +40,7 @@ async function initializeApp() {
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
     registerButtonClickListener('show-pattern', Handlers.handleShowPattern)
     registerButtonClickListener('show-markdown', Handlers.handleShowMarkdown)
+    registerErrorHandler()
 
     document.getElementById("message").focus()
 }
@@ -57,6 +59,35 @@ function registerButtonClickListener(buttonId, handler) {
 function registerFocusListener() {
     Ui.messageTextarea.addEventListener("focus", () => {
         Ui.messageTextarea.select()
+    })
+}
+
+// format any error-like value into a readable string
+function formatErrorArg(arg) {
+    if (arg instanceof Error) return `${arg.name}: ${arg.message}`
+    if (typeof arg === "object") {
+        try { return JSON.stringify(arg) } catch (_) { return String(arg) }
+    }
+    return String(arg)
+}
+
+function registerErrorHandler() {
+
+    // intercept unhandled promise rejections
+    window.addEventListener("unhandledrejection", (event) => {
+        const reason = event.reason
+        const errorText = reason instanceof Error
+            ? `${reason.name}: ${reason.message}`
+            : formatErrorArg(reason)
+        Msg.addErrorMessage(`Unhandled rejection: ${errorText}`)
+    })
+
+    // intercept uncaught synchronous errors
+    window.addEventListener("error", (event) => {
+        const msg = event.error instanceof Error
+            ? `${event.error.name}: ${event.error.message}`
+            : event.message || "Unknown error"
+        Msg.addErrorMessage(`Uncaught error: ${msg}`)
     })
 }
 

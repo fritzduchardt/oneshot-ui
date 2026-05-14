@@ -156,6 +156,16 @@ export function addPendingMessage() {
     return parent
 }
 
+export function addErrorMessage(errorText) {
+    const parent = Dom.createDivWithCloseButton("bot-message bot-message-error")
+    const label = Dom.createDiv("message-tags")
+    label.append(Dom.createDiv("message-tag", "error"))
+    parent.append(label)
+    parent.append(Dom.createDiv("bot-message-text", escapeHtml(errorText)))
+    Ui.messagesDiv.append(parent)
+    scrollMessagesToBottom()
+}
+
 function addMetadata(metadata) {
     let parent = Dom.createDiv("message-tags")
     for (const [key, value] of metadata) {
@@ -275,4 +285,14 @@ function isMobileDevice() {
         return navigator.userAgentData.mobile
     }
     return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent || "")
+}
+
+// escape html special characters for safe display of error text
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
 }
