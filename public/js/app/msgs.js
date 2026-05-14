@@ -156,6 +156,14 @@ export function addPendingMessage() {
     return parent
 }
 
+export function addNotification(text) {
+    let parent = Dom.createDivWithCloseButton("bot-message");
+    parent.append(Dom.createDiv("bot-message-text", escapeHtml(text)))
+    Ui.messagesDiv.append(parent)
+    scrollMessagesToBottom()
+    return parent
+}
+
 export function addErrorMessage(errorText) {
     const parent = Dom.createDivWithCloseButton("bot-message bot-message-error")
     const label = Dom.createDiv("message-tags")

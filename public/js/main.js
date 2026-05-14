@@ -6,6 +6,7 @@ import * as Ui from "./app/ui.js";
 import * as Keys from "./app/keys.js";
 import * as Msg from "./app/msgs.js";
 import {APP_VERSION} from "../sw.js";
+import * as Config from "./config.js";
 
 async function initializeApp() {
 
@@ -41,6 +42,9 @@ async function initializeApp() {
     registerButtonClickListener('show-pattern', Handlers.handleShowPattern)
     registerButtonClickListener('show-markdown', Handlers.handleShowMarkdown)
     registerErrorHandler()
+
+    // SSE stream listener - connects to server-sent events endpoint and publishes incoming events as messages
+    registerSseListener()
 
     document.getElementById("message").focus()
 }
@@ -96,6 +100,35 @@ function registerErrorHandler() {
             ? `${event.error.name}: ${event.error.message}`
             : event.message || "Unknown error"
         Msg.addErrorMessage(`Uncaught error: ${msg}`)
+    })
+}
+
+// connect to SSE stream endpoint and publish each incoming event as a bot message
+function registerSseListener() {
+    const sseUrl = `${Config.API_URL}/stream`
+    const eventSource = new EventSource(sseUrl)
+
+    eventSource.addEventListener('update', (event) => {
+        console.log(`Received message from ${event.source}`)
+        let data
+        // attempt to parse JSON payload, fall back to raw string
+        try {
+            data = JSON.parse(event.data)
+        } catch (_) {
+            data = event.data
+        }
+
+        const text = typeof data === 'object' ? data.message : String(data)
+        Msg.addNotification(text)
+    })
+
+    eventSource.addEventListener('error', (event) => {
+        // log SSE connection errors without showing error messages for routine reconnects
+        console.warn('SSE stream error, connection may be retrying', event)
+    })
+
+    eventSource.addEventListener('open', () => {
+        console.debug('SSE stream connected:', sseUrl)
     })
 }
 
