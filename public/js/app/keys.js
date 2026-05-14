@@ -30,6 +30,7 @@ export function registerHistoryKeyListener() {
         if (event.code === 'ArrowUp') {
             event.preventDefault()
             const previous = MessageHistory.navigateToPrevious()
+            console.log("history: " + previous)
             if (previous !== null) {
                 Ui.messageTextarea.value = previous
             }

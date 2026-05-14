@@ -39,6 +39,8 @@ async function initializeApp() {
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
     registerButtonClickListener('show-pattern', Handlers.handleShowPattern)
     registerButtonClickListener('show-markdown', Handlers.handleShowMarkdown)
+
+    document.getElementById("message").focus()
 }
 
 function registerButtonClickListener(buttonId, handler) {
