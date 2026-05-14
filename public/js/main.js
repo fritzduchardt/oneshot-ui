@@ -58,7 +58,15 @@ function registerButtonClickListener(buttonId, handler) {
 
 function registerFocusListener() {
     Ui.messageTextarea.addEventListener("focus", () => {
-        Ui.messageTextarea.select()
+        const value = Ui.messageTextarea.value
+        // if content starts with a word followed by colon, select all text after the word and colon
+        const prefixMatch = value.match(/^(\w+:\s+)/)
+        if (prefixMatch) {
+            const prefixLength = prefixMatch[1].length
+            Ui.messageTextarea.setSelectionRange(prefixLength, value.length)
+        } else {
+            Ui.messageTextarea.select()
+        }
     })
 }
 
