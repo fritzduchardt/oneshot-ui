@@ -16,7 +16,7 @@ export async function handleSendButtonClick(withMcp) {
         Ui.modelDropdown.focus()
         return
     }
-    const markdown = document.getElementById('markdown').value
+    const markdown = Ui.markdownDropdown.value
     const abortController = new AbortController()
     const userMessageEl = Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern], ["mcp", withMcp]]), abortController, withMcp)
     Store.setMessage(message)
@@ -57,6 +57,7 @@ export function handleShowPattern() {
                 Msg.addBotMessageForPattern(pattern_name, pattern)
             })
     }
+    Store.setPattern(pattern_name)
 }
 
 export function handleShowMarkdown() {
@@ -66,5 +67,6 @@ export function handleShowMarkdown() {
             .then((markdown) => {
                 Msg.addBotMessageForMarkdown(md, markdown)
             })
+        Store.setMarkdown(md)
     }
 }

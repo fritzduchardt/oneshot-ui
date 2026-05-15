@@ -175,11 +175,13 @@ function escapeRawHtmlTags(content) {
 }
 
 function convertNonCodeMarkdownToHtml(content, mdPath) {
-    let mdBasePath = ""
     if (mdPath) {
-        mdBasePath = getMarkdownBasePath(mdPath)
+        if (mdPath.endsWith(".md")) {
+            mdPath = getMarkdownBasePath(mdPath)
+        }
+        const rand = Math.random() * 99999
         // regex: pngs
-        content = content.replace(/!\[([^\]]*)\]\(([^)]+png)\)/g, (_, alt, src) => `<img class="md" alt="${alt}" src="${Config.API_URL}/image/${mdBasePath}/${src}">`)
+        content = content.replace(/!\[([^\]]*)\]\(([^)]+png)\)/g, (_, alt, src) => `<img class="md" alt="${alt}" src="${Config.API_URL}/image/${mdPath}/${src}?${rand}">`)
     }
     // regex: markdown links
     content =  content.replace(/\[([^\]]+)\]\(([^)]+md)\)/g, '<a target="_blank" title="$2" class="md" href="$2">$1</a>')

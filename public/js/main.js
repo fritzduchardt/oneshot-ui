@@ -109,17 +109,16 @@ function registerSseListener() {
     const eventSource = new EventSource(sseUrl)
 
     eventSource.addEventListener('update', (event) => {
-        console.log(`Received message from ${event.source}`)
         let data
         // attempt to parse JSON payload, fall back to raw string
         try {
             data = JSON.parse(event.data)
         } catch (_) {
+            console.error(`Failed to convert message: ${event.data}`)
             data = event.data
         }
-
-        const text = typeof data === 'object' ? data.message : String(data)
-        Msg.addNotification(text)
+        console.log(`Received message from: ${JSON.stringify(data)}`)
+        Msg.addImageNotification(data.message, data.image, data.basepath)
     })
 
     eventSource.addEventListener('error', (event) => {

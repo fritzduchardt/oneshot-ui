@@ -5,6 +5,7 @@ import * as Text from "./formats/text.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
+import {convertMarkdownToHtml} from "./formats/html.js"
 
 export function addUserMessage(message, metadata, abortController, withMcp) {
     let parent = Dom.createDivWithCloseButton("user-message");
@@ -66,6 +67,7 @@ export function addBotMessageForMarkdown(mdPath, md) {
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
     actionButtons.append(createDeleteMarkdownButton(mdPath))
+    actionButtons.append(createStoreButton(mdPath, response.markdown))
     if (mdPath.match("/Food/")) {
         actionButtons.append(createShareButton(mdPath))
     }
@@ -156,9 +158,11 @@ export function addPendingMessage() {
     return parent
 }
 
-export function addNotification(text) {
+export function addImageNotification(message, image, basepath) {
     let parent = Dom.createDivWithCloseButton("bot-message");
-    parent.append(Dom.createDiv("bot-message-text", escapeHtml(text)))
+    parent.append(Dom.createDiv("bot-message-text", Html.convertMarkdownToHtml(
+        message, false, true, true, basepath
+    ).html))
     Ui.messagesDiv.append(parent)
     scrollMessagesToBottom()
     return parent
@@ -297,6 +301,9 @@ function isMobileDevice() {
 
 // escape html special characters for safe display of error text
 function escapeHtml(text) {
+    if (!text) {
+        return "text undefined"
+    }
     return text
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
