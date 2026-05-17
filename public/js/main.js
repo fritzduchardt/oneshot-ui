@@ -105,7 +105,7 @@ function registerErrorHandler() {
 
 // connect to SSE stream endpoint and publish each incoming event as a bot message
 function registerSseListener() {
-    const sseUrl = `${Config.STREAM_URL}/stream`
+    const sseUrl = `${Config.API_URL}/stream`
     const eventSource = new EventSource(sseUrl)
 
     eventSource.addEventListener('update', (event) => {

@@ -69,10 +69,8 @@ function serveStaticFile(filePath, res) {
 
 function respondWithDynamicConfig(res) {
     const apiUrl = process.env.API_URL || "http://localhost:8000"
-    const streamUrl = process.env.STREAM_URL || "http://localhost:8000"
     const body = [
         `export const API_URL = ${JSON.stringify(apiUrl)};`,
-        `export const STREAM_URL = ${JSON.stringify(streamUrl)};`,
     ].join("\n")
 
     res.writeHead(200, {
