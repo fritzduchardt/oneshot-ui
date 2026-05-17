@@ -44,7 +44,7 @@ async function initializeApp() {
     registerErrorHandler()
 
     // SSE stream listener - connects to server-sent events endpoint and publishes incoming events as messages
-    // registerSseListener()
+    registerSseListener()
 
     document.getElementById("message").focus()
 }
