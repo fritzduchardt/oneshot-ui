@@ -158,13 +158,16 @@ export function addPendingMessage() {
     return parent
 }
 
-export function addImageNotification(message, image, basepath) {
+export function addNotification(message, image, basepath) {
     let parent = Dom.createDivWithCloseButton("bot-message");
     parent.append(Dom.createDiv("bot-message-text", Html.convertMarkdownToHtml(
         message, false, true, true, basepath
     ).html))
     Ui.messagesDiv.append(parent)
     scrollMessagesToBottom()
+    if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
+        Sound.playAcknowledgementSound()
+    }
     return parent
 }
 
@@ -188,6 +191,7 @@ function addMetadata(metadata) {
 
 function scrollMessagesToBottom() {
     Ui.messagesDiv.scrollTop = Ui.messagesDiv.scrollHeight
+    Ui.messagesDiv.focus()
 }
 
 export function scrollToTop(domElement) {

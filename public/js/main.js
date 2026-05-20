@@ -118,7 +118,7 @@ function registerSseListener() {
             data = event.data
         }
         console.log(`Received message from: ${JSON.stringify(data)}`)
-        Msg.addImageNotification(data.message, data.image, data.basepath)
+        Msg.addNotification(data.message, data.image, data.basepath)
     })
 
     eventSource.addEventListener('error', (event) => {
