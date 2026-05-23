@@ -536,6 +536,13 @@ canvas.md {
     }
 }
 
+/* Loading dots inside user message shown while waiting for bot response */
+
+.user-message-loading {
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
 /*Button Loading Spinner - shown on store button while waiting for server response*/
 
 .button-loading {

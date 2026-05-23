@@ -117,7 +117,6 @@ function registerSseListener() {
             console.error(`Failed to convert message: ${event.data}`)
             data = event.data
         }
-        console.log(`Received message from: ${JSON.stringify(data)}`)
         Msg.addNotification(data.message, data.image, data.basepath)
     })
 

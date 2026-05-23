@@ -23,6 +23,12 @@ export function addUserMessage(message, metadata, abortController, withMcp) {
     parent.append(actionButtons)
     // attach cancel button reference to parent so handlers.js can disable it
     parent.cancelBtn = cancelBtn
+
+    // add loading dots inside the user message to indicate pending bot response
+    const dots = Dom.createDiv("loading-dots user-message-loading", "<span></span><span></span><span></span>");
+    parent.loadingDots = dots
+    parent.append(dots)
+
     Ui.messagesDiv.append(parent)
     scrollMessagesToBottom()
     return parent
@@ -87,14 +93,18 @@ function addMarkdownLinks(botMessage) {
     })
 }
 
-export function addBotMessage(plain_response, parent) {
+export function addBotMessage(plain_response, userMessageEl) {
 
     const response = Html.convertMarkdownToHtml(plain_response)
 
-    const loadingDots = parent.querySelector(".loading-dots")
-    if (loadingDots) {
-        loadingDots.remove()
+    // remove loading dots from user message if reference provided
+    if (userMessageEl && userMessageEl.loadingDots) {
+        userMessageEl.loadingDots.remove()
+        userMessageEl.loadingDots = null
     }
+
+    const parent = Dom.createDivWithCloseButton("bot-message");
+    Ui.messagesDiv.append(parent)
 
     if (response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
@@ -140,23 +150,12 @@ export function addBotMessage(plain_response, parent) {
             }
         })
     })
-    // scrollToTop(parent)
 
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
 }
 
-export function addPendingMessage() {
-    let parent = Dom.createDivWithCloseButton("bot-message bot-message-pending");
-
-    const dots = Dom.createDiv("loading-dots", "<span></span><span></span><span></span>");
-    parent.append(dots)
-
-    Ui.messagesDiv.append(parent)
-    scrollMessagesToBottom()
-    return parent
-}
 
 export function addNotification(message, image, basepath) {
     let parent = Dom.createDivWithCloseButton("bot-message");

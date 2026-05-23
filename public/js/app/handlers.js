@@ -24,18 +24,16 @@ export async function handleSendButtonClick(withMcp) {
     Store.setModel(model)
     Store.setPattern(pattern)
 
-    const botMessage = Msg.addPendingMessage()
     try {
         const response = await Backend.chat(message, model, pattern, markdown, abortController, withMcp)
         userMessageEl.cancelBtn.disabled = true
-        Msg.addBotMessage(response, botMessage)
+        Msg.addBotMessage(response, userMessageEl)
     } catch (error) {
         userMessageEl.cancelBtn.disabled = true
-        if (error.name === "AbortError") {
-            botMessage.remove()
-            return
+        if (userMessageEl.loadingDots) {
+            userMessageEl.loadingDots.remove()
+            userMessageEl.loadingDots = null
         }
-        Msg.addBotMessage("Request failed: " + String(error?.message ?? error), botMessage)
     }
     History.default.addMessage(message)
 }
