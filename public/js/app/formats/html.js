@@ -34,7 +34,7 @@ export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetad
 
 function trimFilename(markdown) {
     // regex: match leading FILENAME header line
-    const filenamePattern = /^FILENAME:\s+([\S]*?)\n/
+    const filenamePattern = /^\s*FILENAME:\s+(.*?)\n/
     const filenameMatch = markdown.match(filenamePattern)
     let filename = ""
     if (filenameMatch) {
