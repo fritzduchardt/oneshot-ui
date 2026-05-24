@@ -22,7 +22,10 @@ export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetad
         metadata = res.metadata
     }
 
-    const html = convertContentToHtml(content, skipCode, mdPath)
+    let html = convertContentToHtml(content, skipCode, mdPath)
+
+    // convert regular html links to open in new tab
+    html = convertHtmlLinksToNewTab(html)
 
     return {
         html: html,
@@ -171,6 +174,14 @@ function escapeRawHtmlTags(content) {
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
+    })
+}
+
+// regex: match bare https:// URLs not already inside an href attribute and wrap them in an anchor tag with target="_blank"
+function convertHtmlLinksToNewTab(html) {
+    // regex: match https:// URLs that are not preceded by href=" or href=' to avoid double-wrapping existing links
+    return html.replace(/(?<!href=["'])https:\/\/[^\s<>"']+/g, (url) => {
+        return `<a href="${url}" target="_blank">${url}</a>`
     })
 }
 
