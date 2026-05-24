@@ -163,7 +163,6 @@ export function addNotification(message, image, basepath) {
         message, false, true, true, basepath
     ).html))
     Ui.messagesDiv.append(parent)
-    scrollMessagesToBottom()
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
