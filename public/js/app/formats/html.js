@@ -177,10 +177,11 @@ function escapeRawHtmlTags(content) {
     })
 }
 
-// regex: match bare https:// URLs not already inside an href attribute and wrap them in an anchor tag with target="_blank"
+// regex: match bare https:// URLs not already inside an href attribute, not preceded by ]( (markdown link syntax), and wrap them in an anchor tag with target="_blank"
 function convertHtmlLinksToNewTab(html) {
     // regex: match https:// URLs that are not preceded by href=" or href=' to avoid double-wrapping existing links
-    return html.replace(/(?<!href=["'])https:\/\/[^\s<>"']+/g, (url) => {
+    // and not preceded by ]( to avoid matching URLs inside markdown links e.g. [text](https://...)
+    return html.replace(/(?<!href=["'])(?<!\]\()https:\/\/[^\s<>"']+/g, (url) => {
         return `<a href="${url}" target="_blank">${url}</a>`
     })
 }
