@@ -5,7 +5,6 @@ import * as Text from "./formats/text.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
-import {convertMarkdownToHtml} from "./formats/html.js"
 
 export function addUserMessage(message, metadata, abortController, withMcp) {
     let parent = Dom.createDivWithCloseButton("user-message");
@@ -156,17 +155,28 @@ export function addBotMessage(plain_response, userMessageEl) {
     }
 }
 
-
 export function addNotification(message, image, basepath) {
     let parent = Dom.createDivWithCloseButton("bot-message");
-    parent.append(Dom.createDiv("bot-message-text", Html.convertMarkdownToHtml(
-        message, false, true, true, basepath
-    ).html))
+    let response = Html.convertMarkdownToHtml(
+        message, false, false, true, basepath
+    )
+    if (response.metadata.size > 0) {
+        parent.append(addMetadata(response.metadata))
+    }
+    parent.append(Dom.createDiv("bot-message-text", response.html))
+    const shouldScroll = isScrolledNearBottom(Ui.messagesDiv)
     Ui.messagesDiv.append(parent)
+    if (shouldScroll) {
+        scrollMessagesToBottom()
+    }
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
     return parent
+}
+
+function isScrolledNearBottom(element, threshold = 80) {
+    return element.scrollHeight - element.scrollTop - element.clientHeight <= threshold
 }
 
 export function addErrorMessage(errorText) {
@@ -301,7 +311,7 @@ function isMobileDevice() {
     return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent || "")
 }
 
-// escape html special characters for safe display of error text
+// escape HTML special characters for safe display of error text
 function escapeHtml(text) {
     if (!text) {
         return "text undefined"

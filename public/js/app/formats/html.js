@@ -22,10 +22,10 @@ export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetad
         metadata = res.metadata
     }
 
-    let html = convertContentToHtml(content, skipCode, mdPath)
-
     // convert regular html links to open in new tab
-    html = convertHtmlLinksToNewTab(html)
+    let html = convertHtmlLinksToNewTab(content)
+
+    html = convertContentToHtml(html, skipCode, mdPath)
 
     return {
         html: html,
