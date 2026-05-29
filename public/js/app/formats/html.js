@@ -127,6 +127,7 @@ function convertContentToHtml(content, skipCode, mdPath) {
     let codeBlocks = []
     let inlineCodeBlocks = []
     let chartBlocks = []
+    let linkBlocks = []
     if (!skipCode) {
         // regex: match fenced code blocks and HTML <pre><code> blocks
         content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
@@ -154,6 +155,13 @@ function convertContentToHtml(content, skipCode, mdPath) {
         return placeholder
     })
 
+    // protect <a> link tags from being escaped so they are preserved as real HTML
+    content = content.replace(/<a\s[^>]*>[\s\S]*?<\/a>/g, (match) => {
+        const placeholder = `@@LINKBLOCK${linkBlocks.length}@@`
+        linkBlocks.push(match)
+        return placeholder
+    })
+
     // escape any raw html tags in the markdown content so they are not interpreted by the browser
     content = escapeRawHtmlTags(content)
     content = convertMarkdownTablesToHtml(content)
@@ -164,6 +172,8 @@ function convertContentToHtml(content, skipCode, mdPath) {
     }
     // must be last since it contains backticks
     content = restoreChartBlocks(content, chartBlocks)
+    // restore link tags after all escaping and processing is done
+    content = restoreLinkBlocks(content, linkBlocks)
 
     return content
 }
@@ -270,6 +280,14 @@ function restoreChartBlocks(html, chartBlocks) {
         // regex: match chart block placeholder for given index, tolerating surrounding whitespace and line breaks introduced by markdown processing
         const placeholderPattern = new RegExp(`\\s*@@CHARTBLOCK${index}@@\\s*`, "g")
         return acc.replace(placeholderPattern, `<p class="chart">${block}</p>`)
+    }, html)
+}
+
+function restoreLinkBlocks(html, linkBlocks) {
+    return linkBlocks.reduce((acc, block, index) => {
+        // regex: match link block placeholder for given index, tolerating surrounding whitespace introduced by markdown processing
+        const placeholderPattern = new RegExp(`@@LINKBLOCK${index}@@`, "g")
+        return acc.replace(placeholderPattern, block)
     }, html)
 }
 
