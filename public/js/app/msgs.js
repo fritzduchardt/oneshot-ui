@@ -92,7 +92,7 @@ function addMarkdownLinks(botMessage) {
     })
 }
 
-export function addBotMessage(plain_response, userMessageEl) {
+export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
 
     const response = Html.convertMarkdownToHtml(plain_response)
 
@@ -115,8 +115,10 @@ export function addBotMessage(plain_response, userMessageEl) {
     // add action buttons at bottom of message
     let actionButtons = document.createElement('div');
     actionButtons.className = "action-buttons"
-    actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
-    actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(plain_response), "Copy"))
+    if (!hideCopy) {
+        actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
+        actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(plain_response), "Copy"))
+    }
     if (response.filename) {
         if (response.filename.match("/Food/")) {
             actionButtons.append(createShareButton(response.filename))
@@ -154,6 +156,7 @@ export function addBotMessage(plain_response, userMessageEl) {
         Sound.playAcknowledgementSound()
     }
 }
+
 
 export function addNotification(message, image, basepath) {
     let parent = Dom.createDivWithCloseButton("bot-message");

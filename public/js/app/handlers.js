@@ -3,15 +3,16 @@ import * as Ui from './ui.js';
 import * as Store from "./store.js";
 import * as Msg from "./msgs.js";
 import * as History from "./history.js";
+import {messageTextarea} from "./ui.js"
 
 export async function handleSendButtonClick(withMcp) {
-    const message = document.getElementById('message').value
-    const model = document.getElementById('model').value
+    const message = Ui.messageTextarea.value
+    const model = Ui.modelDropdown.value
     if (!model) {
         Ui.modelDropdown.focus()
         return
     }
-    const pattern = document.getElementById('pattern').value
+    const pattern = Ui.patternDropdown.value
     if (!pattern) {
         Ui.modelDropdown.focus()
         return
@@ -28,6 +29,38 @@ export async function handleSendButtonClick(withMcp) {
         const response = await Backend.chat(message, model, pattern, markdown, abortController, withMcp)
         userMessageEl.cancelBtn.disabled = true
         Msg.addBotMessage(response, userMessageEl)
+    } catch (error) {
+        userMessageEl.cancelBtn.disabled = true
+        if (userMessageEl.loadingDots) {
+            userMessageEl.loadingDots.remove()
+            userMessageEl.loadingDots = null
+        }
+    }
+    History.default.addMessage(message)
+}
+
+export async function handleChartButtonClick() {
+    const message = Ui.messageTextarea.value
+    const model = Ui.modelDropdown.value
+    if (!model) {
+        Ui.modelDropdown.focus()
+        return
+    }
+    const pattern = document.getElementById('pattern').value
+    if (!pattern) {
+        Ui.modelDropdown.focus()
+        return
+    }
+    const abortController = new AbortController()
+    const userMessageEl = Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern]]), abortController, false)
+    Store.setMessage(message)
+    Store.setModel(model)
+    Store.setPattern(pattern)
+
+    try {
+        const response = await Backend.chartChat(message, model, pattern, abortController)
+        userMessageEl.cancelBtn.disabled = true
+        Msg.addBotMessage(response, userMessageEl, true)
     } catch (error) {
         userMessageEl.cancelBtn.disabled = true
         if (userMessageEl.loadingDots) {

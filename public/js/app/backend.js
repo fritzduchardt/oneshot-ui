@@ -66,6 +66,25 @@ export async function chat(message, model, pattern, markdown, abortController, w
     })
 }
 
+export async function chartChat(message, model, pattern, abortController) {
+    const url = `${Config.API_URL}/chart`
+    const payload = { message, model, pattern }
+
+    return await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: abortController.signal
+    }).then(response => {
+        return response.text()
+    }).catch(err => {
+        if (err.name === 'AbortError') {
+            console.error('chartChat: request aborted', err)
+        }
+        throw err
+    })
+}
+
 export async function storeMarkdown(path, markdown) {
     const url = `${Config.API_URL}/markdown/store`
     const payload = { path, markdown }

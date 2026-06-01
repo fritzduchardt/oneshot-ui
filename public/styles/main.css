@@ -74,12 +74,33 @@ body {
     margin-bottom: 6px;
 }
 
+/* Stack MCP and Chart buttons vertically beside the Chat button */
 .button-group {
     display: flex;
+    flex-direction: row;
     gap: 6px;
     align-items: stretch;
     margin-left: auto;
     flex: 0 0 auto;
+}
+
+/* Chat button takes full height of the group */
+#chat-button {
+    align-self: stretch;
+}
+
+/* MCP and Chart buttons share the height of the Chat button in a column */
+.button-group-secondary {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+    flex: 1 1 auto;
+}
+
+#mcp-button,
+#chart-button {
+    flex: 1 1 0;
 }
 
 .dropdown-row-1,
