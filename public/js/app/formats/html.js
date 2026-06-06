@@ -23,12 +23,10 @@ export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetad
     }
 
     // convert regular html links to open in new tab
-    let html = convertHtmlLinksToNewTab(content)
-
-    html = convertContentToHtml(html, skipCode, mdPath)
+    content = convertContentToHtml(content, skipCode, mdPath)
 
     return {
-        html: html,
+        html: content,
         metadata,
         markdown,
         filename
@@ -162,6 +160,7 @@ function convertContentToHtml(content, skipCode, mdPath) {
         return placeholder
     })
 
+    content = convertHtmlLinksToNewTab(content)
     // escape any raw html tags in the markdown content so they are not interpreted by the browser
     content = escapeRawHtmlTags(content)
     content = convertMarkdownTablesToHtml(content)
