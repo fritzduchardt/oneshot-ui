@@ -42,6 +42,7 @@ export async function handleSendButtonClick(withMcp) {
 export async function handleChartButtonClick() {
     const message = Ui.messageTextarea.value
     const model = Ui.modelDropdown.value
+    const markdown = Ui.markdownDropdown.value
     if (!model) {
         Ui.modelDropdown.focus()
         return
@@ -58,7 +59,7 @@ export async function handleChartButtonClick() {
     Store.setPattern(pattern)
 
     try {
-        const response = await Backend.chartChat(message, model, pattern, abortController)
+        const response = await Backend.chartChat(message, markdown, model, pattern, abortController)
         userMessageEl.cancelBtn.disabled = true
         Msg.addBotMessage(response, userMessageEl, true)
     } catch (error) {

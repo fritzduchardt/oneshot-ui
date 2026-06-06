@@ -66,9 +66,9 @@ export async function chat(message, model, pattern, markdown, abortController, w
     })
 }
 
-export async function chartChat(message, model, pattern, abortController) {
+export async function chartChat(message, markdown, model, pattern, abortController) {
     const url = `${Config.API_URL}/chart`
-    const payload = { message, model, pattern }
+    const payload = { message, markdown, model, pattern }
 
     return await fetch(url, {
         method: 'POST',
