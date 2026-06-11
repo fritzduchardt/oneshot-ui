@@ -5,6 +5,7 @@ import * as Text from "./formats/text.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
+import {chartButton} from "./ui.js"
 
 export function addUserMessage(message, metadata, abortController, withMcp) {
     let parent = Dom.createDivWithCloseButton("user-message");
@@ -130,6 +131,15 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
         link.addEventListener('click', () => {
             Ui.messageTextarea.value = link.innerHTML
             Ui.chatButton.click()
+        })
+    })
+    const chartLinks = parent.querySelectorAll(".chart-link")
+    chartLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            Ui.messageTextarea.value = link.innerHTML
+            Ui.patternDropdown.value = "grep"
+            $("#pattern").val("grep").trigger("change")
+            Ui.chartButton.click()
         })
     })
     parent.append(actionButtons)

@@ -229,7 +229,7 @@ pre .action-button:hover {
     opacity: 1;
 }
 
-.prompt-link {
+.prompt-link, .chart-link {
     text-decoration: underline;
     color: var(--prompt-link-color);
     cursor: pointer;

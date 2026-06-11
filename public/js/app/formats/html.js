@@ -234,6 +234,8 @@ function convertNonCodeMarkdownToHtml(content, mdPath) {
         .replace(/_(.+?)_/g, "<em>$1</em>")
         // regex: strikethrough (~~text~~)
         .replace(/~~(.+?)~~/g, "<del>$1</del>")
+        // regex: chart links ([[text]])
+        .replace(/\[\[\s*(chart:[\s\S]+?)\]\]/g, '<span class="chart-link">$1</span>')
         // regex: prompt links ([[text]])
         .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
         // regex: unordered list items
