@@ -19,6 +19,7 @@
     --user-message-border-color: #2e7d32;
     --user-message-background-color: #c8e6c9;
     --bot-message-background-color: #ffffff;
+    --notification-message-background-color: #fdffc9;
     --bot-message-background-error-color: #f3c1c1;
     --bot-message-border-color: #81c784;
     --small-font-size: 12px;
@@ -195,6 +196,10 @@ body {
     position: relative;
     color: var(--message-color);
     box-shadow: 0 1px 3px rgba(129,199,132,0.2);
+}
+
+.bot-message.notification {
+    background: var(--notification-message-background-color);
 }
 
 .bot-message-pending {

@@ -5,7 +5,6 @@ import * as Text from "./formats/text.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
-import {chartButton} from "./ui.js"
 
 export function addUserMessage(message, metadata, abortController, withMcp) {
     let parent = Dom.createDivWithCloseButton("user-message");
@@ -118,7 +117,7 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
     actionButtons.className = "action-buttons"
     if (!hideCopy) {
         actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
-        actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(plain_response), "Copy"))
+        actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(response.markdown), "Copy"))
     }
     if (response.filename) {
         if (response.filename.match("/Food/")) {
@@ -169,7 +168,7 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
 
 
 export function addNotification(message, image, basepath) {
-    let parent = Dom.createDivWithCloseButton("bot-message");
+    let parent = Dom.createDivWithCloseButton("bot-message notification");
     let response = Html.convertMarkdownToHtml(
         message, false, false, true, basepath
     )
@@ -178,6 +177,11 @@ export function addNotification(message, image, basepath) {
     }
     parent.append(Dom.createDiv("bot-message-text", response.html))
     const shouldScroll = isScrolledNearBottom(Ui.messagesDiv)
+    let actionButtons = document.createElement('div');
+    actionButtons.className = "action-buttons"
+    actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
+    actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(response.markdown), "Copy"))
+    parent.append(actionButtons)
     Ui.messagesDiv.append(parent)
     if (shouldScroll) {
         scrollMessagesToBottom()
