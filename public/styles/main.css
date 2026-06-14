@@ -630,3 +630,189 @@ pre code {
     padding: 0;
     border: 0;
 }
+
+/*Callout Blocks - obsidian-style [!type] callouts*/
+
+.callout {
+    margin: 8px 0;
+    border-radius: var(--general-radius);
+    border: 1px solid var(--general-border);
+    overflow: hidden;
+}
+
+.callout-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+.callout-icon {
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+.callout-body {
+    padding: 6px 10px 8px 10px;
+    font-size: 0.97em;
+}
+
+/* tip - yellow/amber */
+.callout-tip .callout-title {
+    background: #fff8e1;
+    color: #f57f17;
+    border-bottom: 1px solid #ffe082;
+}
+.callout-tip .callout-body {
+    background: #fffde7;
+    color: #5d4037;
+}
+
+/* note / info - blue */
+.callout-note .callout-title,
+.callout-info .callout-title {
+    background: #e3f2fd;
+    color: #1565c0;
+    border-bottom: 1px solid #90caf9;
+}
+.callout-note .callout-body,
+.callout-info .callout-body {
+    background: #f0f8ff;
+    color: #1a237e;
+}
+
+/* warning / caution - orange */
+.callout-warning .callout-title,
+.callout-caution .callout-title {
+    background: #fff3e0;
+    color: #e65100;
+    border-bottom: 1px solid #ffcc80;
+}
+.callout-warning .callout-body,
+.callout-caution .callout-body {
+    background: #fff8f0;
+    color: #bf360c;
+}
+
+/* danger / error / failure / fail / missing - red */
+.callout-danger .callout-title,
+.callout-error .callout-title,
+.callout-failure .callout-title,
+.callout-fail .callout-title,
+.callout-missing .callout-title {
+    background: #ffebee;
+    color: #b71c1c;
+    border-bottom: 1px solid #ef9a9a;
+}
+.callout-danger .callout-body,
+.callout-error .callout-body,
+.callout-failure .callout-body,
+.callout-fail .callout-body,
+.callout-missing .callout-body {
+    background: #fff5f5;
+    color: #7f0000;
+}
+
+/* success / check / done - green */
+.callout-success .callout-title,
+.callout-check .callout-title,
+.callout-done .callout-title {
+    background: #e8f5e9;
+    color: #1b5e20;
+    border-bottom: 1px solid #a5d6a7;
+}
+.callout-success .callout-body,
+.callout-check .callout-body,
+.callout-done .callout-body {
+    background: #f1f8f1;
+    color: #1b5e20;
+}
+
+/* question / help / faq - teal */
+.callout-question .callout-title,
+.callout-help .callout-title,
+.callout-faq .callout-title {
+    background: #e0f2f1;
+    color: #004d40;
+    border-bottom: 1px solid #80cbc4;
+}
+.callout-question .callout-body,
+.callout-help .callout-body,
+.callout-faq .callout-body {
+    background: #f0fafa;
+    color: #004d40;
+}
+
+/* important - purple */
+.callout-important .callout-title {
+    background: #f3e5f5;
+    color: #4a148c;
+    border-bottom: 1px solid #ce93d8;
+}
+.callout-important .callout-body {
+    background: #faf0ff;
+    color: #4a148c;
+}
+
+/* bug - deep orange */
+.callout-bug .callout-title {
+    background: #fbe9e7;
+    color: #bf360c;
+    border-bottom: 1px solid #ffab91;
+}
+.callout-bug .callout-body {
+    background: #fff3f0;
+    color: #7f0000;
+}
+
+/* example - indigo */
+.callout-example .callout-title {
+    background: #e8eaf6;
+    color: #1a237e;
+    border-bottom: 1px solid #9fa8da;
+}
+.callout-example .callout-body {
+    background: #f5f6ff;
+    color: #1a237e;
+}
+
+/* quote / cite - grey */
+.callout-quote .callout-title,
+.callout-cite .callout-title {
+    background: #f5f5f5;
+    color: #424242;
+    border-bottom: 1px solid #bdbdbd;
+}
+.callout-quote .callout-body,
+.callout-cite .callout-body {
+    background: #fafafa;
+    color: #424242;
+}
+
+/* abstract / summary / tldr - cyan */
+.callout-abstract .callout-title,
+.callout-summary .callout-title,
+.callout-tldr .callout-title {
+    background: #e0f7fa;
+    color: #006064;
+    border-bottom: 1px solid #80deea;
+}
+.callout-abstract .callout-body,
+.callout-summary .callout-body,
+.callout-tldr .callout-body {
+    background: #f0feff;
+    color: #006064;
+}
+
+/* todo - light blue */
+.callout-todo .callout-title {
+    background: #e1f5fe;
+    color: #01579b;
+    border-bottom: 1px solid #81d4fa;
+}
+.callout-todo .callout-body {
+    background: #f0faff;
+    color: #01579b;
+}

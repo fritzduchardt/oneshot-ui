@@ -1,4 +1,4 @@
-import * as Config from "../../config.js"
+import * as Config from '../../config.js'
 
 export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetadata, skipCode, mdPath) {
 
@@ -6,7 +6,7 @@ export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetad
     markdown = markdown.trim()
 
     // trim filename
-    let filename = ""
+    let filename = ''
     if (!skipTrimFilename) {
         const ret = trimFilename(markdown)
         markdown = ret.markdown
@@ -37,32 +37,56 @@ function trimFilename(markdown) {
     // regex: match leading FILENAME header line
     const filenamePattern = /^\s*FILENAME:\s+(.*?)\n/
     const filenameMatch = markdown.match(filenamePattern)
-    let filename = ""
+    let filename = ''
     if (filenameMatch) {
-        markdown = markdown.slice(filenameMatch[0].length)
-        filename = filenameMatch[1]
+        markdown = markdown.slice(filenameMatch[0].length).trim()
+        filename = filenameMatch[1].trim()
     }
     return {markdown, filename}
 }
 
 function parseMetadata(markdown) {
     const metadata = new Map()
-    // regex: match --- metadata block at top of content
-    const metadataHeaderPattern = /^\s*---\n([\s\S]*?)\n---\n/m
-    const metadataMatch = markdown.match(metadataHeaderPattern)
     let content = markdown
-    if (metadataMatch) {
-        const metadataBlock = metadataMatch[1]
-        content = markdown.slice(metadataMatch[0].length)
 
-        metadataBlock.split("\n").forEach((line) => {
-            const separatorIndex = line.indexOf(":")
-            if (separatorIndex === -1) return
-            const key = line.slice(0, separatorIndex).trim()
-            const value = line.slice(separatorIndex + 1).trim()
-            if (key) metadata.set(key, value)
-        })
+    // split into lines and manually check for opening --- on first line
+    const lines = markdown.split('\n')
+
+    const firstNonEmptyIndex = lines.findIndex(line => line.trim() !== "");
+
+    // first line must be exactly --- (trimmed)
+    if (lines.length < 2 || lines[firstNonEmptyIndex].trim() !== '---') {
+        return {metadata, content}
     }
+
+    // find the closing --- line starting from line index 1
+    let closingIndex = -1
+    for (let i = firstNonEmptyIndex + 1; i < lines.length; i++) {
+        if (lines[i].trim() === '---') {
+            closingIndex = i
+            break
+        }
+    }
+
+    // no closing --- found, return as-is
+    if (closingIndex === -1) {
+        return {metadata, content}
+    }
+
+    // lines between opening and closing --- are the metadata block
+    const metadataLines = lines.slice(1, closingIndex)
+
+    metadataLines.forEach((line) => {
+        const separatorIndex = line.indexOf(':')
+        if (separatorIndex === -1) return
+        const key = line.slice(0, separatorIndex).trim()
+        const value = line.slice(separatorIndex + 1).trim()
+        if (key) metadata.set(key, value)
+    })
+
+    // content is everything after the closing ---
+    content = lines.slice(closingIndex + 1).join('\n').trimStart()
+
     return {metadata, content}
 }
 
@@ -73,16 +97,16 @@ function convertMarkdownTablesToHtml(content) {
     return content.replace(tablePattern, (_, headerRow, separatorRow, bodyRows) => {
         const parseColumns = (row) =>
             // regex: trim leading and trailing pipe
-            row.trim().replace(/^\||\|$/g, "").split("|").map((cell) => cell.trim())
+            row.trim().replace(/^\||\|$/g, '').split('|').map((cell) => cell.trim())
 
         const alignments = parseColumns(separatorRow).map((cell) => {
             // regex: detect center alignment
-            if (/^:-+:$/.test(cell)) return "center"
+            if (/^:-+:$/.test(cell)) return 'center'
             // regex: detect right alignment
-            if (/^-+:$/.test(cell)) return "right"
+            if (/^-+:$/.test(cell)) return 'right'
             // regex: detect left alignment
-            if (/^:-+$/.test(cell)) return "left"
-            return ""
+            if (/^:-+$/.test(cell)) return 'left'
+            return ''
         })
 
         const isNoWrapCell = (cell) => cell.length < 20
@@ -90,8 +114,8 @@ function convertMarkdownTablesToHtml(content) {
         const buildStyleAttr = (cell, i) => {
             const styles = []
             if (alignments[i]) styles.push(`text-align:${alignments[i]}`)
-            if (isNoWrapCell(cell)) styles.push("white-space:nowrap")
-            return styles.length ? ` style="${styles.join(";")}"` : ""
+            if (isNoWrapCell(cell)) styles.push('white-space:nowrap')
+            return styles.length ? ` style="${styles.join(';')}"` : ''
         }
 
         const headerCells = parseColumns(headerRow)
@@ -99,11 +123,11 @@ function convertMarkdownTablesToHtml(content) {
                 const styleAttr = buildStyleAttr(cell, i)
                 return `<th${styleAttr}>${cell}</th>`
             })
-            .join("")
+            .join('')
 
         const bodyHtml = bodyRows
             .trim()
-            .split("\n")
+            .split('\n')
             .filter((row) => row.trim())
             .map((row) => {
                 const cells = parseColumns(row)
@@ -111,12 +135,53 @@ function convertMarkdownTablesToHtml(content) {
                         const styleAttr = buildStyleAttr(cell, i)
                         return `<td${styleAttr}>${cell}</td>`
                     })
-                    .join("")
+                    .join('')
                 return `<tr>${cells}</tr>`
             })
-            .join("")
+            .join('')
 
         return `<table class="content-table"><thead><tr>${headerCells}</tr></thead><tbody>${bodyHtml}</tbody></table>\n`
+    })
+}
+
+// map of obsidian-style callout types to emoji icons
+const CALLOUT_ICONS = {
+    tip: '💡',
+    note: 'ℹ️',
+    info: 'ℹ️',
+    warning: '⚠️',
+    caution: '⚠️',
+    danger: '🔥',
+    error: '❌',
+    success: '✅',
+    check: '✅',
+    done: '✅',
+    question: '❓',
+    help: '❓',
+    faq: '❓',
+    important: '❗',
+    bug: '🐛',
+    example: '📋',
+    quote: '💬',
+    cite: '💬',
+    abstract: '📝',
+    summary: '📝',
+    tldr: '📝',
+    todo: '☑️',
+    failure: '❌',
+    fail: '❌',
+    missing: '❌',
+}
+
+function convertCallouts(content) {
+    // regex: match obsidian-style callout blocks: > [!type] optional title\n> body lines
+    return content.replace(/^> \[!(\w+)\]([^\n]*)\n((?:^> [^\n]*\n?)*)/gm, (match, type, titleRest, body) => {
+        const typeLower = type.toLowerCase()
+        const icon = CALLOUT_ICONS[typeLower] || '📌'
+        const title = titleRest.trim() || type.charAt(0).toUpperCase() + type.slice(1)
+        // strip leading "> " from each body line
+        const bodyText = body.replace(/^> ?/gm, '').trim()
+        return `<div class="callout callout-${typeLower}"><div class="callout-title"><span class="callout-icon">${icon}</span>${title}</div><div class="callout-body">${bodyText}</div></div>\n`
     })
 }
 
@@ -130,8 +195,8 @@ function convertContentToHtml(content, skipCode, mdPath) {
         // regex: match fenced code blocks and HTML <pre><code> blocks
         content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
             let htmlBlock = match
-            if (match.startsWith("```")) {
-                const langAttr = lang ? ` class="language-${lang}"` : ""
+            if (match.startsWith('```')) {
+                const langAttr = lang ? ` class="language-${lang}"` : ''
                 code = code.trimEnd()
                 htmlBlock = `<pre><code${langAttr}>${escapeHtml(code)}</code></pre>`
             }
@@ -160,6 +225,9 @@ function convertContentToHtml(content, skipCode, mdPath) {
         return placeholder
     })
 
+    // convert obsidian-style callouts before other processing
+    content = convertCallouts(content)
+
     content = convertHtmlLinksToNewTab(content)
     // escape any raw html tags in the markdown content so they are not interpreted by the browser
     content = escapeRawHtmlTags(content)
@@ -179,10 +247,12 @@ function convertContentToHtml(content, skipCode, mdPath) {
 
 function escapeRawHtmlTags(content) {
     return content.replace(/<\/?[a-zA-Z][^>]*>/g, (tag) => {
+        // preserve callout divs generated by convertCallouts
+        if (/^<\/?div(\s|>)/.test(tag) || /^<\/?span(\s|>)/.test(tag)) return tag
         return tag
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
     })
 }
 
@@ -197,7 +267,7 @@ function convertHtmlLinksToNewTab(html) {
 
 function convertNonCodeMarkdownToHtml(content, mdPath) {
     if (mdPath) {
-        if (mdPath.endsWith(".md")) {
+        if (mdPath.endsWith('.md')) {
             mdPath = getMarkdownBasePath(mdPath)
         }
         const rand = Math.random() * 99999
@@ -205,41 +275,41 @@ function convertNonCodeMarkdownToHtml(content, mdPath) {
         content = content.replace(/!\[([^\]]*)\]\(([^)]+png)\)/g, (_, alt, src) => `<img class="md" alt="${alt}" src="${Config.API_URL}/image/${mdPath}/${src}?${rand}">`)
     }
     // regex: markdown links
-    content =  content.replace(/\[([^\]]+)\]\(([^)]+md)\)/g, '<a target="_blank" title="$2" class="md" href="$2">$1</a>')
+    content = content.replace(/\[([^\]]+)\]\(([^)]+md)\)/g, '<a target="_blank" title="$2" class="md" href="$2">$1</a>')
 
     content = content
         // regex: h6 heading
-        .replace(/^###### (.+)$/gm, "<h6>$1</h6>")
+        .replace(/^###### (.+)$/gm, '<h6>$1</h6>')
         // regex: h5 heading
-        .replace(/^##### (.+)$/gm, "<h5>$1</h5>")
+        .replace(/^##### (.+)$/gm, '<h5>$1</h5>')
         // regex: h4 heading
-        .replace(/^#### (.+)$/gm, "<h4>$1</h4>")
+        .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
         // regex: h3 heading
-        .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
         // regex: h2 heading
-        .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
         // regex: h1 heading
-        .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
         // regex: bold+italic (***text***)
-        .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
+        .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
         // regex: bold (**text**)
-        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         // regex: italic (*text*)
-        .replace(/\*(.+?)\*/g, "<em>$1</em>")
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
         // regex: bold+italic (___text___)
-        .replace(/___(.+?)___/g, "<strong><em>$1</em></strong>")
+        .replace(/___(.+?)___/g, '<strong><em>$1</em></strong>')
         // regex: bold (__text__)
-        .replace(/__(.+?)__/g, "<strong>$1</strong>")
+        .replace(/__(.+?)__/g, '<strong>$1</strong>')
         // regex: italic (_text_)
-        .replace(/_(.+?)_/g, "<em>$1</em>")
+        .replace(/_(.+?)_/g, '<em>$1</em>')
         // regex: strikethrough (~~text~~)
-        .replace(/~~(.+?)~~/g, "<del>$1</del>")
+        .replace(/~~(.+?)~~/g, '<del>$1</del>')
         // regex: chart links ([[text]])
         .replace(/\[\[\s*(chart:[\s\S]+?)\]\]/g, '<span class="chart-link">$1</span>')
         // regex: prompt links ([[text]])
         .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
         // regex: unordered list items
-        .replace(/^\s*[-*+] (.+)$/gm, "<li>$1</li>")
+        .replace(/^\s*[-*+] (.+)$/gm, '<li>$1</li>')
         // regex: wrap consecutive <li> into <ul>
         .replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`)
         // regex: ordered list items
@@ -247,23 +317,23 @@ function convertNonCodeMarkdownToHtml(content, mdPath) {
         // regex: wrap consecutive <li value="n"> into <ol>
         .replace(/(<li value="\d+">[^]*?<\/li>\n?)+/g, (match) => `<ol>${match}</ol>`)
         // regex: blockquote
-        .replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>")
+        .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
         // regex: horizontal rule
-        .replace(/^---$/gm, "<hr>")
+        .replace(/^---$/gm, '<hr>')
         // regex: links
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a target="_blank" href="$2">$1</a>')
         // regex: paragraph breaks
-        .replace(/\n\n+/g, "</p><p>")
+        .replace(/\n\n+/g, '</p><p>')
         // regex: trim plain lines that are not HTML tags
-        .replace(/^(?!<[a-z])(.+)$/gm, (line) => line.trim() ? line : "")
+        .replace(/^(?!<[a-z])(.+)$/gm, (line) => line.trim() ? line : '')
 
-        return content
+    return content
 }
 
 function restoreCodeBlocks(html, codeBlocks) {
     return codeBlocks.reduce((acc, block, index) => {
         // regex: match code block placeholder for given index, tolerating surrounding whitespace and line breaks introduced by markdown processing
-        const placeholderPattern = new RegExp(`\\s*@@CODEBLOCK${index}@@\\s*`, "g")
+        const placeholderPattern = new RegExp(`\\s*@@CODEBLOCK${index}@@\\s*`, 'g')
         return acc.replace(placeholderPattern, block)
     }, html)
 }
@@ -271,7 +341,7 @@ function restoreCodeBlocks(html, codeBlocks) {
 function restoreInlineCodeBlocks(html, inlineCodeBlocks) {
     return inlineCodeBlocks.reduce((acc, block, index) => {
         // regex: match inline code placeholder for given index, tolerating surrounding whitespace and line breaks
-        const placeholderPattern = new RegExp(`\\s*@@INLINECODEPROTECT${index}@@\\s*`, "g")
+        const placeholderPattern = new RegExp(`\\s*@@INLINECODEPROTECT${index}@@\\s*`, 'g')
         return acc.replace(placeholderPattern, block)
     }, html)
 }
@@ -279,7 +349,7 @@ function restoreInlineCodeBlocks(html, inlineCodeBlocks) {
 function restoreChartBlocks(html, chartBlocks) {
     return chartBlocks.reduce((acc, block, index) => {
         // regex: match chart block placeholder for given index, tolerating surrounding whitespace and line breaks introduced by markdown processing
-        const placeholderPattern = new RegExp(`\\s*@@CHARTBLOCK${index}@@\\s*`, "g")
+        const placeholderPattern = new RegExp(`\\s*@@CHARTBLOCK${index}@@\\s*`, 'g')
         return acc.replace(placeholderPattern, `<p class="chart">${block}</p>`)
     }, html)
 }
@@ -287,7 +357,7 @@ function restoreChartBlocks(html, chartBlocks) {
 function restoreLinkBlocks(html, linkBlocks) {
     return linkBlocks.reduce((acc, block, index) => {
         // regex: match link block placeholder for given index, tolerating surrounding whitespace introduced by markdown processing
-        const placeholderPattern = new RegExp(`@@LINKBLOCK${index}@@`, "g")
+        const placeholderPattern = new RegExp(`@@LINKBLOCK${index}@@`, 'g')
         return acc.replace(placeholderPattern, block)
     }, html)
 }
@@ -295,19 +365,19 @@ function restoreLinkBlocks(html, linkBlocks) {
 function escapeHtml(text) {
     return text
         // regex: escape &
-        .replace(/&/g, "&amp;")
+        .replace(/&/g, '&amp;')
         // regex: escape <
-        .replace(/</g, "&lt;")
+        .replace(/</g, '&lt;')
         // regex: escape >
-        .replace(/>/g, "&gt;")
+        .replace(/>/g, '&gt;')
         // regex: escape "
-        .replace(/"/g, "&quot;")
+        .replace(/"/g, '&quot;')
         // regex: escape '
-        .replace(/'/g, "&#039;")
+        .replace(/'/g, '&#039;')
 }
 
 function getMarkdownBasePath(mdPath) {
-    if (!mdPath) return ""
-    const lastSlash = mdPath.lastIndexOf("/")
+    if (!mdPath) return ''
+    const lastSlash = mdPath.lastIndexOf('/')
     return mdPath.slice(0, lastSlash)
 }

@@ -38,7 +38,7 @@ export function addBotMessageForPattern(patternName, patternContent) {
     const parent = Dom.createDivWithCloseButton("bot-message");
     Ui.messagesDiv.append(parent)
 
-    const response = Html.convertMarkdownToHtml(patternContent, true, true, true)
+    const response = Html.convertMarkdownToHtml(patternContent, false, false, false)
 
     let metadata = new Map()
     metadata.set("pattern", patternName)
@@ -170,9 +170,9 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
 export function addNotification(message, image, basepath) {
     let parent = Dom.createDivWithCloseButton("bot-message notification");
     let response = Html.convertMarkdownToHtml(
-        message, false, false, true, basepath
+        message, false, false, false, basepath
     )
-    if (response.metadata.size > 0) {
+    if (response.metadata && response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
     }
     parent.append(Dom.createDiv("bot-message-text", response.html))
