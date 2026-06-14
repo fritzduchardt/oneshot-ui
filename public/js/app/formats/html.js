@@ -48,7 +48,7 @@ function trimFilename(markdown) {
 function parseMetadata(markdown) {
     const metadata = new Map()
     // regex: match --- metadata block at top of content
-    const metadataHeaderPattern = /^[\s\S]*?^---\n([\s\S]*?)\n---\n/m
+    const metadataHeaderPattern = /^\s*---\n([\s\S]*?)\n---\n/m
     const metadataMatch = markdown.match(metadataHeaderPattern)
     let content = markdown
     if (metadataMatch) {
