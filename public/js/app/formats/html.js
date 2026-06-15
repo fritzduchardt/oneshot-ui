@@ -173,16 +173,50 @@ const CALLOUT_ICONS = {
     missing: '❌',
 }
 
+// Changed convertCallouts to manual line-by-line parsing to replace regex-based approach
 function convertCallouts(content) {
-    // regex: match obsidian-style callout blocks: > [!type] optional title\n> body lines
-    return content.replace(/^> \[!(\w+)\]([^\n]*)\n((?:^> [^\n]*\n?)*)/gm, (match, type, titleRest, body) => {
-        const typeLower = type.toLowerCase()
-        const icon = CALLOUT_ICONS[typeLower] || '📌'
-        const title = titleRest.trim() || type.charAt(0).toUpperCase() + type.slice(1)
-        // strip leading "> " from each body line
-        const bodyText = body.replace(/^> ?/gm, '').trim()
-        return `<div class="callout callout-${typeLower}"><div class="callout-title"><span class="callout-icon">${icon}</span>${title}</div><div class="callout-body">${bodyText}</div></div>\n`
-    })
+    const lines = content.split('\n')
+    const resultLines = []
+    let i = 0
+    while (i < lines.length) {
+        const line = lines[i]
+        // Check if this line starts a callout: > [!type] optional title
+        const calloutMatch = line.match(/^>\s*\[!(\w+)\](.*)$/)
+        if (calloutMatch) {
+            const typeOriginal = calloutMatch[1]
+            const type = typeOriginal.toLowerCase()
+            const icon = CALLOUT_ICONS[type] || '📌'
+            const titleRest = calloutMatch[2].trim()
+            const title = titleRest || typeOriginal.charAt(0).toUpperCase() + typeOriginal.slice(1)
+            // Collect body lines that start with "> " (as required by original pattern)
+            const bodyLines = []
+            i++ // move past the opening line
+            while (i < lines.length) {
+                const bodyLine = lines[i]
+                // Only lines that start with "> " (including the space) are part of callout body
+                if (bodyLine.startsWith('> ')) {
+                    // Strip leading "> " and one optional space (already consumed by startsWith)
+                    const stripped = bodyLine.slice(2)
+                    bodyLines.push(stripped)
+                    i++
+                } else if (bodyLine === '>') {
+                    // Original pattern did not match ">" alone, so we break here for consistency
+                    break
+                } else {
+                    // End of callout body
+                    break
+                }
+            }
+            const bodyText = bodyLines.join('\n').trim()
+            const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${title}</div><div class="callout-body">${bodyText}</div></div>`
+            resultLines.push(html)
+            // i is now positioned after the last consumed body line (or at the break line)
+        } else {
+            resultLines.push(line)
+            i++
+        }
+    }
+    return resultLines.join('\n')
 }
 
 function convertContentToHtml(content, skipCode, mdPath) {
