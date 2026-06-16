@@ -50,7 +50,7 @@ body {
 /*Font*/
 
 body {
-    font-family: var(--base-font-family);
+    font-family: var(--base-font-family), serif;
     font-size: var(--default-font-size);
     line-height: 1.5;
 }
@@ -145,7 +145,7 @@ body {
     min-height: 0;
     background: var(--messages-background-color);
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: scroll;
     margin: 6px;
     position: relative;
     padding: 5px;
@@ -600,7 +600,7 @@ canvas.md {
 
 /*Code*/
 code {
-    font-family: var(--code-font-family);
+    font-family: var(--code-font-family), serif;
     color: var(--code-text-color) !important;
     border-radius: 6px;
     font-size: 0.9rem;
@@ -815,4 +815,41 @@ pre code {
 .callout-todo .callout-body {
     background: #f0faff;
     color: #01579b;
+}
+
+/* Added styles for messages-wrapper and scroll pagination buttons */
+#messages-wrapper {
+    position: relative;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.scroll-btn {
+    position: absolute;
+    right: 29px;
+    z-index: 10;
+    width: 25px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--button-background);
+    color: var(--button-text);
+    border: 1px solid var(--general-border);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.scroll-btn:hover:not(:disabled) {
+    background: var(--button-background-hover);
+}
+
+.scroll-up {
+    top: 48px;
+}
+
+.scroll-down {
+    bottom: 15px;
 }
