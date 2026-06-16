@@ -24,8 +24,7 @@ async function initializeApp() {
     })
 
     // keys
-    Keys.registerMessageKeyListener()
-    Keys.registerHistoryKeyListener()
+    Keys.registerKeyListener()
 
     // focus
     registerFocusListener()

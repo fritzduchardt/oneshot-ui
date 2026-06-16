@@ -5,6 +5,8 @@ import * as Msg from "./msgs.js";
 import * as History from "./history.js";
 import {messageTextarea} from "./ui.js"
 
+let currentBotMessageIndex = -1
+
 export async function handleSendButtonClick(withMcp) {
     const message = Ui.messageTextarea.value
     const model = Ui.modelDropdown.value
@@ -100,5 +102,28 @@ export function handleShowMarkdown() {
                 Msg.addBotMessageForMarkdown(md, markdown)
             })
         Store.setMarkdown(md)
+    }
+}
+
+// Added handler for key up and down to paginate through bot messages
+export function handleMessageScroll(dir) {
+    const botMessages = document.querySelectorAll('.bot-message')
+    if (botMessages.length === 0) return
+    if (dir == "down") {
+        currentBotMessageIndex = Math.min(currentBotMessageIndex + 1, botMessages.length - 1)
+    } else {
+        currentBotMessageIndex = Math.max(currentBotMessageIndex - 1, 0)
+    }
+    const targetMessage = botMessages[currentBotMessageIndex]
+    if (targetMessage) {
+        targetMessage.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        botMessages.forEach((msg, idx) => {
+            if (idx === currentBotMessageIndex) {
+                msg.classList.add('highlighted-bot-message')
+            } else {
+                msg.classList.remove('highlighted-bot-message')
+            }
+        })
+        console.log("Navigated to bot message, index: $currentBotMessageIndex")
     }
 }
