@@ -1,6 +1,5 @@
 // sw.js
-// Updated APP_VERSION to v1.2.29
-export const APP_VERSION = "v1.2.29";
+export const APP_VERSION = "v1.2.30";
 const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
 const STATIC_ASSETS = [
     "/index.html",
