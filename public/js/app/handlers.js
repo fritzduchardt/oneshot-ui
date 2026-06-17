@@ -3,7 +3,6 @@ import * as Ui from './ui.js';
 import * as Store from "./store.js";
 import * as Msg from "./msgs.js";
 import * as History from "./history.js";
-import {messageTextarea} from "./ui.js"
 
 let currentBotMessageIndex = -1
 
@@ -109,14 +108,14 @@ export function handleShowMarkdown() {
 export function handleMessageScroll(dir) {
     const botMessages = document.querySelectorAll('.bot-message')
     if (botMessages.length === 0) return
-    if (dir == "down") {
+    if (dir === "down") {
         currentBotMessageIndex = Math.min(currentBotMessageIndex + 1, botMessages.length - 1)
     } else {
         currentBotMessageIndex = Math.max(currentBotMessageIndex - 1, 0)
     }
     const targetMessage = botMessages[currentBotMessageIndex]
     if (targetMessage) {
-        targetMessage.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        Msg.scrollToTop(targetMessage)
         botMessages.forEach((msg, idx) => {
             if (idx === currentBotMessageIndex) {
                 msg.classList.add('highlighted-bot-message')
@@ -124,6 +123,6 @@ export function handleMessageScroll(dir) {
                 msg.classList.remove('highlighted-bot-message')
             }
         })
-        console.log("Navigated to bot message, index: $currentBotMessageIndex")
+        console.log("Navigated to bot message, index: " + currentBotMessageIndex)
     }
 }

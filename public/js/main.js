@@ -43,8 +43,8 @@ async function initializeApp() {
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
     registerButtonClickListener('show-pattern', Handlers.handleShowPattern)
     registerButtonClickListener('show-markdown', Handlers.handleShowMarkdown)
-    registerButtonClickListener('scroll-up-btn', () => Handlers.handleMessageScroll("up"))
-    registerButtonClickListener('scroll-down-btn', () => Handlers.handleMessageScroll("down"))
+    registerButtonClickListener('button-scroll-up', () => Handlers.handleMessageScroll("up"))
+    registerButtonClickListener('button-scroll-down', () => Handlers.handleMessageScroll("down"))
     registerErrorHandler()
 
     // SSE stream listener - connects to server-sent events endpoint and publishes incoming events as messages

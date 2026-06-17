@@ -842,6 +842,17 @@ pre code {
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
+.scroll-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 800px) {
+    .scroll-btn {
+        right: 16px;
+    }
+}
+
 .scroll-btn:hover:not(:disabled) {
     background: var(--button-background-hover);
 }

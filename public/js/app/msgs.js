@@ -104,7 +104,7 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
 
     const parent = Dom.createDivWithCloseButton("bot-message");
     Ui.messagesDiv.append(parent)
-
+    Ui.scrollDownButton.disabled = false
     if (response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
     }

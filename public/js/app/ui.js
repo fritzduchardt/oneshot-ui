@@ -20,3 +20,5 @@ export const mcpButton = getRequiredElementById("mcp-button");
 export const chartButton = getRequiredElementById("chart-button");
 export const toggleSound = getRequiredElementById("toggle-sound");
 export const toggleInput = getRequiredElementById("toggle-input");
+export const scrollUpButton = getRequiredElementById("button-scroll-up");
+export const scrollDownButton = getRequiredElementById("button-scroll-down");
