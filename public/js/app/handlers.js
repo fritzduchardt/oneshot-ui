@@ -4,8 +4,6 @@ import * as Store from "./store.js";
 import * as Msg from "./msgs.js";
 import * as History from "./history.js";
 
-let currentBotMessageIndex = -1
-
 export async function handleSendButtonClick(withMcp) {
     const message = Ui.messageTextarea.value
     const model = Ui.modelDropdown.value
@@ -104,10 +102,22 @@ export function handleShowMarkdown() {
     }
 }
 
-// Added handler for key up and down to paginate through bot messages
 export function handleMessageScroll(dir) {
     const botMessages = document.querySelectorAll('.bot-message')
     if (botMessages.length === 0) return
+
+    let bestIndex = 0
+    let minDistance = Infinity
+    botMessages.forEach((msg, idx) => {
+        const rect = msg.getBoundingClientRect()
+        const distance = Math.abs(rect.top)
+        if (distance < minDistance) {
+            minDistance = distance
+            bestIndex = idx
+        }
+    })
+    let currentBotMessageIndex = bestIndex
+
     if (dir === "down") {
         currentBotMessageIndex = Math.min(currentBotMessageIndex + 1, botMessages.length - 1)
     } else {
@@ -123,6 +133,6 @@ export function handleMessageScroll(dir) {
                 msg.classList.remove('highlighted-bot-message')
             }
         })
-        console.log("Navigated to bot message, index: " + currentBotMessageIndex)
+        console.log(`Navigated to bot message, index: ${currentBotMessageIndex}`)
     }
 }
