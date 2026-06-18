@@ -19,6 +19,9 @@ export function addUserMessage(message, metadata, abortController, withMcp) {
     // store reference to cancel button so it can be disabled when response arrives
     const cancelBtn = createCancelRequestButton(abortController)
     actionButtons.append(cancelBtn)
+    // Added: cancel and delete button - cancels request and removes the user message
+    const cancelDeleteBtn = createCancelAndDeleteButton(abortController, parent)
+    actionButtons.append(cancelDeleteBtn)
     parent.append(actionButtons)
     // attach cancel button reference to parent so handlers.js can disable it
     parent.cancelBtn = cancelBtn
@@ -317,6 +320,16 @@ function createCancelRequestButton(abortController) {
     btn.addEventListener('click', () => {
         abortController.abort("user abort")
         btn.disabled = true
+    })
+    return btn;
+}
+
+// Added: cancel and delete button - cancels the request and removes the user message element
+function createCancelAndDeleteButton(abortController, parentElement) {
+    const btn = Dom.createButton("action-button", "Cancel & Delete")
+    btn.addEventListener('click', () => {
+        abortController.abort("user abort")
+        parentElement.remove()
     })
     return btn;
 }
