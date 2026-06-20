@@ -252,7 +252,6 @@ function convertContentToHtml(content, skipCode, mdPath) {
         return placeholder
     })
 
-    // protect <a> link tags from being escaped so they are preserved as real HTML
     content = content.replace(/<a\s[^>]*>[\s\S]*?<\/a>/g, (match) => {
         const placeholder = `@@LINKBLOCK${linkBlocks.length}@@`
         linkBlocks.push(match)

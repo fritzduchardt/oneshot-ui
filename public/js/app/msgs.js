@@ -324,12 +324,18 @@ function createCancelRequestButton(abortController) {
     return btn;
 }
 
-// Added: cancel and delete button - cancels the request and removes the user message element
+// Added: cancel and delete button - cancels the request, removes the user message,
+// and also removes the next bot-message if it exists (to clean up pending response)
 function createCancelAndDeleteButton(abortController, parentElement) {
-    const btn = Dom.createButton("action-button", "Cancel & Delete")
+    const btn = Dom.createButton("action-button", "Cancel-Delete")
     btn.addEventListener('click', () => {
         abortController.abort("user abort")
+        // Get reference to next sibling before removing, so we can check for bot-message
+        const nextSibling = parentElement.nextElementSibling;
         parentElement.remove()
+        if (nextSibling && nextSibling.classList.contains('bot-message')) {
+            nextSibling.remove()
+        }
     })
     return btn;
 }
