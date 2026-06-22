@@ -80,6 +80,14 @@ export function handleToggleInputButtonClick() {
     Ui.inputSection.classList.toggle('hidden')
 }
 
+// Added: Toggle notifications - uses localStorage to persist the disabled state
+export function handleToggleNotificationsButtonClick() {
+    const currentlyEnabled = localStorage.getItem('notifications_enabled') !== 'false';
+    const newState = !currentlyEnabled;
+    localStorage.setItem('notifications_enabled', newState.toString());
+    Ui.toggleNotifications.classList.toggle('pressed', !newState);
+}
+
 export function handleShowPattern() {
     const pattern_name = Ui.patternDropdown.value
     if (pattern_name) {

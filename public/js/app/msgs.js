@@ -107,7 +107,6 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
 
     const parent = Dom.createDivWithCloseButton("bot-message");
     Ui.messagesDiv.append(parent)
-    Ui.scrollDownButton.disabled = false
     if (response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
     }
@@ -169,8 +168,12 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
     }
 }
 
-
 export function addNotification(message, image, basepath) {
+    const notificationsEnabled = localStorage.getItem('notifications_enabled') !== 'false';
+    if (!notificationsEnabled) {
+        return;
+    }
+
     let parent = Dom.createDivWithCloseButton("bot-message notification");
     let response = Html.convertMarkdownToHtml(
         message, false, false, false, basepath

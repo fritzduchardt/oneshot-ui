@@ -41,6 +41,7 @@ async function initializeApp() {
     })
     registerButtonClickListener('toggle-sound', Handlers.handleToggleSoundButtonClick)
     registerButtonClickListener('toggle-input', Handlers.handleToggleInputButtonClick)
+    registerButtonClickListener('toggle-notifications', Handlers.handleToggleNotificationsButtonClick)
     registerButtonClickListener('show-pattern', Handlers.handleShowPattern)
     registerButtonClickListener('show-markdown', Handlers.handleShowMarkdown)
     registerButtonClickListener('button-scroll-up', () => Handlers.handleMessageScroll("up"))
@@ -49,6 +50,10 @@ async function initializeApp() {
 
     // SSE stream listener - connects to server-sent events endpoint and publishes incoming events as messages
     registerSseListener()
+
+    // Set initial button state for notifications toggle
+    const notificationsEnabled = localStorage.getItem('notifications_enabled') !== 'false';
+    Ui.toggleNotifications.classList.toggle('pressed', !notificationsEnabled);
 
     document.getElementById("message").focus()
 }
