@@ -173,7 +173,8 @@ const CALLOUT_ICONS = {
 }
 
 // Changed convertCallouts to manual line-by-line parsing to replace regex-based approach
-function convertCallouts(content) {
+// Callout html snippets are stored as placeholders to prevent convertContentToHtml from processing them
+function convertCallouts(content, calloutBlocks) {
     const lines = content.split('\n')
     const resultLines = []
     let i = 0
@@ -211,8 +212,11 @@ function convertCallouts(content) {
                 }
             }
             const bodyText = bodyLines.join('\n').trim()
+            // Build callout html and store as placeholder to avoid re-processing by convertContentToHtml
             const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${title}</div><div class="callout-body">${convertContentToHtml(bodyText)}</div></div>`
-            resultLines.push(html)
+            const placeholder = `@@CALLOUTBLOCK${calloutBlocks.length}@@`
+            calloutBlocks.push(html)
+            resultLines.push(placeholder)
             // i is now positioned after the last consumed body line (or at the break line)
         } else {
             resultLines.push(line)
@@ -227,6 +231,8 @@ function convertContentToHtml(content, skipCode, mdPath) {
     let codeBlocks = []
     let inlineCodeBlocks = []
     let chartBlocks = []
+    // callout blocks stored here to prevent their html from being re-processed
+    let calloutBlocks = []
     if (!skipCode) {
         // regex: match fenced code blocks and HTML <pre><code> blocks
         content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
@@ -256,7 +262,8 @@ function convertContentToHtml(content, skipCode, mdPath) {
 
     content = convertHtmlLinksToNewTab(content)
     content = escapeRawHtmlTags(content)
-    content = convertCallouts(content)
+    // pass calloutBlocks array so generated html snippets are stored as placeholders
+    content = convertCallouts(content, calloutBlocks)
     content = convertMarkdownTablesToHtml(content)
     content = convertNonCodeMarkdownToHtml(content, mdPath)
     if (!skipCode) {
@@ -264,6 +271,8 @@ function convertContentToHtml(content, skipCode, mdPath) {
         content = restoreInlineCodeBlocks(content, inlineCodeBlocks)
     }
     content = restoreChartBlocks(content, chartBlocks)
+    // restore callout html snippets after all other processing is done
+    content = restoreCalloutBlocks(content, calloutBlocks)
 
     return content
 }
@@ -374,6 +383,14 @@ function restoreChartBlocks(html, chartBlocks) {
         // regex: match chart block placeholder for given index, tolerating surrounding whitespace and line breaks introduced by markdown processing
         const placeholderPattern = new RegExp(`\\s*@@CHARTBLOCK${index}@@\\s*`, 'g')
         return acc.replace(placeholderPattern, `<p class="chart">${block}</p>`)
+    }, html)
+}
+
+function restoreCalloutBlocks(html, calloutBlocks) {
+    return calloutBlocks.reduce((acc, block, index) => {
+        // regex: match callout block placeholder for given index, tolerating surrounding whitespace and line breaks
+        const placeholderPattern = new RegExp(`\\s*@@CALLOUTBLOCK${index}@@\\s*`, 'g')
+        return acc.replace(placeholderPattern, block)
     }, html)
 }
 
