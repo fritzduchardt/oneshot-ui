@@ -192,10 +192,14 @@ function convertCallouts(content) {
             i++ // move past the opening line
             while (i < lines.length) {
                 const bodyLine = lines[i]
+                if (bodyLine.match(/^\s*$/)) {
+                    i++
+                    continue
+                }
                 // Only lines that start with "> " (including the space) are part of callout body
-                if (bodyLine.startsWith('> ')) {
+                if (bodyLine.startsWith('>')) {
                     // Strip leading "> " and one optional space (already consumed by startsWith)
-                    const stripped = bodyLine.slice(2)
+                    const stripped = bodyLine.slice(1).trim()
                     bodyLines.push(stripped)
                     i++
                 } else if (bodyLine === '>') {
@@ -207,7 +211,7 @@ function convertCallouts(content) {
                 }
             }
             const bodyText = bodyLines.join('\n').trim()
-            const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${title}</div><div class="callout-body">${bodyText}</div></div>`
+            const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${title}</div><div class="callout-body">${convertContentToHtml(bodyText)}</div></div>`
             resultLines.push(html)
             // i is now positioned after the last consumed body line (or at the break line)
         } else {
