@@ -3,30 +3,29 @@ import * as Config from '../../config.js'
 export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetadata, skipCode, mdPath) {
 
     // strip spaces
-    markdown = markdown.trim()
-
-    // trim filename
-    let filename = ''
-    if (!skipTrimFilename) {
-        const ret = trimFilename(markdown)
-        markdown = ret.markdown
-        filename = ret.filename
-    }
+    let content = markdown.trim()
 
     // parse metadata
     let metadata
-    let content = markdown
     if (!skipParseMetadata) {
-        let res = parseMetadata(markdown)
+        let res = parseMetadata(content)
         content = res.content
         metadata = res.metadata
     }
 
+    // trim filename
+    let filename = ''
+    if (!skipTrimFilename) {
+        const ret = trimFilename(content)
+        content = ret.markdown
+        filename = ret.filename
+    }
+
     // convert regular html links to open in new tab
-    content = convertContentToHtml(content, skipCode, mdPath)
+    let html = convertContentToHtml(content, skipCode, mdPath)
 
     return {
-        html: content,
+        html: html,
         metadata,
         markdown,
         filename
@@ -224,7 +223,6 @@ function convertContentToHtml(content, skipCode, mdPath) {
     let codeBlocks = []
     let inlineCodeBlocks = []
     let chartBlocks = []
-    let linkBlocks = []
     if (!skipCode) {
         // regex: match fenced code blocks and HTML <pre><code> blocks
         content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
@@ -252,9 +250,9 @@ function convertContentToHtml(content, skipCode, mdPath) {
         return placeholder
     })
 
-    content = convertCallouts(content)
     content = convertHtmlLinksToNewTab(content)
     content = escapeRawHtmlTags(content)
+    content = convertCallouts(content)
     content = convertMarkdownTablesToHtml(content)
     content = convertNonCodeMarkdownToHtml(content, mdPath)
     if (!skipCode) {
