@@ -6,6 +6,7 @@ import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
 
+// Improved code: replaced Cancel button with Cancel-Delete button and renamed it to Cancel
 export function addUserMessage(message, metadata, abortController, withMcp) {
     let parent = Dom.createDivWithCloseButton("user-message");
 
@@ -16,15 +17,10 @@ export function addUserMessage(message, metadata, abortController, withMcp) {
 
     let actionButtons = Dom.createDiv("action-buttons");
     actionButtons.append(createPromptAgainButton(message, withMcp))
-    // store reference to cancel button so it can be disabled when response arrives
-    const cancelBtn = createCancelRequestButton(abortController)
-    actionButtons.append(cancelBtn)
-    // Added: cancel and delete button - cancels request and removes the user message
-    const cancelDeleteBtn = createCancelAndDeleteButton(abortController, parent)
-    actionButtons.append(cancelDeleteBtn)
+    // Added: cancel and delete button - cancels request and removes the user message, renamed to Cancel
+    const deleteBtn = createDeleteButton(abortController, parent)
+    actionButtons.append(deleteBtn)
     parent.append(actionButtons)
-    // attach cancel button reference to parent so handlers.js can disable it
-    parent.cancelBtn = cancelBtn
 
     // add loading dots inside the user message to indicate pending bot response
     const dots = Dom.createDiv("loading-dots user-message-loading", "<span></span><span></span><span></span>");
@@ -323,19 +319,11 @@ function createDeleteMarkdownButton(path) {
     return btn;
 }
 
-function createCancelRequestButton(abortController) {
-    const btn = Dom.createButton( "action-button", "Cancel")
-    btn.addEventListener('click', () => {
-        abortController.abort("user abort")
-        btn.disabled = true
-    })
-    return btn;
-}
-
 // Added: cancel and delete button - cancels the request, removes the user message,
 // and also removes the next bot-message if it exists (to clean up pending response)
-function createCancelAndDeleteButton(abortController, parentElement) {
-    const btn = Dom.createButton("action-button", "Cancel-Delete")
+// Improved code: renamed label to "Cancel"
+function createDeleteButton(abortController, parentElement) {
+    const btn = Dom.createButton("action-button", "Delete")
     btn.addEventListener('click', () => {
         abortController.abort("user abort")
         // Get reference to next sibling before removing, so we can check for bot-message

@@ -26,10 +26,8 @@ export async function handleSendButtonClick(withMcp) {
 
     try {
         const response = await Backend.chat(message, model, pattern, markdown, abortController, withMcp)
-        userMessageEl.cancelBtn.disabled = true
         Msg.addBotMessage(response, userMessageEl)
     } catch (error) {
-        userMessageEl.cancelBtn.disabled = true
         if (userMessageEl.loadingDots) {
             userMessageEl.loadingDots.remove()
             userMessageEl.loadingDots = null
@@ -59,10 +57,8 @@ export async function handleChartButtonClick() {
 
     try {
         const response = await Backend.chartChat(message, markdown, model, pattern, abortController)
-        userMessageEl.cancelBtn.disabled = true
         Msg.addBotMessage(response, userMessageEl, true)
     } catch (error) {
-        userMessageEl.cancelBtn.disabled = true
         if (userMessageEl.loadingDots) {
             userMessageEl.loadingDots.remove()
             userMessageEl.loadingDots = null
