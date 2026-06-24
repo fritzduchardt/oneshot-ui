@@ -310,6 +310,8 @@ function convertNonCodeMarkdownToHtml(content, mdPath) {
     content = content.replace(/\[([^\]]+)\]\(([^)]+md)\)/g, '<a target="_blank" title="$2" class="md" href="$2">$1</a>')
 
     content = content
+        // strip empty line block quotes
+        .replace(/^\s*>\s*$/gm, '')
         // regex: h6 heading
         .replace(/^###### (.+)$/gm, '<h6>$1</h6>')
         // regex: h5 heading
@@ -349,7 +351,7 @@ function convertNonCodeMarkdownToHtml(content, mdPath) {
         // regex: wrap consecutive <li value="n"> into <ol>
         .replace(/(<li value="\d+">[^]*?<\/li>\n?)+/g, (match) => `<ol>${match}</ol>`)
         // regex: blockquote
-        .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+        .replace(/^>\s*(.+)$/gm, '<blockquote>$1</blockquote>')
         // regex: horizontal rule
         .replace(/^---$/gm, '<hr>')
         // regex: links

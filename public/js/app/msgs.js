@@ -95,6 +95,18 @@ function addMarkdownLinks(botMessage) {
     })
 }
 
+function initChartLinks(parent) {
+    const chartLinks = parent.querySelectorAll(".chart-link")
+    chartLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            Ui.messageTextarea.value = link.innerHTML
+            Ui.patternDropdown.value = "grep"
+            $("#pattern").val("grep").trigger("change")
+            Ui.chartButton.click()
+        })
+    })
+}
+
 export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
 
     const response = Html.convertMarkdownToHtml(plain_response)
@@ -134,15 +146,7 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
             Ui.chatButton.click()
         })
     })
-    const chartLinks = parent.querySelectorAll(".chart-link")
-    chartLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            Ui.messageTextarea.value = link.innerHTML
-            Ui.patternDropdown.value = "grep"
-            $("#pattern").val("grep").trigger("change")
-            Ui.chartButton.click()
-        })
-    })
+    initChartLinks(parent)
     parent.append(actionButtons)
 
     // add copy buttons inside each code block
@@ -195,6 +199,7 @@ export function addNotification(message, image, basepath) {
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
+    initChartLinks(parent)
     return parent
 }
 
