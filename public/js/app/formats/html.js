@@ -181,7 +181,8 @@ function convertCallouts(content, calloutBlocks) {
     while (i < lines.length) {
         const line = lines[i]
         // Check if this line starts a callout: > [!type] optional title
-        const calloutMatch = line.match(/^>\s*\[!(\w+)\](.*)$/)
+        let callOutRegex = /^>\s*\[!(\w+)\](.*)$/
+        const calloutMatch = line.match(callOutRegex)
         if (calloutMatch) {
             const typeOriginal = calloutMatch[1]
             const type = typeOriginal.toLowerCase()
@@ -198,7 +199,7 @@ function convertCallouts(content, calloutBlocks) {
                     continue
                 }
                 // Only lines that start with "> " (including the space) are part of callout body
-                if (bodyLine.startsWith('>')) {
+                if (bodyLine.startsWith('>') && !bodyLine.match(callOutRegex)) {
                     // Strip leading "> " and one optional space (already consumed by startsWith)
                     const stripped = bodyLine.slice(1).trim()
                     bodyLines.push(stripped)
