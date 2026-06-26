@@ -1,28 +1,24 @@
 import * as Config from '../../config.js'
 
-export function convertMarkdownToHtml(markdown, skipTrimFilename, skipParseMetadata, skipCode, mdPath) {
+export function convertMarkdownToHtml(markdown, mdPath) {
 
     // strip spaces
     let content = markdown.trim()
 
     // parse metadata
     let metadata
-    if (!skipParseMetadata) {
-        let res = parseMetadata(content)
-        content = res.content
-        metadata = res.metadata
-    }
+    let res = parseMetadata(content)
+    content = res.content
+    metadata = res.metadata
 
     // trim filename
     let filename = ''
-    if (!skipTrimFilename) {
-        const ret = trimFilename(content)
-        content = ret.markdown
-        filename = ret.filename
-    }
+    const ret = trimFilename(content)
+    content = ret.markdown
+    filename = ret.filename
 
     // convert regular html links to open in new tab
-    let html = convertContentToHtml(content, skipCode, mdPath)
+    let html = convertContentToHtml(content, mdPath)
 
     return {
         html: html,
@@ -174,7 +170,7 @@ const CALLOUT_ICONS = {
 
 // Changed convertCallouts to manual line-by-line parsing to replace regex-based approach
 // Callout html snippets are stored as placeholders to prevent convertContentToHtml from processing them
-function convertCallouts(content, calloutBlocks) {
+function convertCallouts(content, calloutBlocks, mdPath) {
     const lines = content.split('\n')
     const resultLines = []
     let i = 0
@@ -214,7 +210,7 @@ function convertCallouts(content, calloutBlocks) {
             }
             const bodyText = bodyLines.join('\n').trim()
             // Build callout html and store as placeholder to avoid re-processing by convertContentToHtml
-            const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${title}</div><div class="callout-body">${convertContentToHtml(bodyText)}</div></div>`
+            const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${title}</div><div class="callout-body">${convertContentToHtml(bodyText, mdPath)}</div></div>`
             const placeholder = `@@CALLOUTBLOCK${calloutBlocks.length}@@`
             calloutBlocks.push(html)
             resultLines.push(placeholder)
@@ -227,33 +223,30 @@ function convertCallouts(content, calloutBlocks) {
     return resultLines.join('\n')
 }
 
-function convertContentToHtml(content, skipCode, mdPath) {
+function convertContentToHtml(content, mdPath) {
 
     let codeBlocks = []
     let inlineCodeBlocks = []
     let chartBlocks = []
-    // callout blocks stored here to prevent their html from being re-processed
     let calloutBlocks = []
-    if (!skipCode) {
-        // regex: match fenced code blocks and HTML <pre><code> blocks
-        content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
-            let htmlBlock = match
-            if (match.startsWith('```')) {
-                const langAttr = lang ? ` class="language-${lang}"` : ''
-                code = code.trimEnd()
-                htmlBlock = `<pre><code${langAttr}>${escapeHtml(code)}</code></pre>`
-            }
-            const placeholder = `@@CODEBLOCK${codeBlocks.length}@@`
-            codeBlocks.push(htmlBlock)
-            return placeholder
-        })
+    // regex: match fenced code blocks and HTML <pre><code> blocks
+    content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
+        let htmlBlock = match
+        if (match.startsWith('```')) {
+            const langAttr = lang ? ` class="language-${lang}"` : ''
+            code = code.trimEnd()
+            htmlBlock = `<pre><code${langAttr}>${escapeHtml(code)}</code></pre>`
+        }
+        const placeholder = `@@CODEBLOCK${codeBlocks.length}@@`
+        codeBlocks.push(htmlBlock.trim())
+        return placeholder
+    })
 
-        content = content.replace(/`([^`]+)`/g, (match, code) => {
-            const placeholder = `@@INLINECODEPROTECT${inlineCodeBlocks.length}@@`
-            inlineCodeBlocks.push(`<code>${escapeHtml(code)}</code>`)
-            return placeholder
-        })
-    }
+    content = content.replace(/`([^`]+)`/g, (match, code) => {
+        const placeholder = `@@INLINECODEPROTECT${inlineCodeBlocks.length}@@`
+        inlineCodeBlocks.push(`<code>${escapeHtml(code)}</code>`)
+        return placeholder
+    })
 
     content = content.replace(/<!--\s*CHART\s*-->([\s\S]*?)<!--\s*CHART\s*-->/g, (match, chartHtml) => {
         const placeholder = `@@CHARTBLOCK${chartBlocks.length}@@`
@@ -263,17 +256,13 @@ function convertContentToHtml(content, skipCode, mdPath) {
 
     content = convertHtmlLinksToNewTab(content)
     content = escapeRawHtmlTags(content)
-    // pass calloutBlocks array so generated html snippets are stored as placeholders
-    content = convertCallouts(content, calloutBlocks)
+    content = convertCallouts(content, calloutBlocks, mdPath)
     content = convertMarkdownTablesToHtml(content)
     content = convertNonCodeMarkdownToHtml(content, mdPath)
-    if (!skipCode) {
-        content = restoreCodeBlocks(content, codeBlocks)
-        content = restoreInlineCodeBlocks(content, inlineCodeBlocks)
-    }
     content = restoreChartBlocks(content, chartBlocks)
-    // restore callout html snippets after all other processing is done
     content = restoreCalloutBlocks(content, calloutBlocks)
+    content = restoreCodeBlocks(content, codeBlocks)
+    content = restoreInlineCodeBlocks(content, inlineCodeBlocks)
 
     return content
 }
