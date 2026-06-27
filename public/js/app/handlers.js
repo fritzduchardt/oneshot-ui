@@ -85,14 +85,21 @@ export function handleToggleNotificationsButtonClick() {
 }
 
 export function handleShowPattern() {
-    const pattern_name = Ui.patternDropdown.value
-    if (pattern_name) {
-        Backend.getPattern(pattern_name)
+    let patternName = Ui.patternDropdown.value
+    if (patternName === "grep") {
+        const prompt = Ui.messageTextarea.value
+        let indexOfColon = prompt.indexOf(":")
+        if (indexOfColon > -1) {
+            patternName = prompt.substring(0, indexOfColon)
+        }
+    }
+    if (patternName) {
+        Backend.getPattern(patternName)
             .then((pattern) => {
-                Msg.addBotMessageForPattern(pattern_name, pattern)
+                Msg.addBotMessageForPattern(patternName, pattern)
             })
     }
-    Store.setPattern(pattern_name)
+    Store.setPattern(patternName)
 }
 
 export function handleShowMarkdown() {
