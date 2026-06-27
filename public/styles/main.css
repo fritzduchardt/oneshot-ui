@@ -626,9 +626,12 @@ pre {
     box-sizing: border-box;
 }
 
+/* Improved code block rendering to prevent first-line indentation issues by resetting margin and setting display to block */
 pre code {
     padding: 0;
     border: 0;
+    margin: 0;
+    display: block;
 }
 
 /*Callout Blocks - obsidian-style [!type] callouts*/

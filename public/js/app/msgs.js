@@ -5,6 +5,7 @@ import * as Text from "./formats/text.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
+import {listPatterns} from "./backend.js"
 
 // Improved code: replaced Cancel button with Cancel-Delete button and renamed it to Cancel
 export function addUserMessage(message, metadata, abortController, withMcp) {
@@ -279,6 +280,10 @@ function createStoreButton(filename, markdown) {
             .then(() => {
                 btn.classList.remove("button-loading")
                 btn.innerText = `Stored: ${filename}`
+                Backend.listMarkdowns()
+                    .then(markdown => {
+                        Dom.loadDropdown(markdown, Ui.markdownDropdown, Store.getMarkdown(), "None")
+                    })
             })
             .catch(err => {
                 // restore button state on error so user can retry
@@ -286,21 +291,20 @@ function createStoreButton(filename, markdown) {
                 btn.disabled = false
                 console.error('Failed to store markdown', err)
             })
-
-        Backend.listMarkdowns()
-            .then(markdown => {
-                Dom.loadDropdown(markdown, Ui.markdownDropdown, Store.getMarkdown(), "None")
-            })
     })
     return btn;
 }
 
 function createDeletePatternButton(pattern) {
-    const btn = Dom.createButton( "action-button", "Delete")
+    const btn = Dom.createButton( "action-button", "Delete Pattern")
     btn.addEventListener('click', () => {
         Backend.deletePattern(pattern)
             .then(() => {
                 btn.disabled = true
+                Backend.listPatterns()
+                    .then(pattern => {
+                        Dom.loadDropdown(pattern, Ui.patternDropdown, "grep", "grep")
+                    })
             })
             .catch(err => console.error('Failed to delete pattern', err))
     })
@@ -313,6 +317,10 @@ function createDeleteMarkdownButton(path) {
         Backend.deleteMarkdowns(path)
             .then(() => {
                 btn.disabled = true
+                Backend.listMarkdowns()
+                    .then(markdown => {
+                        Dom.loadDropdown(markdown, Ui.markdownDropdown, Store.getMarkdown(), "None")
+                    })
             })
             .catch(err => console.error('Failed to delete markdown', err))
     })
