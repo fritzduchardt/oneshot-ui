@@ -1,6 +1,6 @@
 import * as Config from '../../config.js'
 
-export function convertMarkdownToHtml(markdown, mdPath) {
+export function convertMarkdownFileToHtml(markdown, mdPath) {
 
     // strip spaces
     let content = markdown.trim()
@@ -28,9 +28,55 @@ export function convertMarkdownToHtml(markdown, mdPath) {
     }
 }
 
+
+function convertContentToHtml(content, mdPath) {
+
+    let codeBlocks = []
+    let inlineCodeBlocks = []
+    let chartBlocks = []
+    let calloutBlocks = []
+    // regex: match fenced code blocks and HTML <pre><code> blocks
+    content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
+        let htmlBlock = match
+        if (match.startsWith('```')) {
+            const langAttr = lang ? ` class="language-${lang}"` : ''
+            code = code.trimEnd()
+            htmlBlock = `<pre><code${langAttr}>${escapeHtml(code)}</code></pre>`
+        }
+        const placeholder = `@@CODEBLOCK${codeBlocks.length}@@`
+        codeBlocks.push(htmlBlock.trim())
+        return placeholder
+    })
+
+    content = content.replace(/`([^`]+)`/g, (match, code) => {
+        const placeholder = `@@INLINECODEPROTECT${inlineCodeBlocks.length}@@`
+        inlineCodeBlocks.push(`<code>${escapeHtml(code)}</code>`)
+        return placeholder
+    })
+
+    content = content.replace(/<!--\s*CHART\s*-->([\s\S]*?)<!--\s*CHART\s*-->/g, (match, chartHtml) => {
+        const placeholder = `@@CHARTBLOCK${chartBlocks.length}@@`
+        chartBlocks.push(chartHtml)
+        return placeholder
+    })
+
+    content = convertCallouts(content, calloutBlocks, mdPath)
+    content = convertHtmlLinksToNewTab(content)
+    content = escapeRawHtmlTags(content)
+    content = convertMarkdownTablesToHtml(content)
+    content = convertMarkdownCodeToHtml(content, mdPath)
+    content = restoreCalloutBlocks(content, calloutBlocks)
+    content = restoreChartBlocks(content, chartBlocks)
+    content = restoreCodeBlocks(content, codeBlocks)
+    content = restoreInlineCodeBlocks(content, inlineCodeBlocks)
+
+    return content
+}
+
+
 function trimFilename(markdown) {
     // regex: match leading FILENAME header line
-    const filenamePattern = /^\s*FILENAME:\s+(.*?)\n/
+    const filenamePattern = /^\s*#*\s*FILENAME:\s+(.*?)\n/
     const filenameMatch = markdown.match(filenamePattern)
     let filename = ''
     if (filenameMatch) {
@@ -210,7 +256,7 @@ function convertCallouts(content, calloutBlocks, mdPath) {
             }
             const bodyText = bodyLines.join('\n').trim()
             // Build callout html and store as placeholder to avoid re-processing by convertContentToHtml
-            const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${title}</div><div class="callout-body">${convertContentToHtml(bodyText, mdPath)}</div></div>`
+            const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${convertMarkdownCodeToHtml(title)}</div><div class="callout-body">${convertMarkdownCodeToHtml(bodyText, mdPath)}</div></div>`
             const placeholder = `@@CALLOUTBLOCK${calloutBlocks.length}@@`
             calloutBlocks.push(html)
             resultLines.push(placeholder)
@@ -223,53 +269,9 @@ function convertCallouts(content, calloutBlocks, mdPath) {
     return resultLines.join('\n')
 }
 
-function convertContentToHtml(content, mdPath) {
-
-    let codeBlocks = []
-    let inlineCodeBlocks = []
-    let chartBlocks = []
-    let calloutBlocks = []
-    // regex: match fenced code blocks and HTML <pre><code> blocks
-    content = content.replace(/```(\w+)?\n([\s\S]*?)```|<pre><code[\s\S]*?<\/code><\/pre>/g, (match, lang, code) => {
-        let htmlBlock = match
-        if (match.startsWith('```')) {
-            const langAttr = lang ? ` class="language-${lang}"` : ''
-            code = code.trimEnd()
-            htmlBlock = `<pre><code${langAttr}>${escapeHtml(code)}</code></pre>`
-        }
-        const placeholder = `@@CODEBLOCK${codeBlocks.length}@@`
-        codeBlocks.push(htmlBlock.trim())
-        return placeholder
-    })
-
-    content = content.replace(/`([^`]+)`/g, (match, code) => {
-        const placeholder = `@@INLINECODEPROTECT${inlineCodeBlocks.length}@@`
-        inlineCodeBlocks.push(`<code>${escapeHtml(code)}</code>`)
-        return placeholder
-    })
-
-    content = content.replace(/<!--\s*CHART\s*-->([\s\S]*?)<!--\s*CHART\s*-->/g, (match, chartHtml) => {
-        const placeholder = `@@CHARTBLOCK${chartBlocks.length}@@`
-        chartBlocks.push(chartHtml)
-        return placeholder
-    })
-
-    content = convertHtmlLinksToNewTab(content)
-    content = escapeRawHtmlTags(content)
-    content = convertCallouts(content, calloutBlocks, mdPath)
-    content = convertMarkdownTablesToHtml(content)
-    content = convertNonCodeMarkdownToHtml(content, mdPath)
-    content = restoreChartBlocks(content, chartBlocks)
-    content = restoreCalloutBlocks(content, calloutBlocks)
-    content = restoreCodeBlocks(content, codeBlocks)
-    content = restoreInlineCodeBlocks(content, inlineCodeBlocks)
-
-    return content
-}
-
 function escapeRawHtmlTags(content) {
     return content.replace(/<\/?[a-zA-Z][^>]*>/g, (tag) => {
-        // preserve callout divs and spans generated by convertCallouts, and anchor tags
+        // preserve links
         if (/^<\/?a(\s|>)/.test(tag)) return tag
         return tag
             .replace(/&/g, '&amp;')
@@ -287,7 +289,7 @@ function convertHtmlLinksToNewTab(html) {
     })
 }
 
-function convertNonCodeMarkdownToHtml(content, mdPath) {
+function convertMarkdownCodeToHtml(content, mdPath) {
     if (mdPath) {
         if (mdPath.endsWith('.md')) {
             mdPath = getMarkdownBasePath(mdPath)

@@ -38,7 +38,7 @@ export function addBotMessageForPattern(patternName, patternContent) {
     const parent = Dom.createDivWithCloseButton("bot-message");
     Ui.messagesDiv.append(parent)
 
-    const response = Html.convertMarkdownToHtml(patternContent)
+    const response = Html.convertMarkdownFileToHtml(patternContent)
 
     let metadata = new Map()
     metadata.set("pattern", patternName)
@@ -59,7 +59,7 @@ export function addBotMessageForMarkdown(mdPath, md) {
     const parent = Dom.createDivWithCloseButton("bot-message");
     Ui.messagesDiv.append(parent)
 
-    const response = Html.convertMarkdownToHtml(md, mdPath)
+    const response = Html.convertMarkdownFileToHtml(md, mdPath)
 
     let metadata = response.metadata
     metadata.set("path", mdPath)
@@ -106,7 +106,7 @@ function initChartLinks(parent) {
 
 export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
 
-    const response = Html.convertMarkdownToHtml(plain_response)
+    const response = Html.convertMarkdownFileToHtml(plain_response)
 
     // remove loading dots from user message if reference provided
     if (userMessageEl && userMessageEl.loadingDots) {
@@ -176,7 +176,7 @@ export function addNotification(message, image, basepath) {
     }
 
     let parent = Dom.createDivWithCloseButton("bot-message notification");
-    let response = Html.convertMarkdownToHtml(
+    let response = Html.convertMarkdownFileToHtml(
         message, basepath
     )
     if (response.metadata && response.metadata.size > 0) {
