@@ -36,6 +36,21 @@ export async function handleSendButtonClick(withMcp) {
     History.default.addMessage(message)
 }
 
+// Added: Helper to find the bot message currently visible in the viewport (closest to top)
+function getVisibleBotMessage() {
+    const botMessages = document.querySelectorAll('.bot-message')
+    if (botMessages.length === 0) return null
+
+    const cRect = Ui.messagesDiv.getBoundingClientRect()
+    botMessages.forEach((msg) => {
+        const rect = msg.getBoundingClientRect()
+        if (rect.bottom > cRect.top && rect.bottom < cRect.bottom) {
+            return msg
+        }
+    })
+    return Ui.messagesDiv
+}
+
 export async function handleChartButtonClick() {
     const message = Ui.messageTextarea.value
     const model = Ui.modelDropdown.value
@@ -50,7 +65,9 @@ export async function handleChartButtonClick() {
         return
     }
     const abortController = new AbortController()
-    const userMessageEl = Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern]]), abortController, false)
+    const userMessageEl = Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern]]), abortController, false, false)
+    const visibleBotMsg = getVisibleBotMessage()
+    visibleBotMsg.append(userMessageEl)
     Store.setMessage(message)
     Store.setModel(model)
     Store.setPattern(pattern)

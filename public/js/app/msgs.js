@@ -8,7 +8,7 @@ import * as Sound from './sound.js'
 import {listPatterns} from "./backend.js"
 
 // Improved code: replaced Cancel button with Cancel-Delete button and renamed it to Cancel
-export function addUserMessage(message, metadata, abortController, withMcp) {
+export function addUserMessage(message, metadata, abortController, withMcp, insert=true) {
     let parent = Dom.createDivWithCloseButton("user-message");
 
     if (metadata.size > 0) {
@@ -27,9 +27,10 @@ export function addUserMessage(message, metadata, abortController, withMcp) {
     const dots = Dom.createDiv("loading-dots user-message-loading", "<span></span><span></span><span></span>");
     parent.loadingDots = dots
     parent.append(dots)
-
-    Ui.messagesDiv.append(parent)
-    scrollMessagesToBottom()
+    if (insert) {
+        Ui.messagesDiv.append(parent)
+        scrollMessagesToBottom()
+    }
     return parent
 }
 
