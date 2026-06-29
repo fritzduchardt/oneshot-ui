@@ -153,6 +153,10 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.18);
 }
 
+.user-message.chart-message {
+    width: 100%;
+}
+
 .user-message {
     width: 75%;
     max-width: 75%;

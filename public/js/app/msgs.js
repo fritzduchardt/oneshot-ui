@@ -105,7 +105,7 @@ function initChartLinks(parent) {
     })
 }
 
-export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
+export function addBotMessage(plain_response, userMessageEl, hideCopy= false, insert = true) {
 
     const response = Html.convertMarkdownFileToHtml(plain_response)
 
@@ -116,7 +116,9 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
     }
 
     const parent = Dom.createDivWithCloseButton("bot-message");
-    Ui.messagesDiv.append(parent)
+    if (insert) {
+        Ui.messagesDiv.append(parent)
+    }
     if (response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
     }
@@ -168,6 +170,7 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false) {
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
+    return parent
 }
 
 export function addNotification(message, image, basepath) {

@@ -36,20 +36,6 @@ export async function handleSendButtonClick(withMcp) {
     History.default.addMessage(message)
 }
 
-// Added: Helper to find the bot message currently visible in the viewport (closest to top)
-function getVisibleBotMessage() {
-    const botMessages = document.querySelectorAll('.bot-message')
-    if (botMessages.length === 0) return null
-
-    const cRect = Ui.messagesDiv.getBoundingClientRect()
-    botMessages.forEach((msg) => {
-        const rect = msg.getBoundingClientRect()
-        if (rect.bottom > cRect.top && rect.bottom < cRect.bottom) {
-            return msg
-        }
-    })
-    return Ui.messagesDiv
-}
 
 export async function handleChartButtonClick() {
     const message = Ui.messageTextarea.value
@@ -74,7 +60,13 @@ export async function handleChartButtonClick() {
 
     try {
         const response = await Backend.chartChat(message, markdown, model, pattern, abortController)
-        Msg.addBotMessage(response, userMessageEl, true)
+        const botMessage = Msg.addBotMessage(response, userMessageEl, true, false)
+        if (visibleBotMsg === Ui.messagesDiv) {
+            Ui.messagesDiv.append(botMessage)
+        } else {
+            userMessageEl.classList.add("chat-message")
+            userMessageEl.append(botMessage)
+        }
     } catch (error) {
         if (userMessageEl.loadingDots) {
             userMessageEl.loadingDots.remove()
@@ -82,6 +74,44 @@ export async function handleChartButtonClick() {
         }
     }
     History.default.addMessage(message)
+}
+
+// Improved code: fixed getVisibleBotMessage so it actually returns the first visible bot message instead of always returning Ui.messagesDiv
+function getVisibleBotMessage() {
+    const botMessages = document.querySelectorAll('.bot-message')
+    if (botMessages.length === 0) return Ui.messagesDiv
+
+    const cRect = Ui.messagesDiv.getBoundingClientRect()
+    let lastMessage = null
+    // check for window that is fully visible
+    for (const msg of botMessages) {
+        const rect = msg.getBoundingClientRect()
+        if (rect.top > cRect.top && rect.bottom < cRect.bottom) {
+            lastMessage = msg
+        }
+    }
+    // check for window that has upper border visible
+    if (lastMessage === null) {
+        for (const msg of botMessages) {
+            const rect = msg.getBoundingClientRect()
+            if (rect.top > cRect.top && rect.top < cRect.bottom) {
+                lastMessage = msg
+            }
+        }
+    }
+    // check for window that has lower border visible
+    if (lastMessage === null) {
+        for (const msg of botMessages) {
+            const rect = msg.getBoundingClientRect()
+            if (rect.bottom > cRect.top && rect.bottom < cRect.bottom) {
+                lastMessage = msg
+            }
+        }
+    }
+    if (lastMessage === null || lastMessage ===  botMessages[botMessages.length - 1]) {
+        return Ui.messagesDiv
+    }
+    return lastMessage
 }
 
 export function handleToggleSoundButtonClick() {
