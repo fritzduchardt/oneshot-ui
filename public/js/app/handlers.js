@@ -82,36 +82,14 @@ function getVisibleBotMessage() {
     if (botMessages.length === 0) return Ui.messagesDiv
 
     const cRect = Ui.messagesDiv.getBoundingClientRect()
-    let lastMessage = null
-    // check for window that is fully visible
+    // Return the first bot message that is at least partially visible in the messages container
     for (const msg of botMessages) {
         const rect = msg.getBoundingClientRect()
-        if (rect.top > cRect.top && rect.bottom < cRect.bottom) {
-            lastMessage = msg
+        if (rect.bottom > cRect.top) {
+            return msg
         }
     }
-    // check for window that has upper border visible
-    if (lastMessage === null) {
-        for (const msg of botMessages) {
-            const rect = msg.getBoundingClientRect()
-            if (rect.top > cRect.top && rect.top < cRect.bottom) {
-                lastMessage = msg
-            }
-        }
-    }
-    // check for window that has lower border visible
-    if (lastMessage === null) {
-        for (const msg of botMessages) {
-            const rect = msg.getBoundingClientRect()
-            if (rect.bottom > cRect.top && rect.bottom < cRect.bottom) {
-                lastMessage = msg
-            }
-        }
-    }
-    if (lastMessage === null || lastMessage ===  botMessages[botMessages.length - 1]) {
-        return Ui.messagesDiv
-    }
-    return lastMessage
+    return Ui.messagesDiv
 }
 
 export function handleToggleSoundButtonClick() {
