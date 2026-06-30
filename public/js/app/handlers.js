@@ -85,7 +85,7 @@ function getVisibleBotMessage() {
     // Return the first bot message that is at least partially visible in the messages container
     for (const msg of botMessages) {
         const rect = msg.getBoundingClientRect()
-        if (rect.bottom > cRect.top) {
+        if (rect.bottom > cRect.top && rect.bottom - cRect.top > 80) {
             return msg
         }
     }

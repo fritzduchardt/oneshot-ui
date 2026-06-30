@@ -834,8 +834,7 @@ pre code {
 }
 
 .scroll-btn {
-    position: absolute;
-    right: 30px;
+    font-size: 16px;
     z-index: 10;
     width: 22px;
     height: 22px;
@@ -866,10 +865,11 @@ pre code {
 }
 
 .scroll-up {
-    top: 48px;
     padding-bottom: 3px;
 }
 
 .scroll-down {
     bottom: 15px;
+    position: absolute;
+    right: 30px;
 }

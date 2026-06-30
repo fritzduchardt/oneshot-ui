@@ -1,5 +1,5 @@
 // sw.js
-export const APP_VERSION = "v1.3.1";
+export const APP_VERSION = "v1.3.2";
 const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
 const FETCH_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 const STATIC_ASSETS = [
