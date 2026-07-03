@@ -1,7 +1,6 @@
 // sw.js
-export const APP_VERSION = "v1.3.2";
+export const APP_VERSION = "v1.3.3";
 const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
-const FETCH_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 const STATIC_ASSETS = [
     "/index.html",
     "/favicon.ico",
@@ -29,27 +28,10 @@ const STATIC_ASSETS = [
     "https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"
 ];
 
-// wrap fetch with an AbortController-based timeout
-const fetchWithTimeout = (request, timeoutMs = FETCH_TIMEOUT_MS) => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-    // preserve original request options while injecting the abort signal
-    const fetchPromise = fetch(request, { signal: controller.signal });
-
-    return fetchPromise.finally(() => clearTimeout(timeoutId));
-};
-
 self.addEventListener("install", (event) => {
     event.waitUntil((async () => {
         const cache = await caches.open(STATIC_CACHE_NAME);
-        // use fetchWithTimeout for each asset during install
-        await Promise.all(
-            STATIC_ASSETS.map(async (url) => {
-                const response = await fetchWithTimeout(url);
-                await cache.put(url, response);
-            })
-        );
+        await cache.addAll(STATIC_ASSETS);
         await self.skipWaiting();
     })());
 });
@@ -64,17 +46,5 @@ self.addEventListener("activate", (event) => {
                 .map((key) => caches.delete(key))
         );
         await self.clients.claim();
-    })());
-});
-
-// apply timeout to all outgoing fetches intercepted by the service worker
-self.addEventListener("fetch", (event) => {
-    event.respondWith((async () => {
-        // check cache first
-        const cached = await caches.match(event.request);
-        if (cached) return cached;
-
-        // fall back to network with timeout
-        return fetchWithTimeout(event.request);
     })());
 });
