@@ -255,8 +255,10 @@ function convertCallouts(content, calloutBlocks, mdPath) {
                 }
             }
             const bodyText = bodyLines.join('\n').trim()
+            let bodyHtml = convertMarkdownTablesToHtml(bodyText)
+            bodyHtml = convertMarkdownCodeToHtml(bodyHtml, mdPath)
             // Build callout html and store as placeholder to avoid re-processing by convertContentToHtml
-            const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${convertMarkdownCodeToHtml(title)}</div><div class="callout-body">${convertMarkdownCodeToHtml(bodyText, mdPath)}</div></div>`
+            const html = `<div class="callout callout-${type}"><div class="callout-title"><span class="callout-icon">${icon}</span>${convertMarkdownCodeToHtml(title)}</div><div class="callout-body">${bodyHtml}</div></div>`
             const placeholder = `@@CALLOUTBLOCK${calloutBlocks.length}@@`
             calloutBlocks.push(html)
             resultLines.push(placeholder)

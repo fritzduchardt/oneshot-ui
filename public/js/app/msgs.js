@@ -5,7 +5,6 @@ import * as Text from "./formats/text.js"
 import * as Backend from './backend.js'
 import * as Store from "./store.js"
 import * as Sound from './sound.js'
-import {listPatterns} from "./backend.js"
 
 // Improved code: replaced Cancel button with Cancel-Delete button and renamed it to Cancel
 export function addUserMessage(message, metadata, abortController, withMcp, insert=true) {
@@ -237,6 +236,14 @@ export function scrollToTop(domElement) {
     }
     domElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+export function scrollToBottom(domElement) {
+    if (!domElement) {
+        return
+    }
+    domElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
 
 
 // Action Buttons

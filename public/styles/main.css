@@ -854,11 +854,6 @@ pre code {
     cursor: not-allowed;
 }
 
-@media (max-width: 800px) {
-    .scroll-btn {
-        right: 16px;
-    }
-}
 
 .scroll-btn:hover:not(:disabled) {
     background: var(--button-background-hover);
@@ -872,4 +867,10 @@ pre code {
     bottom: 15px;
     position: absolute;
     right: 30px;
+}
+
+@media (max-width: 800px) {
+    .scroll-down {
+        right: 16px;
+    }
 }

@@ -153,22 +153,25 @@ export function handleMessageScroll(dir) {
         }
     })
     let currentBotMessageIndex = bestIndex
-
+    let onLastMessage = false
     if (dir === "down") {
-        currentBotMessageIndex = Math.min(currentBotMessageIndex + 1, botMessages.length - 1)
+        if (bestIndex === botMessages.length - 1) {
+            onLastMessage = true
+        } else {
+            currentBotMessageIndex = Math.min(currentBotMessageIndex + 1, botMessages.length - 1)
+        }
     } else {
         currentBotMessageIndex = Math.max(currentBotMessageIndex - 1, 0)
     }
+    console.log(`Current index: ${currentBotMessageIndex}`)
     const targetMessage = botMessages[currentBotMessageIndex]
     if (targetMessage) {
-        Msg.scrollToTop(targetMessage)
-        botMessages.forEach((msg, idx) => {
-            if (idx === currentBotMessageIndex) {
-                msg.classList.add('highlighted-bot-message')
-            } else {
-                msg.classList.remove('highlighted-bot-message')
-            }
-        })
-        console.log(`Navigated to bot message, index: ${currentBotMessageIndex}`)
+        if (onLastMessage) {
+            console.log("bottom")
+            Msg.scrollToBottom(targetMessage)
+        } else {
+            console.log("top")
+            Msg.scrollToTop(targetMessage)
+        }
     }
 }
