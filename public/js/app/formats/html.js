@@ -262,7 +262,6 @@ function convertCallouts(content, calloutBlocks, mdPath) {
             const placeholder = `@@CALLOUTBLOCK${calloutBlocks.length}@@`
             calloutBlocks.push(html)
             resultLines.push(placeholder)
-            // i is now positioned after the last consumed body line (or at the break line)
         } else {
             resultLines.push(line)
             i++

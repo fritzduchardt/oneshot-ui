@@ -154,6 +154,14 @@ export function handleMessageScroll(dir) {
     })
     let currentBotMessageIndex = bestIndex
     let onLastMessage = false
+    let targetMessage = botMessages[currentBotMessageIndex]
+    const rect = targetMessage.getBoundingClientRect()
+    const cRect = Ui.messagesDiv.getBoundingClientRect()
+    // scroll to top of current message since it is scrolled to the bottom
+    if (Math.abs(cRect.bottom - rect.bottom) < 10) {
+        Msg.scrollToTop(targetMessage)
+        return
+    }
     if (dir === "down") {
         if (bestIndex === botMessages.length - 1) {
             onLastMessage = true
@@ -163,15 +171,10 @@ export function handleMessageScroll(dir) {
     } else {
         currentBotMessageIndex = Math.max(currentBotMessageIndex - 1, 0)
     }
-    console.log(`Current index: ${currentBotMessageIndex}`)
-    const targetMessage = botMessages[currentBotMessageIndex]
-    if (targetMessage) {
-        if (onLastMessage) {
-            console.log("bottom")
-            Msg.scrollToBottom(targetMessage)
-        } else {
-            console.log("top")
-            Msg.scrollToTop(targetMessage)
-        }
+    targetMessage = botMessages[currentBotMessageIndex]
+    if (onLastMessage) {
+        Msg.scrollToBottom(targetMessage)
+    } else {
+        Msg.scrollToTop(targetMessage)
     }
 }
