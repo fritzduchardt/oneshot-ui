@@ -1,7 +1,6 @@
 import * as Ui from "./ui.js"
 import * as Handlers from "./handlers.js"
 import MessageHistory from "./history.js"
-import {handleMessageScroll} from "./handlers.js"
 
 export function registerKeyListener() {
     const keyPressed = new Set()

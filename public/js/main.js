@@ -45,7 +45,9 @@ async function initializeApp() {
     registerButtonClickListener('show-pattern', Handlers.handleShowPattern)
     registerButtonClickListener('show-markdown', Handlers.handleShowMarkdown)
     registerButtonClickListener('button-scroll-up', () => Handlers.handleMessageScroll("up"))
+    registerButtonDoubleClickListener('button-scroll-up', () => Handlers.handleMessageScroll("top"))
     registerButtonClickListener('button-scroll-down', () => Handlers.handleMessageScroll("down"))
+    registerButtonDoubleClickListener('button-scroll-down', () => Handlers.handleMessageScroll("bottom"))
     registerErrorHandler()
 
     // SSE stream listener - connects to server-sent events endpoint and publishes incoming events as messages
@@ -67,6 +69,17 @@ function registerButtonClickListener(buttonId, handler) {
     }
 
     button.addEventListener('click', handler)
+}
+
+function registerButtonDoubleClickListener(buttonId, handler) {
+    const button = document.getElementById(buttonId)
+
+    if (!button) {
+        console.debug(`button ${buttonId} not found`)
+        return
+    }
+
+    button.addEventListener('dblclick', handler)
 }
 
 function registerFocusListener() {
@@ -132,6 +145,7 @@ function registerSseListener() {
     eventSource.addEventListener('error', (event) => {
         // log SSE connection errors without showing error messages for routine reconnects
         console.warn('SSE stream error, connection may be retrying', event)
+        window.setTimeout(registerSseListener, 5000)
     })
 
     eventSource.addEventListener('open', () => {

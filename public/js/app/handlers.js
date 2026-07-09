@@ -139,8 +139,18 @@ export function handleShowMarkdown() {
 }
 
 export function handleMessageScroll(dir) {
+
+
     const botMessages = document.querySelectorAll('.bot-message')
     if (botMessages.length === 0) return
+    if (dir === "top") {
+        Msg.scrollToTop(botMessages[0])
+        return
+    }
+    if (dir === "bottom") {
+        Msg.scrollToBottom(botMessages[botMessages.length - 1])
+        return
+    }
 
     let bestIndex = 0
     let minDistance = Infinity
