@@ -61,8 +61,10 @@ function convertContentToHtml(content, mdPath) {
     })
 
     content = convertCallouts(content, calloutBlocks, mdPath)
+    // introduced dedicated blockquote conversion to handle multi-line blockquotes and preserve empty lines
     content = convertHtmlLinksToNewTab(content)
     content = escapeRawHtmlTags(content)
+    content = convertBlockquotes(content)
     content = convertMarkdownTablesToHtml(content)
     content = convertMarkdownCodeToHtml(content, mdPath)
     content = restoreCalloutBlocks(content, calloutBlocks)
@@ -290,6 +292,43 @@ function convertHtmlLinksToNewTab(html) {
     })
 }
 
+function convertBlockquotes(content) {
+    const lines = content.split('\n')
+    const result = []
+    let i = 0
+    while (i < lines.length) {
+        const line = lines[i]
+        if (line.startsWith('>')) {
+            const blockLines = []
+            while (i < lines.length && lines[i].startsWith('>')) {
+                blockLines.push(lines[i])
+                i++
+            }
+            const innerLines = blockLines.map(l => {
+                // Remove leading '>' and optional one space
+                if (l.length > 1 && l[1] === ' ') {
+                    return l.substring(2)
+                } else {
+                    return l.substring(1)
+                }
+            })
+            const processedInner = innerLines.map((inner, idx) => {
+                if (inner === '') {
+                    // double newline will become a paragraph break later
+                    return '\n\n'
+                } else {
+                    return inner
+                }
+            }).join('\n')
+            result.push('<blockquote>\n' + processedInner + '\n</blockquote>')
+        } else {
+            result.push(line)
+            i++
+        }
+    }
+    return result.join('\n')
+}
+
 function convertMarkdownCodeToHtml(content, mdPath) {
     if (mdPath) {
         if (mdPath.endsWith('.md')) {
@@ -332,7 +371,7 @@ function convertMarkdownCodeToHtml(content, mdPath) {
         // regex: strikethrough (~~text~~)
         .replace(/~~(.+?)~~/g, '<del>$1</del>')
         // regex: chart links ([[text]])
-        .replace(/\[\[\s*(chart:[\s\S]+?)\]\]/g, '<span class="chart-link">$1</span>')
+        .replace(/\[+\s*(chart:[\s\S]+?)\]+/g, '<span class="chart-link">$1</span>')
         // regex: prompt links ([[text]])
         .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
         // regex: unordered list items
@@ -343,8 +382,6 @@ function convertMarkdownCodeToHtml(content, mdPath) {
         .replace(/^\s*(\d+)\. (.+)$/gm, (_, num, text) => `<li value="${num}">${text}</li>`)
         // regex: wrap consecutive <li value="n"> into <ol>
         .replace(/(<li value="\d+">[^]*?<\/li>\n?)+/g, (match) => `<ol>${match}</ol>`)
-        // regex: blockquote
-        .replace(/^>\s*(.+)$/gm, '<blockquote>$1</blockquote>')
         // regex: horizontal rule
         .replace(/^---$/gm, '<hr>')
         // regex: links

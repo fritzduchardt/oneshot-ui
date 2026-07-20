@@ -1,0 +1,11 @@
+[{
+"id": "001",
+"model": "claude-opus-4-8",
+"summary": "L3Harris wins $955 million U.S. Space Force contract to supply 18 satellites for the Golden Dome missile defense shield.",
+"category": "equity",
+"impact": "up",
+"explanation": "This is a confirmed corporate contract award for L3Harris Technologies (LHX.N), announced after market close. The $955 million deal from the U.S. Space Force is a positive catalyst for LHX stock, as it reflects strong demand for defense and space capabilities under the Golden Dome program. The contract is material but not transformative for a company of L3Harris's size, so the impact is moderately positive. The defense sector may also see a slight positive halo effect. Relevancy is 7 because the news is confirmed, contract value is significant, and it directly affects a specific stock, but it is not a broad market-moving event.",
+"relevancy": "7",
+"tags": "equity, regulatory",
+"chart_link": "[[ chart: get data from alpaca for LHX.N from 2026-07-14 till 2026-07-14. Annotate with Label "last-close" for LHX.N ]]"
+}]

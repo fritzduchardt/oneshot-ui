@@ -173,6 +173,7 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false, in
 }
 
 export function addNotification(message, image, basepath) {
+    console.log("Notification: " + message)
     const notificationsEnabled = localStorage.getItem('notifications_enabled') !== 'false';
     if (!notificationsEnabled) {
         return;
