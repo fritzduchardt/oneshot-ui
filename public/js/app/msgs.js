@@ -315,7 +315,7 @@ function createDeletePatternButton(pattern) {
                 btn.disabled = true
                 Backend.listPatterns()
                     .then(pattern => {
-                        Dom.loadDropdown(pattern, Ui.patternDropdown, "grep", "grep")
+                        Dom.loadDropdown(pattern, Ui.patternDropdown, "grep")
                     })
             })
             .catch(err => console.error('Failed to delete pattern', err))
