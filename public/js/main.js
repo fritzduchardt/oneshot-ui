@@ -167,7 +167,7 @@ async function loadPatterns(selected) {
         .then(() => {
             Backend.listPatterns()
                 .then((patterns) => {
-                    Dom.loadDropdown(patterns, Ui.patternDropdown, selected, selected ? false : "grep")
+                    Dom.loadDropdown(patterns, Ui.patternDropdown, selected ? false : "grep")
                 })
         })
 }

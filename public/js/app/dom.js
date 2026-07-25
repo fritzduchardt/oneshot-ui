@@ -1,8 +1,5 @@
-export function loadDropdown(options, element, selected, none) {
+export function loadDropdown(options, element, selected) {
     let html = ""
-    if (none) {
-        html = `<option value=\"\">${none}</option>`
-    }
 
     html += options
         .map((value) => `<option value="${value}">${value}</option>`)

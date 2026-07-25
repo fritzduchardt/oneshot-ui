@@ -1,5 +1,5 @@
 // sw.js
-export const APP_VERSION = "v1.3.11";
+export const APP_VERSION = "v1.3.12";
 const STATIC_CACHE_NAME = `static-${APP_VERSION}`;
 const DYNAMIC_CACHE_NAME = `dynamic-${APP_VERSION}`;
 const STATIC_ASSETS = [
@@ -34,7 +34,7 @@ self.addEventListener("install", (event) => {
     event.waitUntil((async () => {
         const cache = await caches.open(STATIC_CACHE_NAME);
         // Use allSettled for CDN assets to avoid install failure if some fail
-        const results = await Promise.allSettled(
+        await Promise.allSettled(
             STATIC_ASSETS.map(url => cache.add(url).catch(e => console.warn('Failed to cache', url, e)))
         );
         await self.skipWaiting();
@@ -97,7 +97,7 @@ async function cacheFirst(request) {
             const cache = await caches.open(STATIC_CACHE_NAME);
             // Cache only same-origin or CDN responses
             if (request.url.startsWith(self.location.origin) || request.url.includes('cdn.jsdelivr.net') || request.url.includes('code.jquery.com')) {
-                cache.put(request, networkResponse.clone());
+                await cache.put(request, networkResponse.clone());
             }
         }
         return networkResponse;
@@ -117,7 +117,7 @@ async function networkFirst(request) {
         // Cache successful responses for later offline use
         if (networkResponse.ok) {
             const cache = await caches.open(DYNAMIC_CACHE_NAME);
-            cache.put(request, networkResponse.clone());
+            await cache.put(request, networkResponse.clone());
         }
         return networkResponse;
     } catch (error) {
