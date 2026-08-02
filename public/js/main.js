@@ -20,8 +20,7 @@ async function initializeApp() {
     await loadMessage(Store.getMessage())
     $("#markdown").select2()
     $("#pattern").select2()
-    $("#model").select2({
-    })
+    $("#model").select2()
 
     // keys
     Keys.registerKeyListener()
@@ -174,7 +173,6 @@ async function loadPatterns(selected) {
 
 async function loadMarkdown(selected) {
     const data = await Backend.listMarkdowns()
-    data[data.length] = "weaviate"
     Dom.loadDropdown(data, Ui.markdownDropdown, selected, "None")
 }
 

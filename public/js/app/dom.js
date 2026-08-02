@@ -6,7 +6,10 @@ export function loadDropdown(options, element, selected, noneOption) {
         .join("");
 
     if (noneOption) {
-        html += `<option value=\"\">${noneOption}</option>`
+        html += `<option value=\"${noneOption}\">${noneOption}</option>`
+        if (!selected) {
+            selected = noneOption
+        }
     }
 
     element.innerHTML = html
