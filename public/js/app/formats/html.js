@@ -372,6 +372,7 @@ function convertMarkdownCodeToHtml(content, mdPath) {
         .replace(/~~(.+?)~~/g, '<del>$1</del>')
         // regex: chart links ([[text]])
         .replace(/\[+\s*(chart:[\s\S]+?)\]+/g, '<span class="chart-link">$1</span>')
+        .replace(/\[.*?\]\((chart:[\s\S]+?)\)/g, '<span class="chart-link">$1</span>')
         // regex: prompt links ([[text]])
         .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
         // regex: unordered list items
