@@ -866,11 +866,5 @@ pre code {
 .scroll-down {
     bottom: 15px;
     position: absolute;
-    right: 30px;
-}
-
-@media (max-width: 800px) {
-    .scroll-down {
-        right: 16px;
-    }
+    right: 16px;
 }

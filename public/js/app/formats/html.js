@@ -164,7 +164,7 @@ function convertMarkdownTablesToHtml(content) {
         const headerCells = parseColumns(headerRow)
             .map((cell, i) => {
                 const styleAttr = buildStyleAttr(cell, i)
-                return `<th${styleAttr}>${cell}</th>`
+                return `<th${styleAttr}>${convertMarkdownCodeToHtml(cell)}</th>`
             })
             .join('')
 
@@ -176,7 +176,7 @@ function convertMarkdownTablesToHtml(content) {
                 const cells = parseColumns(row)
                     .map((cell, i) => {
                         const styleAttr = buildStyleAttr(cell, i)
-                        return `<td${styleAttr}>${cell}</td>`
+                        return `<td${styleAttr}>${convertMarkdownCodeToHtml(cell)}</td>`
                     })
                     .join('')
                 return `<tr>${cells}</tr>`
@@ -371,8 +371,7 @@ function convertMarkdownCodeToHtml(content, mdPath) {
         // regex: strikethrough (~~text~~)
         .replace(/~~(.+?)~~/g, '<del>$1</del>')
         // regex: chart links ([[text]])
-        .replace(/\[+\s*(chart:[\s\S]+?)\]+/g, '<span class="chart-link">$1</span>')
-        .replace(/\[.*?\]\((chart:[\s\S]+?)\)/g, '<span class="chart-link">$1</span>')
+        .replace(/\[(.*?)]\((\w+:[\s\S]+?)\)/g, '<span class="prompt-link"  content="$2">$1</span>')
         // regex: prompt links ([[text]])
         .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
         // regex: unordered list items

@@ -93,10 +93,10 @@ function addMarkdownLinks(botMessage) {
 }
 
 function initChartLinks(parent) {
-    const chartLinks = parent.querySelectorAll(".chart-link")
+    const chartLinks = parent.querySelectorAll(".prompt-link")
     chartLinks.forEach(link => {
         link.addEventListener('click', () => {
-            Ui.messageTextarea.value = link.innerHTML
+            Ui.messageTextarea.value = link.getAttribute("content")
             Ui.patternDropdown.value = "grep"
             $("#pattern").val("grep").trigger("change")
             Ui.chartButton.click()
