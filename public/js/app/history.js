@@ -4,23 +4,38 @@ const MessageHistory = (() => {
 
     let currentIndex = -1;
 
+    // Loads history from localStorage, migrating legacy string entries to object format
     const loadHistory = () => {
         const stored = localStorage.getItem(STORAGE_KEY);
-        return stored ? JSON.parse(stored) : [];
+        const history = stored ? JSON.parse(stored) : [];
+        return history.map((item) => {
+            if (typeof item === 'string') {
+                return { prompt: item, pattern: '', markdown: '', model: '', type: '' };
+            }
+            return item;
+        });
     };
 
     const saveHistory = (history) => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
     };
 
+    // Adds an object with prompt, pattern, markdown, model and type to the history
     const addMessage = (message) => {
-        if (!message || !message.trim()) return;
+        if (!message || typeof message !== 'object' || !message.prompt || !message.prompt.trim()) return;
 
         const history = loadHistory();
+        const lastItem = history[history.length - 1];
 
-        if (history[history.length - 1] === message) return;
+        if (lastItem && lastItem.prompt === message.prompt) return;
 
-        history.push(message);
+        history.push({
+            prompt: message.prompt,
+            pattern: message.pattern || '',
+            markdown: message.markdown || '',
+            model: message.model || '',
+            type: message.type || ''
+        });
 
         if (history.length > MAX_HISTORY_SIZE) {
             history.shift();

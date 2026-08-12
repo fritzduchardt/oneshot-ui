@@ -73,7 +73,6 @@ function convertContentToHtml(content, mdPath) {
     return content
 }
 
-
 function trimFilename(markdown) {
     // regex: match leading FILENAME header line
     const filenamePattern = /^\s*#*\s*FILENAME:\s+(.*?)\n/

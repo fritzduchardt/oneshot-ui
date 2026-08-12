@@ -21,16 +21,21 @@ export function registerKeyListener() {
         } else if (isCtrlArrowDown(keyPressed)) {
             event.preventDefault()
             Handlers.handleMessageScroll("down")
+        // Populates UI elements when reading previous/next history entry
         } else if (isArrowUp(keyPressed)) {
             event.preventDefault()
             const previous = MessageHistory.navigateToPrevious()
             if (previous !== null) {
-                Ui.messageTextarea.value = previous
+                applyHistoryToUi(previous)
             }
         } else if (isArrowDown(keyPressed)) {
             event.preventDefault()
             const next = MessageHistory.navigateToNext()
-            Ui.messageTextarea.value = next !== null ? next : ''
+            if (next !== null) {
+                applyHistoryToUi(next)
+            } else {
+                Ui.messageTextarea.value = ''
+            }
         }
     });
 
@@ -39,6 +44,24 @@ export function registerKeyListener() {
     })
 }
 
+// Writes properties from a history item to UI elements
+function applyHistoryToUi(item) {
+    if (!item) return
+    if (typeof item === 'string') {
+        Ui.messageTextarea.value = item
+        return
+    }
+    Ui.messageTextarea.value = item.prompt || ''
+    if (item.pattern !== undefined) {
+        $("#pattern").val(item.pattern).trigger('change')
+    }
+    if (item.markdown !== undefined) {
+        $("#markdown").val(item.markdown).trigger('change')
+    }
+    if (item.model !== undefined) {
+        $("#model").val(item.model).trigger('change')
+    }
+}
 
 function isCtrlEnter(keyPressed) {
     return keyPressed.has('Enter') && keyPressed.has('ControlLeft')
