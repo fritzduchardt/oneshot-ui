@@ -61,8 +61,6 @@ function convertContentToHtml(content, mdPath) {
     })
 
     content = convertCallouts(content, calloutBlocks, mdPath)
-    // introduced dedicated blockquote conversion to handle multi-line blockquotes and preserve empty lines
-    content = convertHtmlLinksToNewTab(content)
     content = escapeRawHtmlTags(content)
     content = convertBlockquotes(content)
     content = convertMarkdownTablesToHtml(content)
@@ -285,15 +283,6 @@ function escapeRawHtmlTags(content) {
     })
 }
 
-// regex: match bare https:// URLs not already inside an href attribute, not preceded by ]( (markdown link syntax), and wrap them in an anchor tag with target="_blank"
-function convertHtmlLinksToNewTab(html) {
-    // regex: match https:// URLs that are not preceded by href=" or href=' to avoid double-wrapping existing links
-    // and not preceded by ]( to avoid matching URLs inside markdown links e.g. [text](https://...)
-    return html.replace(/(?<!href=["'])(?<!\]\()https:\/\/[^\s<>"']+/g, (url) => {
-        return `<a href="${url}" target="_blank">${url}</a>`
-    })
-}
-
 function convertBlockquotes(content) {
     const lines = content.split('\n')
     const result = []
@@ -332,16 +321,17 @@ function convertBlockquotes(content) {
 }
 
 function convertMarkdownCodeToHtml(content, mdPath) {
+    // improved link/image URL matching: URLs may now contain balanced parentheses, e.g. https://example.org/page_(details)
     if (mdPath) {
         if (mdPath.endsWith('.md')) {
             mdPath = getMarkdownBasePath(mdPath)
         }
         const rand = Math.random() * 99999
         // regex: pngs
-        content = content.replace(/!\[([^\]]*)\]\(([^)]+png)\)/g, (_, alt, src) => `<img class="md" alt="${alt}" src="${Config.API_URL}/image/${mdPath}/${src}?${rand}">`)
+        content = content.replace(/!\[([^\]]*)\]\(((?:[^()]|\([^()]*\))+png)\)/g, (_, alt, src) => `<img class="md" alt="${alt}" src="${Config.API_URL}/image/${mdPath}/${src}?${rand}">`)
     }
     // regex: markdown links
-    content = content.replace(/\[([^\]]+)\]\(([^)]+md)\)/g, '<a target="_blank" title="$2" class="md" href="$2">$1</a>')
+    content = content.replace(/\[([^\]]+)\]\(((?:[^()]|\([^()]*\))+md)\)/g, '<a target="_blank" title="$2" class="md" href="$2">$1</a>')
 
     content = content
         // block-level expressions also match when starting after a <br> tag
@@ -374,9 +364,9 @@ function convertMarkdownCodeToHtml(content, mdPath) {
         // regex: strikethrough (~~text~~)
         .replace(/~~(.+?)~~/g, '<del>$1</del>')
         // regex: prompt links [[text]](link)
-        .replace(/\[\[(.*?)\]\]\((\w+:[\s\S]+?)\)/g, '<span class="promt-link" content="$2">$1</span>')
+        .replace(/\[\[(.*?)\]\]\((\w+:(?:[^()]|\([^()]*\))+)\)/g, '<span class="prompt-link" content="$2">$1</span>')
         // regex: links [text](text)
-        .replace(/\[(.*?)\]\((\w+:[\s\S]+?)\)/g, '<span class="link" content="$2">$1</span>')
+        .replace(/\[(.*?)\]\((\w+:(?:[^()]|\([^()]*\))+)\)/g, '<span class="link" content="$2">$1</span>')
         // regex: unordered list items
         .replace(/(?:^|(?<=<br\s*\/?>))\s*[-*+] (.+?)(?=<br\s*\/?>|$)/gm, '<li>$1</li>')
         // regex: wrap consecutive <li> into <ul>
@@ -387,8 +377,6 @@ function convertMarkdownCodeToHtml(content, mdPath) {
         .replace(/(<li value="\d+">[^]*?<\/li>\n?)+/g, (match) => `<ol>${match}</ol>`)
         // regex: horizontal rule
         .replace(/(?:^|(?<=<br\s*\/?>))---(?=<br\s*\/?>|$)/gm, '<hr>')
-        // regex: links
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a target="_blank" href="$2">$1</a>')
         // regex: paragraph breaks
         .replace(/\n\n+/g, '</p><p>')
         // regex: trim plain lines that are not HTML tags

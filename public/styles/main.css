@@ -212,6 +212,15 @@ body {
     color: var(--message-color);
     box-shadow: 0 1px 3px rgba(129,199,132,0.2);
 }
+.callout-message {
+    width: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    position: relative;
+}
 
 .bot-message.notification-news {
     color: var(--news-color);

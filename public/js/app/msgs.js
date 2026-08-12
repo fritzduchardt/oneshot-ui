@@ -190,14 +190,18 @@ export function addNotification(type, message, image, basepath) {
         return;
     }
 
-    let parent = Dom.createDivWithCloseButton(`bot-message notification notification-${type}`);
+    let className = "bot-message notification"
+    if (type === "callout") {
+        className = "callout-message"
+    }
+    let parent = Dom.createDivWithCloseButton(className);
     let response = Html.convertMarkdownFileToHtml(
         message, basepath
     )
     if (response.metadata && response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
     }
-    parent.append(Dom.createDiv(`bot-message-text ${type}-message`, response.html))
+    parent.append(Dom.createDiv(`bot-message-text`, response.html))
     const shouldScroll = isScrolledNearBottom(Ui.messagesDiv)
     if (type === "prompt") {
         let actionButtons = document.createElement('div');
