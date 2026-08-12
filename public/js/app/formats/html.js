@@ -276,6 +276,8 @@ function escapeRawHtmlTags(content) {
     return content.replace(/<\/?[a-zA-Z][^>]*>/g, (tag) => {
         // preserve links
         if (/^<\/?a(\s|>)/.test(tag)) return tag
+        // preserve brs (both <br> and <br/>)
+        if (/^<br\s*\/?>/.test(tag)) return tag
         return tag
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -342,20 +344,21 @@ function convertMarkdownCodeToHtml(content, mdPath) {
     content = content.replace(/\[([^\]]+)\]\(([^)]+md)\)/g, '<a target="_blank" title="$2" class="md" href="$2">$1</a>')
 
     content = content
+        // block-level expressions also match when starting after a <br> tag
         // strip empty line block quotes
-        .replace(/^\s*>\s*$/gm, '')
+        .replace(/(?:^|(?<=<br\s*\/?>))\s*>\s*(?=<br\s*\/?>|$)/gm, '')
         // regex: h6 heading
-        .replace(/^###### (.+)$/gm, '<h6>$1</h6>')
+        .replace(/(?:^|(?<=<br\s*\/?>))(?:###### )(.+?)(?=<br\s*\/?>|$)/gm, '<h6>$1</h6>')
         // regex: h5 heading
-        .replace(/^##### (.+)$/gm, '<h5>$1</h5>')
+        .replace(/(?:^|(?<=<br\s*\/?>))(?:##### )(.+?)(?=<br\s*\/?>|$)/gm, '<h5>$1</h5>')
         // regex: h4 heading
-        .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+        .replace(/(?:^|(?<=<br\s*\/?>))(?:#### )(.+?)(?=<br\s*\/?>|$)/gm, '<h4>$1</h4>')
         // regex: h3 heading
-        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/(?:^|(?<=<br\s*\/?>))(?:### )(.+?)(?=<br\s*\/?>|$)/gm, '<h3>$1</h3>')
         // regex: h2 heading
-        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/(?:^|(?<=<br\s*\/?>))(?:## )(.+?)(?=<br\s*\/?>|$)/gm, '<h2>$1</h2>')
         // regex: h1 heading
-        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/(?:^|(?<=<br\s*\/?>))(?:# )(.+?)(?=<br\s*\/?>|$)/gm, '<h1>$1</h1>')
         // regex: bold+italic (***text***)
         .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
         // regex: bold (**text**)
@@ -371,19 +374,19 @@ function convertMarkdownCodeToHtml(content, mdPath) {
         // regex: strikethrough (~~text~~)
         .replace(/~~(.+?)~~/g, '<del>$1</del>')
         // regex: chart links ([[text]])
-        .replace(/\[(.*?)]\((\w+:[\s\S]+?)\)/g, '<span class="prompt-link"  content="$2">$1</span>')
+        .replace(/\[(.*?)]\((\w+:[\s\S]+?)\)/g, '<span class="link"  content="$2">$1</span>')
         // regex: prompt links ([[text]])
         .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
         // regex: unordered list items
-        .replace(/^\s*[-*+] (.+)$/gm, '<li>$1</li>')
+        .replace(/(?:^|(?<=<br\s*\/?>))\s*[-*+] (.+?)(?=<br\s*\/?>|$)/gm, '<li>$1</li>')
         // regex: wrap consecutive <li> into <ul>
         .replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`)
         // regex: ordered list items
-        .replace(/^\s*(\d+)\. (.+)$/gm, (_, num, text) => `<li value="${num}">${text}</li>`)
+        .replace(/(?:^|(?<=<br\s*\/?>))\s*(\d+)\. (.+?)(?=<br\s*\/?>|$)/gm, (_, num, text) => `<li value="${num}">${text}</li>`)
         // regex: wrap consecutive <li value="n"> into <ol>
         .replace(/(<li value="\d+">[^]*?<\/li>\n?)+/g, (match) => `<ol>${match}</ol>`)
         // regex: horizontal rule
-        .replace(/^---$/gm, '<hr>')
+        .replace(/(?:^|(?<=<br\s*\/?>))---(?=<br\s*\/?>|$)/gm, '<hr>')
         // regex: links
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a target="_blank" href="$2">$1</a>')
         // regex: paragraph breaks

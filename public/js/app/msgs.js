@@ -104,6 +104,17 @@ function initChartLinks(parent) {
     })
 }
 
+// Improved code: changed initLinks to open links in a new tab
+function initLinks(parent) {
+    const links = parent.querySelectorAll(".link")
+    links.forEach(link => {
+        link.addEventListener('click', event => {
+            event.preventDefault()
+            window.open(link.getAttribute("content"), "_blank")
+        })
+    })
+}
+
 export function addBotMessage(plain_response, userMessageEl, hideCopy= false, insert = true) {
 
     const response = Html.convertMarkdownFileToHtml(plain_response)
@@ -146,6 +157,7 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false, in
         })
     })
     initChartLinks(parent)
+    initLinks(parent)
     parent.append(actionButtons)
 
     // add copy buttons inside each code block
@@ -172,14 +184,13 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false, in
     return parent
 }
 
-export function addNotification(message, image, basepath) {
-    console.log("Notification: " + message)
+export function addNotification(type, message, image, basepath) {
     const notificationsEnabled = localStorage.getItem('notifications_enabled') !== 'false';
     if (!notificationsEnabled) {
         return;
     }
 
-    let parent = Dom.createDivWithCloseButton("bot-message notification");
+    let parent = Dom.createDivWithCloseButton(`bot-message notification notification-${type}`);
     let response = Html.convertMarkdownFileToHtml(
         message, basepath
     )
@@ -188,11 +199,13 @@ export function addNotification(message, image, basepath) {
     }
     parent.append(Dom.createDiv("bot-message-text", response.html))
     const shouldScroll = isScrolledNearBottom(Ui.messagesDiv)
-    let actionButtons = document.createElement('div');
-    actionButtons.className = "action-buttons"
-    actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
-    actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(response.markdown), "Copy"))
-    parent.append(actionButtons)
+    if (type == "prompt") {
+        let actionButtons = document.createElement('div');
+        actionButtons.className = "action-buttons"
+        actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
+        actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(response.markdown), "Copy"))
+        parent.append(actionButtons)
+    }
     Ui.messagesDiv.append(parent)
     if (shouldScroll) {
         scrollMessagesToBottom()
@@ -201,6 +214,7 @@ export function addNotification(message, image, basepath) {
         Sound.playAcknowledgementSound()
     }
     initChartLinks(parent)
+    initLinks(parent)
     return parent
 }
 

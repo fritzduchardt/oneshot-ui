@@ -138,7 +138,7 @@ function registerSseListener() {
             console.error(`Failed to convert message: ${event.data}`)
             data = event.data
         }
-        Msg.addNotification(data.message, data.image, data.basepath)
+        Msg.addNotification(data.type, data.message, data.image, data.basepath)
     })
 
     eventSource.addEventListener('error', (event) => {
