@@ -28,6 +28,7 @@
     --message-tag-background-color: #f1f8e9;
     --message-tag-border-color: #aed581;
     --link-color: #1b1b59;
+    --prompt-link-color: #004d40;
     --base-font-family: 'Roboto', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
     --code-font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Courier New', monospace;
     --code-text-color: #e8f5e9;
@@ -36,6 +37,15 @@
     --news-color: #a8a75e;
     --version-border-color: #a8a75e;
     --version-background-color: #fcfa77;
+    --prompt-message-background-color: #e0f2f1;
+    --prompt-message-border-color: #80cbc4;
+    --prompt-message-color: #004d40;
+    --news-message-background-color: #fcfa77;
+    --news-message-border-color: #a8a75e;
+    --news-message-color: #5d5a1f;
+    --info-message-background-color: #e3f2fd;
+    --info-message-border-color: #90caf9;
+    --info-message-color: #1565c0;
 }
 
 html,
@@ -203,7 +213,7 @@ body {
     box-shadow: 0 1px 3px rgba(129,199,132,0.2);
 }
 
-.bot-message.notification-news {initChartLinks
+.bot-message.notification-news {
     color: var(--news-color);
 }
 
@@ -220,6 +230,7 @@ body {
     font-size: var(--small-font-size);
 }
 
+/* Fixed stray characters in action-button margin declaration */
 .action-button {
     margin: 0 2px;
 }
@@ -243,9 +254,34 @@ pre .action-button:hover {
     opacity: 1;
 }
 
-.prompt-link, .chart-link, .link {
+/* Distinct colors for prompt, news and info messages */
+.prompt-message {
+    background: var(--prompt-message-background-color);
+    border: 1px solid var(--prompt-message-border-color);
+    color: var(--prompt-message-color);
+}
+
+.news-message {
+    background: var(--news-message-background-color);
+    border: 1px solid var(--news-message-border-color);
+    color: var(--news-message-color);
+}
+
+.info-message {
+    background: var(--info-message-background-color);
+    border: 1px solid var(--info-message-border-color);
+    color: var(--info-message-color);
+}
+
+.link {
     text-decoration: underline;
     color: var(--link-color);
+    cursor: pointer;
+}
+
+.prompt-link {
+    text-decoration: underline;
+    color: var(--prompt-link-color);
     cursor: pointer;
 }
 

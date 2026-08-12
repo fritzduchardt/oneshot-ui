@@ -373,10 +373,10 @@ function convertMarkdownCodeToHtml(content, mdPath) {
         .replace(/_(.+?)_/g, '<em>$1</em>')
         // regex: strikethrough (~~text~~)
         .replace(/~~(.+?)~~/g, '<del>$1</del>')
-        // regex: chart links ([[text]])
-        .replace(/\[(.*?)]\((\w+:[\s\S]+?)\)/g, '<span class="link"  content="$2">$1</span>')
-        // regex: prompt links ([[text]])
-        .replace(/\[\[([\s\S]+?)\]\]/g, '<span class="prompt-link">$1</span>')
+        // regex: prompt links [[text]](link)
+        .replace(/\[\[(.*?)\]\]\((\w+:[\s\S]+?)\)/g, '<span class="promt-link" content="$2">$1</span>')
+        // regex: links [text](text)
+        .replace(/\[(.*?)\]\((\w+:[\s\S]+?)\)/g, '<span class="link" content="$2">$1</span>')
         // regex: unordered list items
         .replace(/(?:^|(?<=<br\s*\/?>))\s*[-*+] (.+?)(?=<br\s*\/?>|$)/gm, '<li>$1</li>')
         // regex: wrap consecutive <li> into <ul>

@@ -197,9 +197,9 @@ export function addNotification(type, message, image, basepath) {
     if (response.metadata && response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
     }
-    parent.append(Dom.createDiv("bot-message-text", response.html))
+    parent.append(Dom.createDiv(`bot-message-text ${type}-message`, response.html))
     const shouldScroll = isScrolledNearBottom(Ui.messagesDiv)
-    if (type == "prompt") {
+    if (type === "prompt") {
         let actionButtons = document.createElement('div');
         actionButtons.className = "action-buttons"
         actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
