@@ -92,7 +92,7 @@ function addMarkdownLinks(botMessage) {
     })
 }
 
-function initChartLinks(parent) {
+function initPromptLinks(parent) {
     const chartLinks = parent.querySelectorAll(".prompt-link")
     chartLinks.forEach(link => {
         link.addEventListener('click', () => {
@@ -156,7 +156,7 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false, in
             Ui.chatButton.click()
         })
     })
-    initChartLinks(parent)
+    initPromptLinks(parent)
     initLinks(parent)
     parent.append(actionButtons)
 
@@ -217,7 +217,7 @@ export function addNotification(type, message, image, basepath) {
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
-    initChartLinks(parent)
+    initPromptLinks(parent)
     initLinks(parent)
     return parent
 }
