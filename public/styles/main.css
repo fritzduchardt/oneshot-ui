@@ -727,6 +727,18 @@ pre code {
     color: #5d4037;
 }
 
+/* Added callout-news style with matching news colors */
+/* news - yellow/olive */
+.callout-news .callout-title {
+    background: #fffde7;
+    color: var(--news-message-color);
+    border-bottom: 1px solid var(--news-message-border-color);
+}
+.callout-news .callout-body {
+    background: var(--news-message-background-color);
+    color: var(--news-message-color);
+}
+
 /* note / info - blue */
 .callout-note .callout-title,
 .callout-info .callout-title {

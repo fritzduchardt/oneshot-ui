@@ -23,6 +23,10 @@ export async function handleSendButtonClick(withMcp) {
     Store.setMarkdown(markdown)
     Store.setModel(model)
     Store.setPattern(pattern)
+    let type = "chat"
+    if (withMcp) {
+        type = "mcp-chat"
+    }
     History.default.addMessage({ prompt: message, pattern, markdown, model, type})
 
     try {
@@ -33,10 +37,6 @@ export async function handleSendButtonClick(withMcp) {
             userMessageEl.loadingDots.remove()
             userMessageEl.loadingDots = null
         }
-    }
-    let type = "chat"
-    if (withMcp) {
-        type = "mcp-chat"
     }
 }
 
@@ -61,6 +61,7 @@ export async function handleChartButtonClick() {
     Store.setMessage(message)
     Store.setModel(model)
     Store.setPattern(pattern)
+    let type = "chat"
     History.default.addMessage({ prompt: message, pattern, markdown, model, type})
 
     try {
@@ -78,7 +79,6 @@ export async function handleChartButtonClick() {
             userMessageEl.loadingDots = null
         }
     }
-    let type = "chat"
 }
 
 // Improved code: fixed getVisibleBotMessage so it actually returns the first visible bot message instead of always returning Ui.messagesDiv
