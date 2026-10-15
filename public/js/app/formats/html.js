@@ -59,7 +59,6 @@ function convertContentToHtml(content, mdPath) {
         chartBlocks.push(chartHtml)
         return placeholder
     })
-
     content = convertCallouts(content, calloutBlocks, mdPath)
     content = escapeRawHtmlTags(content)
     content = convertBlockquotes(content)
@@ -358,12 +357,12 @@ function convertMarkdownCodeToHtml(content, mdPath) {
         .replace(/___(.+?)___/g, '<strong><em>$1</em></strong>')
         // regex: bold (__text__)
         .replace(/__(.+?)__/g, '<strong>$1</strong>')
-        // regex: italic (_text_)
-        .replace(/_(.+?)_/g, '<em>$1</em>')
         // regex: strikethrough (~~text~~)
         .replace(/~~(.+?)~~/g, '<del>$1</del>')
         // regex: prompt links [[text]](link)
         .replace(/\[\[(.*?)\]\]\((\w+:(?:[^()]|\([^()]*\))+)\)/g, '<span class="prompt-link" content="$2">$1</span>')
+        // regex: prompt links [[text]]
+        .replace(/\[\[(.*?)\]\]/g, '<span class="prompt-link" content="$1">$1</span>')
         // regex: links [text](text)
         .replace(/\[(.*?)\]\((\w+:(?:[^()]|\([^()]*\))+)\)/g, '<span class="link" content="$2">$1</span>')
         // regex: unordered list items

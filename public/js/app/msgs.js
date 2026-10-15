@@ -93,13 +93,22 @@ function addMarkdownLinks(botMessage) {
 }
 
 function initPromptLinks(parent) {
-    const chartLinks = parent.querySelectorAll(".prompt-link")
-    chartLinks.forEach(link => {
+    const promptLinks = parent.querySelectorAll(".prompt-link")
+    promptLinks.forEach(link => {
         link.addEventListener('click', () => {
-            Ui.messageTextarea.value = link.getAttribute("content")
+            let content = link.getAttribute("content")
+            Ui.messageTextarea.value = content
             Ui.patternDropdown.value = "grep"
             $("#pattern").val("grep").trigger("change")
-            Ui.chartButton.click()
+            if (content.startsWith("chart:")) {
+                Ui.chartButton.click()
+            }
+            else if (content.startsWith("finclaw:")) {
+                Ui.mcpButton.click()
+            }
+            else {
+                Ui.chatButton.click()
+            }
         })
     })
 }
@@ -167,15 +176,9 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false, in
         }
         actionButtons.append(createStoreButton(response.filename, response.markdown))
     }
-    const links = parent.querySelectorAll(".prompt-link")
-    links.forEach(link => {
-        link.addEventListener('click', () => {
-            Ui.messageTextarea.value = link.innerHTML
-            Ui.chatButton.click()
-        })
-    })
     initPromptLinks(parent)
     initLinks(parent)
+    initScripts(parent)
     parent.append(actionButtons)
 
     // add copy buttons inside each code block
@@ -228,7 +231,6 @@ export function addNotification(type, message, image, basepath) {
     }
     initPromptLinks(parent)
     initLinks(parent)
-    // Added: initialize script tags in notification content
     initScripts(notificationText)
     return parent
 }
