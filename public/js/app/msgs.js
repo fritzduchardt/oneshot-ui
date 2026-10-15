@@ -115,6 +115,24 @@ function initLinks(parent) {
     })
 }
 
+// Added: shared helper that executes script tags found inside a message element
+function initScripts(messageElement) {
+    if (!messageElement) {
+        return
+    }
+    requestAnimationFrame(() => {
+        messageElement.querySelectorAll("script").forEach(scriptTag => {
+            const code = scriptTag.textContent || scriptTag.innerText
+            try {
+                const fn = new Function(code)
+                fn()
+            } catch (err) {
+                console.error('Failed to execute script from bot message:', err)
+            }
+        })
+    })
+}
+
 export function addBotMessage(plain_response, userMessageEl, hideCopy= false, insert = true) {
 
     const response = Html.convertMarkdownFileToHtml(plain_response)
@@ -166,17 +184,6 @@ export function addBotMessage(plain_response, userMessageEl, hideCopy= false, in
     })
 
     addMarkdownLinks(botMessage)
-    requestAnimationFrame(() => {
-        botMessage.querySelectorAll("script").forEach(scriptTag => {
-            const code = scriptTag.textContent || scriptTag.innerText
-            try {
-                const fn = new Function(code)
-                fn()
-            } catch (err) {
-                console.error('Failed to execute script from bot message:', err)
-            }
-        })
-    })
 
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
@@ -201,7 +208,9 @@ export function addNotification(type, message, image, basepath) {
     if (response.metadata && response.metadata.size > 0) {
         parent.append(addMetadata(response.metadata))
     }
-    parent.append(Dom.createDiv(`bot-message-text`, response.html))
+    // Added: keep reference to the notification text element so script tags can be initialized
+    const notificationText = Dom.createDiv(`bot-message-text`, response.html)
+    parent.append(notificationText)
     const shouldScroll = isScrolledNearBottom(Ui.messagesDiv)
     if (type === "prompt") {
         let actionButtons = document.createElement('div');
@@ -219,6 +228,8 @@ export function addNotification(type, message, image, basepath) {
     }
     initPromptLinks(parent)
     initLinks(parent)
+    // Added: initialize script tags in notification content
+    initScripts(notificationText)
     return parent
 }
 

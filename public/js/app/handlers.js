@@ -70,7 +70,6 @@ export async function handleChartButtonClick() {
         if (visibleBotMsg === Ui.messagesDiv) {
             Ui.messagesDiv.append(botMessage)
         } else {
-            userMessageEl.classList.add("chat-message")
             userMessageEl.append(botMessage)
         }
     } catch (error) {
