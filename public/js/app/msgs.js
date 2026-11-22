@@ -204,35 +204,35 @@ export function addNotification(type, message, image, basepath) {
     if (type === "callout") {
         className = "callout-message"
     }
-    let parent = Dom.createDivWithCloseButton(className);
+    let notificationDiv = Dom.createDivWithCloseButton(className);
     let response = Html.convertMarkdownFileToHtml(
         message, basepath
     )
     if (response.metadata && response.metadata.size > 0) {
-        parent.append(addMetadata(response.metadata))
+        notificationDiv.append(addMetadata(response.metadata))
     }
     // Added: keep reference to the notification text element so script tags can be initialized
     const notificationText = Dom.createDiv(`bot-message-text`, response.html)
-    parent.append(notificationText)
+    notificationDiv.append(notificationText)
     const shouldScroll = isScrolledNearBottom(Ui.messagesDiv)
     if (type === "prompt") {
         let actionButtons = document.createElement('div');
         actionButtons.className = "action-buttons"
         actionButtons.append(createCopyButton(response.markdown, "Copy MD"))
         actionButtons.append(createCopyButton(Text.convertMarkdownToPlainText(response.markdown), "Copy"))
-        parent.append(actionButtons)
+        notificationDiv.append(actionButtons)
     }
-    Ui.messagesDiv.append(parent)
+    Ui.messagesDiv.append(notificationDiv)
     if (shouldScroll) {
         scrollMessagesToBottom()
     }
     if (!isMobileDevice() && !Ui.toggleSound.classList.contains("pressed")) {
         Sound.playAcknowledgementSound()
     }
-    initPromptLinks(parent)
-    initLinks(parent)
+    initPromptLinks(notificationDiv)
+    initLinks(notificationDiv)
     initScripts(notificationText)
-    return parent
+    return notificationDiv
 }
 
 function isScrolledNearBottom(element, threshold = 80) {

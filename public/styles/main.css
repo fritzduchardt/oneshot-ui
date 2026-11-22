@@ -543,6 +543,9 @@ table th {
     background: #c8e6c9;
     color: var(--message-color);
     font-weight: 600;
+    /* Ensure long text in table headers breaks properly */
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 blockquote {
