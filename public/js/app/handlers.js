@@ -56,8 +56,6 @@ export async function handleChartButtonClick() {
     }
     const abortController = new AbortController()
     const userMessageEl = Msg.addUserMessage(message, new Map([["model", model], ["pattern", pattern]]), abortController, false, false)
-    const visibleBotMsg = getVisibleBotMessage()
-    visibleBotMsg.append(userMessageEl)
     Store.setMessage(message)
     Store.setModel(model)
     Store.setPattern(pattern)
@@ -67,11 +65,7 @@ export async function handleChartButtonClick() {
     try {
         const response = await Backend.chartChat(message, markdown, model, pattern, abortController)
         const botMessage = Msg.addBotMessage(response, userMessageEl, true, false)
-        if (visibleBotMsg === Ui.messagesDiv) {
-            Ui.messagesDiv.append(botMessage)
-        } else {
-            userMessageEl.append(botMessage)
-        }
+        Ui.messagesDiv.append(botMessage)
     } catch (error) {
         if (userMessageEl.loadingDots) {
             userMessageEl.loadingDots.remove()

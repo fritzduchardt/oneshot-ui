@@ -157,7 +157,9 @@ function convertMarkdownTablesToHtml(content) {
             return styles.length ? ` style="${styles.join(';')}"` : ''
         }
 
-        const headerCells = parseColumns(headerRow)
+        const headerCellsParsed = parseColumns(headerRow)
+        const headerCellCount = headerCellsParsed.length
+        const headerCells = headerCellsParsed
             .map((cell, i) => {
                 const styleAttr = buildStyleAttr(cell, i)
                 return `<th${styleAttr}>${convertMarkdownCodeToHtml(cell)}</th>`
@@ -169,7 +171,14 @@ function convertMarkdownTablesToHtml(content) {
             .split('\n')
             .filter((row) => row.trim())
             .map((row) => {
-                const cells = parseColumns(row)
+                const cellsParsed = parseColumns(row)
+                while (cellsParsed.length < headerCellCount) {
+                    cellsParsed.push('')
+                }
+                if (cellsParsed.length > headerCellCount) {
+                    cellsParsed.length = headerCellCount
+                }
+                const cells = cellsParsed
                     .map((cell, i) => {
                         const styleAttr = buildStyleAttr(cell, i)
                         return `<td${styleAttr}>${convertMarkdownCodeToHtml(cell)}</td>`
