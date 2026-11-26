@@ -1,3 +1,9 @@
+/* Ensure all table cells have equal width */
+table th,
+table td {
+    width: 0;
+}
+
 /*Background*/
 
 :root {
@@ -531,6 +537,7 @@ table {
     padding: 0;
     text-align: left;
     border: 1px solid var(--general-border);
+    table-layout: fixed;
 }
 
 table th,
